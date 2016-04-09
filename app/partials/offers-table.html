@@ -1,0 +1,38 @@
+<md-card flex md-whiteframe="5">
+  <md-toolbar class="md-table-toolbar md-default">
+    <div class="md-toolbar-tools">
+      <span>{{name}}</span>
+    </div>
+  </md-toolbar>
+  <md-table-container>
+    <table md-table ng-model="selected">
+      <thead md-head md-order="query.order" md-on-reorder="getDesserts">
+      <tr md-row>
+        <th md-column md-numeric md-order-by="price">
+          <span>Price
+            <md-icon md-svg-src="/images/svg/BTC.svg"></md-icon>
+          </span></th>
+        <th md-column md-numeric md-order-by="amount">
+          <span>{{secondary}}
+            <md-icon md-svg-src="/images/svg/{{secondary}}.svg"></md-icon>
+          </span></th>
+        </th>
+        <th md-column md-numeric md-order-by="amount">
+          <span>{{primary}}
+            <md-icon md-svg-src="/images/svg/{{primary}}.svg"></md-icon>
+          </span></th>
+        </th>
+      </tr>
+      </thead>
+      <tbody md-body>
+      <tr md-row ng-repeat=" (price,amount) in offers">
+        <td md-cell>{{price}}</td>
+        <td md-cell>{{amount}}</td>
+        <td md-cell>{{price * amount}}</td>
+      </tr>
+      </tbody>
+    </table>
+  </md-table-container>
+  <md-table-pagination md-limit="ctrl.query.limit" md-page="ctrl.query.page" md-total="{{offers.count}}"
+                       md-on-paginate="getOrders"></md-table-pagination>
+</md-card>

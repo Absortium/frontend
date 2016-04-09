@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html ng-cloak="" ng-app="MyApp">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Satellizer</title>
+  <link href="favicon.png" rel="shortcut icon">
+  <link href="//fonts.googleapis.com/css?family=Roboto|Montserrat:400,700|Open+Sans:400,300,600" rel="stylesheet">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+  <link href="//code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet">
+  <link href="//cdn.jsdelivr.net/animatecss/3.2.0/animate.css" rel="stylesheet">
+
+  <!-- Angular Material style sheet -->
+
+  <link rel="stylesheet" href="../bower_components/angular-material/angular-material.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="../bower_components/angular-toastr/dist/angular-toastr.css" rel="stylesheet">
+
+  <!-- Angular Material Table -->
+  <link href="../bower_components/angular-material-data-table/dist/md-data-table.min.css" rel="stylesheet" type="text/css"/>
+
+  <link href="styles/styles.css" rel="stylesheet">
+  <link href="styles/signup.css" rel="stylesheet">
+  <link href="styles/login.css" rel="stylesheet">
+  <link href="styles/order.css" rel="stylesheet">
+
+
+</head>
+<body>
+
+
+<div layout="column" layout-fill>
+  <md-toolbar ng-controller="NavbarCtrl" class="md-default-theme">
+    <div layout="row" layout-padding layout-align="space-between center">
+      <div flex="20"></div>
+
+      <div>
+        <md-button>EXCHANGE</md-button>
+        <md-menu>
+          <md-button md-menu-origin ng-click="$mdOpenMenu()">Help</md-button>
+          <md-menu-content width="2">
+            <md-menu-item>
+              <md-button>Help</md-button>
+            </md-menu-item>
+            <md-menu-item>
+              <md-button>About</md-button>
+            </md-menu-item>
+          </md-menu-content>
+        </md-menu>
+      </div>
+
+      <div class="nav-buttons">
+        <div ng-if="isAuthenticated()">
+          <md-button href="">SETTINGS</md-button>
+          <md-button href="/#/logout" class="md-raised"><div >LOG OUT</div></md-button>
+        </div>
+
+        <div ng-if="!isAuthenticated()">
+          <md-button href="/#/login" class="md-raised">LOG IN</md-button>
+          <md-button href="/#/signup" class="md-raised">SIGN UP</md-button>
+        </div>
+      </div>
+
+      <div flex="20"></div>
+    </div>
+  </md-toolbar>
+  <md-content layout-fill role="main">
+    <div ui-view></div>
+  </md-content>
+  <md-bottom-sheet>
+
+  </md-bottom-sheet>
+</div>
+
+<!-- Third-party Libraries -->
+<script src="../bower_components/angular/angular.js"></script>
+<script src="../bower_components/angular-animate/angular-animate.js"></script>
+<script src="../bower_components/angular-messages/angular-messages.js"></script>
+<script src="../bower_components/angular-resource/angular-resource.js"></script>
+<script src="../bower_components/angular-sanitize/angular-sanitize.js"></script>
+<script src="../bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+<script src="../bower_components/angular-toastr/dist/angular-toastr.tpls.js"></script>
+<script src="../bower_components/satellizer/satellizer.min.js"></script>
+
+<script src="../bower_components/angular-aria/angular-aria.js"></script>
+
+<!-- Angular Material Library -->
+<script src="../bower_components/angular-material/angular-material.js"></script>
+
+<!-- Angular Material Tables -->
+<script type="text/javascript" src="../bower_components/angular-material-data-table/dist/md-data-table.min.js"></script>
+
+<!-- Autobahn (WAMP)-->
+<script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
+
+<!-- Application Code -->
+<script src="js/app.js"></script>
+<!--<script src="js/directives/passwordStrength.js"></script>-->
+<!--<script src="js/directives/passwordMatch.js"></script>-->
+<script src="js/controllers/home.js"></script>
+<script src="js/controllers/login.js"></script>
+<script src="js/controllers/signup.js"></script>
+<script src="js/controllers/logout.js"></script>
+<script src="js/controllers/offers.js"></script>
+<script src="js/controllers/orders.js"></script>
+<script src="js/controllers/profile.js"></script>
+<script src="js/controllers/navbar.js"></script>
+
+<script src="js/directives/orderCard.js"></script>
+<script src="js/directives/offersTable.js"></script>
+
+<script src="js/services/account.js"></script>
+<script src="js/services/orders.js"></script>
+<script src="js/services/offers.js"></script>
+</body>
+</html>

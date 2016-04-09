@@ -1,0 +1,72 @@
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+<div class="signup-input" ng-cloak="" layout-align="center center" layout="row">
+  <md-content flex="20">
+    <form method="post" ng-submit="signup()" name="signupForm">
+      <div layout="column">
+        <div layout="row">
+          <md-input-container class="md-icon-float" flex="grow">
+            <md-icon md-font-set="material-icons">person</md-icon>
+            <input md-maxlength="30" required type="text" name="displayName" placeholder="Name"
+                   ng-model="user.displayName"/>
+            <div ng-if="!signupForm.displayName.$dirty" class="hint">Tell us what we should call you!</div>
+            <div ng-if="signupForm.displayName.$dirty" ng-messages="signupForm.displayName.$error">
+              <div ng-message="required">Name is required.</div>
+              <div ng-message="md-maxlength">The name has to be less than 30 characters long.</div>
+            </div>
+          </md-input-container>
+          <div flex="5"></div>
+        </div>
+
+        <div layout="row">
+          <md-input-container class="md-icon-float" flex="grow">
+            <md-icon md-font-set="material-icons">email</md-icon>
+            <input required ng-model="user.email" type="email" name="email" placeholder="Email">
+            <div ng-if="!signupForm.email.$dirty" class="hint">How can we reach you?</div>
+            <div ng-if="signupForm.email.$dirty" ng-messages="signupForm.email.$error">
+              <div ng-message="required">Email is required.</div>
+            </div>
+          </md-input-container>
+          <div flex="5"></div>
+        </div>
+
+        <div layout="row">
+          <md-input-container class="md-icon-float" flex="grow">
+            <md-icon md-font-set="material-icons">vpn_key</md-icon>
+            <input required ng-model="user.password" type="password" name="password" placeholder="Password"
+                   ng-required="true">
+            <div ng-if="!signupForm.password.$dirty" class="hint">Secure yourself as much as you can!</div>
+            <div ng-if="signupForm.password.$dirty" ng-messages="signupForm.password.$error">
+              <div ng-message="required">Password is required.</div>
+            </div>
+          </md-input-container>
+          <div flex="5"></div>
+        </div>
+
+        <div layout="row">
+          <md-input-container class="md-icon-float" flex="grow">
+            <md-icon md-font-set="material-icons">confirmation_number</md-icon>
+            <input required ng-model="confirmPassword" type="password" name="confirmPassword"
+                   placeholder="Confirm Password" ng-required="true">
+            <div ng-if="!signupForm.confirmPassword.$dirty" class="hint">Check yourself!</div>
+            <div ng-if="signupForm.confirmPassword.$dirty" ng-messages="signupForm.confirmPassword.$error">
+              <div ng-message="required">Password confirmation is required.</div>
+            </div>
+          </md-input-container>
+          <div flex="5"></div>
+        </div>
+
+        <md-button type="submit" class="rounded md-raised" ng-disabled="signupForm.$invalid" class="md-primary"> SIGN
+          UP
+        </md-button>
+      </div>
+    </form>
+  </md-content>
+</div>

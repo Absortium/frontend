@@ -1,0 +1,54 @@
+.rounded {
+  color : rgb(49, 46, 46);
+  background-color: rgba(255, 222, 121, 0.96);
+  border-radius: 5px 5px 5px 5px;
+  font-size: 16px;
+}
+/*.rounded:not([disabled]):hover {*/
+  /*background-color: rgba(107, 103, 91, 0.96);*/
+  /*color: white;*/
+/*}*/
+/*.rounded[disabled] {*/
+  /*color : rgb(187, 187, 187);*/
+  /*background-color: rgba(230, 230, 229, 0.96);*/
+/*}*/
+
+#login-btn {
+  background-color: #71cb7a;
+}
+
+#signup-btn {
+  background-color: #71cb7a;
+}
+
+#google-plus-btn {
+  color : rgb(255, 255, 255);
+  background-color: #CB3927;
+}
+
+#twitter-btn {
+  color : rgb(255, 255, 255);
+  background-color: #00aced;
+}
+
+#github-btn {
+  color : rgb(255, 255, 255);
+  background-color: #444;
+}
+
+.md-toolbar-tools h1 {
+  font-size: inherit;
+  font-weight: inherit;
+  margin: inherit;
+}
+
+.div {
+  border: 2px solid transparent;
+  margin: 2px;
+}
+
+/*.a md-card {*/
+  /*border: 2px solid transparent;*/
+/*}*/
+
+

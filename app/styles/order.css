@@ -1,0 +1,24 @@
+.order-card {
+  /* NOTE: Check the demo's HTML to see some additional RTL support CSS */
+  /* Setup animations similar to the ng-messages */ }
+.order-card .hint {
+  /* Position the hint */
+  position: absolute;
+  left: 2px;
+  right: auto;
+  bottom: 7px;
+  /* Copy styles from ng-messages */
+  font-size: 12px;
+  line-height: 14px;
+  transition: all 0.3s cubic-bezier(0.55, 0, 0.55, 0.2);
+  /* Set our own color */
+  color: grey; }
+.order-card .hint.ng-hide,
+.order-card .hint.ng-enter,
+.order-card .hint.ng-leave.ng-leave-active {
+  bottom: 26px;
+  opacity: 0; }
+.order-card .hint.ng-leave,
+.order-card .hint.ng-enter.ng-enter-active {
+bottom: 7px;
+  opacity: 1; }
