@@ -1,5 +1,5 @@
 angular.module('MyApp')
-  .controller('LoginCtrl', function ($scope, $location, $auth, toastr) {
+  .controller('LoginCtrl', function ($scope, $location, auth, toastr) {
     $scope.login = function () {
       $auth.login($scope.user)
         .then(function () {
@@ -10,6 +10,9 @@ angular.module('MyApp')
           toastr.error(error.data.message, error.status);
         });
     };
+
+    $scope.auth = auth;
+
     $scope.authenticate = function (provider) {
       $auth.authenticate(provider)
         .then(function () {
