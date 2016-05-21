@@ -1,14 +1,9 @@
 angular.module('MyApp')
-  .controller('OrdersCtrl', ['$scope', 'OrdersSrv', 'toastr', '$auth', function ($scope, OrdersSrv, toastr, $auth) {
+  .controller('OrdersCtrl', ['$scope', 'OrdersSrv', 'toastr', function ($scope, OrdersSrv, toastr) {
     'use strict';
     $scope.order = {};
 
     $scope.createOrder = function () {
-      // console.log($auth.getToken());
-      // console.log($auth.isAuthenticated());
-      // console.log($auth.isAuthenticated());
-      // console.log($auth.getPayload());
-
       var data = {
         type: $scope.type,
         price: $scope.order.price,

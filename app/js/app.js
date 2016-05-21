@@ -4,7 +4,6 @@ angular.module('MyApp', [
   'ngAnimate',
   'toastr',
   'ui.router',
-  'satellizer',
   'ngMaterial',
   'md.data.table',
   'angular-jwt',
@@ -19,27 +18,7 @@ angular.module('MyApp', [
         controllerAs: 'home_ctrl',
         templateUrl: 'partials/home.html'
       })
-      .state('login', {
-        url: '/login',
-        templateUrl: 'partials/login.html',
-        controller: 'LoginCtrl',
-        resolve: {
-          skipIfLoggedIn: skipIfLoggedIn
-        }
-      })
-      .state('signup', {
-        url: '/signup',
-        templateUrl: 'partials/signup.html',
-        controller: 'SignupCtrl',
-        resolve: {
-          skipIfLoggedIn: skipIfLoggedIn
-        }
-      })
-      .state('logout', {
-        url: '/logout',
-        template: null,
-        controller: 'LogoutCtrl'
-      })
+
       .state('profile', {
         url: '/profile',
         templateUrl: 'partials/profile.html',
@@ -53,11 +32,10 @@ angular.module('MyApp', [
 
     authProvider.init({
       domain: 'absortium.auth0.com',
-      clientID: 'AsRV3YgqX7qQNYqsITCLGM05C85ypkpd',
+      clientID: 'JmIrPzSo0nixk13ohk8KeQC2OZ7LByRI',
       loginUrl: '/login'
     });
 
-    //Called when login is successful
     authProvider.on('loginSuccess', function ($location, profilePromise, idToken, store) {
       console.log("Login Success");
       profilePromise.then(function (profile) {
@@ -67,56 +45,27 @@ angular.module('MyApp', [
       $location.path('/');
     });
 
-    //Called when login fails
     authProvider.on('loginFailure', function () {
-      console.log("Error logging in");
-      $location.path('/login');
+      alert("Error");
     });
 
-    //Angular HTTP Interceptor function
+    authProvider.on('authenticated', function ($location) {
+      console.log("Authenticated");
+
+    });
+
     jwtInterceptorProvider.tokenGetter = function (store) {
       return store.get('token');
     };
 
-    //Push interceptor function to $httpProvider's interceptors
+    // Add a simple interceptor that will fetch all requests and add the jwt token to its authorization header.
+    // NOTE: in case you are calling APIs which expect a token signed with a different secret, you might
+    // want to check the delegation-token example
     $httpProvider.interceptors.push('jwtInterceptor');
 
-    // $authProvider.tokenPrefix = "";
-    // $authProvider.authToken = "JWT";
-    //
-    // $authProvider.google({
-    //   url: '/auth/social/oauth2/google',
-    //   clientId: '627422708179-p2nsu6pq24iatk3pccjdcj9gkq8lr1lj.apps.googleusercontent.com',
-    //   responseParams: {
-    //     code: 'code',
-    //     clientId: 'client_id',
-    //     redirectUri: 'redirect_uri'
-    //   }
-    // });
-    //
-    // $authProvider.github({
-    //   url: '/auth/social/oauth2/github',
-    //   clientId: '87ca9a8ddc43578f62e5',
-    //   responseParams: {
-    //     code: 'code',
-    //     clientId: 'client_id',
-    //     redirectUri: 'redirect_uri'
-    //   }
-    // });
-    //
-    //
-    // $authProvider.twitter({
-    //   url: '/auth/social/oauth1/twitter',
-    //   responseParams: {
-    //     code: 'code',
-    //     clientId: 'client_id',
-    //     redirectUri: 'redirect_uri'
-    //   }
-    // });
-
-    function skipIfLoggedIn($q, $auth) {
+    function skipIfLoggedIn($q, auth) {
       var deferred = $q.defer();
-      if ($auth.isAuthenticated()) {
+      if (auth.isAuthenticated) {
         deferred.reject();
       } else {
         deferred.resolve();
@@ -124,18 +73,33 @@ angular.module('MyApp', [
       return deferred.promise;
     }
 
-    function loginRequired($q, $location, $auth) {
+    function loginRequired($q, $location, auth) {
       var deferred = $q.defer();
-      if ($auth.isAuthenticated()) {
+      if (auth.isAuthenticated) {
         deferred.resolve();
       } else {
         $location.path('/login');
       }
       return deferred.promise;
     }
+
   })
 
-  .run(function (auth) {
-    // This hooks all auth events to check everything as soon as the app starts
-    auth.hookEvents();
-  });
+  .run(function ($rootScope, auth, store, jwtHelper, $location) {
+    $rootScope.$on('$locationChangeStart', function () {
+
+      var token = store.get('token');
+      if (token) {
+        if (!jwtHelper.isTokenExpired(token)) {
+          if (!auth.isAuthenticated) {
+            auth.authenticate(store.get('profile'), token);
+          }
+        } else {
+          // Either show the login page or use the refresh token to get a new idToken
+          $location.path('/');
+        }
+      }
+
+    })
+  })
+

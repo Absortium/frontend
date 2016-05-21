@@ -1,5 +1,5 @@
 angular.module('MyApp')
-  .controller('ProfileCtrl', function($scope, $auth, toastr, Account) {
+  .controller('ProfileCtrl', function($scope, auth, toastr, Account) {
     $scope.getProfile = function() {
       Account.getProfile()
         .then(function(response) {
