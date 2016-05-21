@@ -16,7 +16,7 @@
             <md-icon md-font-set="material-icons">person</md-icon>
             <input md-maxlength="30" required type="text" name="displayName" placeholder="Name"
                    ng-model="user.displayName"/>
-            <div ng-if="!signupForm.displayName.$dirty" class="hint">Tell us what we should call you!</div>
+            <div ng-if="!signupForm.displayName.$dirty" class="hint">Tell us what we should exec you!</div>
             <div ng-if="signupForm.displayName.$dirty" ng-messages="signupForm.displayName.$error">
               <div ng-message="required">Name is required.</div>
               <div ng-message="md-maxlength">The name has to be less than 30 characters long.</div>
