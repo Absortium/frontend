@@ -1,4 +1,4 @@
-angular.module('MyApp', [
+angular.module('AbsortiumApp', [
   'ngResource',
   'ngMessages',
   'ngAnimate',

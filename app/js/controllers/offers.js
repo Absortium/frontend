@@ -1,4 +1,4 @@
-angular.module('MyApp')
+angular.module('AbsortiumApp')
   .controller('OffersCtrl', ['$scope', 'toastr', 'OffersSrv', function ($scope, toastr, OffersSrv) {
     'use strict';
 

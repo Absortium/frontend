@@ -1,11 +1,15 @@
-angular.module('MyApp')
-  .factory('Account', function($http) {
+angular.module('AbsortiumApp')
+  .factory('AccountSrv', function ($http) {
     return {
-      getProfile: function() {
-        return $http.get('/api/me');
+      getAccounts: function () {
+        return $http.get('/api/accounts/');
       },
-      updateProfile: function(profileData) {
-        return $http.put('/api/me', profileData);
+      createAccount: function (currency) {
+        var data = {
+          'currency': currency
+        };
+
+        return $http.post('/api/accounts/', data);
       }
     };
   });

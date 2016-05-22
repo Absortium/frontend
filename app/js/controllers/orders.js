@@ -1,4 +1,4 @@
-angular.module('MyApp')
+angular.module('AbsortiumApp')
   .controller('OrdersCtrl', ['$scope', 'OrdersSrv', 'toastr', function ($scope, OrdersSrv, toastr) {
     'use strict';
     $scope.order = {};

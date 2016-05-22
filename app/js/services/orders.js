@@ -1,4 +1,4 @@
-angular.module('MyApp')
+angular.module('AbsortiumApp')
   .factory('OrdersSrv', function($http) {
     return {
       createOrder: function(data) {

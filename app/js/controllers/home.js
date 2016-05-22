@@ -1,4 +1,4 @@
-angular.module('MyApp')
+angular.module('AbsortiumApp')
   .controller('HomeCtrl', [function () {
     'use strict';
     var self = this;

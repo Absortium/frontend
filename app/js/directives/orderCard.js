@@ -1,4 +1,4 @@
-angular.module('MyApp')
+angular.module('AbsortiumApp')
   .directive('orderCard', function () {
     return {
       restrict: 'E',

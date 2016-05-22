@@ -1,4 +1,4 @@
-angular.module('MyApp')
+angular.module('AbsortiumApp')
   .factory('OffersSrv', function($http) {
     return {
       getOffers: function(pair, type) {
