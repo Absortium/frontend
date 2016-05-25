@@ -1,0 +1,8 @@
+.root {
+    flexWrap: 'wrap';
+    justifyContent: 'space-around';
+}
+
+.grid {
+    border: 20px solid;
+}
