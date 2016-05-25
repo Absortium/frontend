@@ -36,10 +36,6 @@ module.exports = (options) => ({
                 loaders: ['style-loader', 'css-loader'],
             },
             {
-                test: /\.scss$/,
-                loaders: ["style", "css", "sass"]
-            },
-            {
                 test: /\.jpe?g$|\.gif$|\.png$|\.svg$/i,
                 loader: 'url-loader?limit=10000',
             },

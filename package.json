@@ -170,10 +170,7 @@
     "sanitize.css": "^3.3.0",
     "whatwg-fetch": "^1.0.0",
     "react-tap-event-plugin": "^1.0.0",
-    "material-ui": "^0.15.0",
-    "classnames": "2.2.5",
-    "flexboxgrid": "^6.3.0",
-    "react-flexbox-grid": "0.9.5"
+    "material-ui": "^0.15.0"
   },
   "devDependencies": {
     "babel-core": "^6.7.7",

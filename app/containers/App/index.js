@@ -10,7 +10,6 @@ import React from "react";
 import "sanitize.css/sanitize.css";
 import Footer from "components/Footer";
 import Header from "components/Header";
-import Main from "components/Main";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import getMuiTheme from "material-ui/styles/getMuiTheme";
 import injectTapEventPlugin from "react-tap-event-plugin";
@@ -28,8 +27,9 @@ function App(props) {
         <MuiThemeProvider muiTheme={getMuiTheme()}>
             <div>
                 <Header />
-                <Main />
+                {props.children}
                 <Footer />
+
             </div>
         </MuiThemeProvider>
     );
