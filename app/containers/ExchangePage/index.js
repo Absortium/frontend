@@ -20,16 +20,16 @@ export class ExchangePage extends React.Component {
                     <div>
                         <Col xs={12}>
                             <Row center="xs">
-                                <Col xs={4}> <ExchangeBox fee="0.25"
-                                                          price="0.219378176"
-                                                          from="BTC"
-                                                          to="ETH"/> </Col>
-                            </Row>
-                        </Col>
-
-                        <Col xs={12}>
-                            <Row center="xs">
-                                <Col xs={10}> <ExchangeOffers/> </Col>
+                                <Col xs={7}>
+                                    <ExchangeOffers from="BTC"
+                                                    to="ETH"/>
+                                </Col>
+                                <Col xs={5}>
+                                    <ExchangeBox fee="0.25"
+                                                 price="0.219378176"
+                                                 from="BTC"
+                                                 to="ETH"/>
+                                </Col>
                             </Row>
                         </Col>
                     </div>

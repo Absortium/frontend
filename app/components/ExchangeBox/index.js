@@ -13,10 +13,7 @@ import RaisedButton from "material-ui/RaisedButton";
 import Divider from "material-ui/Divider";
 import ForwardTenIcon from "material-ui/svg-icons/AV/forward-10";
 import CryptoIcon from "components/CryptoIcon";
-
-const iconStyles = {
-    marginRight: 24,
-};
+import Subheader from "material-ui/Subheader";
 
 
 const styles = {
@@ -46,9 +43,11 @@ class ExchangeBox extends React.Component {
 
     render() {
         return (
-            <div className={ styles.exchangeBox }>
+            <div className={styles.exchangeBox}>
                 <Paper style={styles.block} zDepth={2}>
                     <div>
+                        <br />
+                        <Subheader>{"Exchange " + this.props.from + " at " + this.props.to}</Subheader>
                         <br />
                         <Divider />
 
