@@ -1,19 +1,38 @@
-import React from 'react';
+/**
+ *
+ * Footer
+ *
+ */
 
-import A from 'components/A';
-import styles from './styles.css';
+import React from "react";
+import FlatButton from "material-ui/FlatButton";
+import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from "material-ui/Toolbar";
+import styles from "./styles.css";
 
-function Footer() {
-  return (
-    <footer className={styles.footer}>
-      <section>
-        <p>This project is licensed under the MIT license.</p>
-      </section>
-      <section>
-        <p>Made with love by <A href="https://twitter.com/mxstbr">Max Stoiber</A>.</p>
-      </section>
-    </footer>
-  );
+
+const separator = {
+    "margin-left": "0"
+};
+
+export default class Footer extends React.Component {
+    render() {
+        return (
+            <Toolbar>
+                <ToolbarGroup className={styles.toolbar}>
+                    <FlatButton label="CONTACTS"/>
+                    <ToolbarSeparator style={separator}/>
+                    <FlatButton label="ABOUT"/>
+                </ToolbarGroup>
+            </Toolbar>
+        );
+    }
 }
 
 export default Footer;
+
+
+
+
+
+
+

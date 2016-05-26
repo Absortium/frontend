@@ -1,3 +1,20 @@
-.exchangePage {
+.main {
+    display: flex;
+    flex-direction: column;
+}
 
+@media (min-width: 768px) {
+    .main {
+        flex-direction: row;
+        flex: 1;
+    }
+
+    .content {
+        flex: 1;
+    }
+
+    .market {
+        /* 50em is the width of the market column */
+        flex: 0 0 50em;
+    }
 }

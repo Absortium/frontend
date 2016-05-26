@@ -7,18 +7,47 @@
 import React from "react";
 import {connect} from "react-redux";
 import selectExchangePage from "./selectors";
-import "flexboxgrid/css/flexboxgrid.css";
-const {Grid, Row, Col} = require('react-flexbox-grid');
+import styles from "./styles.css";
+import {Row, Col} from "react-flexbox-grid";
+import ExchangeBox from "components/ExchangeBox";
+import ExchangeOffers from "components/ExchangeOffers";
 
-
-export class ExchangePage extends React.Component { // eslint-disable-line react/prefer-stateless-function
+export class ExchangePage extends React.Component {
     render() {
         return (
-            <Grid>
-                <Row>
-                    <Col xs={6} md={3}>Hello, world!</Col>
-                </Row>
-            </Grid>
+            <div className={styles.main}>
+                <div className={styles.content}>
+                    <div>
+                        <Col xs={12}>
+                            <Row center="xs">
+                                <Col xs={10}> <ExchangeBox/> </Col>
+                            </Row>
+                        </Col>
+
+                        <Col xs={12}>
+                            <Row center="xs">
+                                <Col xs={10}> <ExchangeOffers/> </Col>
+                            </Row>
+                        </Col>
+                    </div>
+                </div>
+                <div className={styles.market}>
+                    <div>
+                        <Col xs={12}>
+                            <Row center="xs">
+                                <Col xs={10}> SEARCH BAR <p>ANOTHER THING</p></Col>
+                            </Row>
+                        </Col>
+
+                        <Col xs={12}>
+                            <Row center="xs">
+                                <Col xs={10}> BTC INFO </Col>
+                            </Row>
+                        </Col>
+                    </div>
+
+                </div>
+            </div>
         );
     }
 }

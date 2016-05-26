@@ -4,6 +4,7 @@
 
 const path = require('path');
 const webpack = require('webpack');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = (options) => ({
     entry: options.entry,
@@ -12,7 +13,7 @@ module.exports = (options) => ({
         publicPath: '/',
     }, options.output), // Merge with env dependent settings
     module: {
-        loaders: options.loaders.concat([
+        loaders: [
             {
                 test: /\.js$/, // Transform all .js files required somewhere with Babel
                 loader: 'babel',
@@ -35,6 +36,11 @@ module.exports = (options) => ({
                 include: /node_modules/,
                 loaders: ['style-loader', 'css-loader'],
                 exclude: /flexboxgrid/,
+            },
+            {
+                test: /(\.css)$/,
+                loader: ExtractTextPlugin.extract('style', 'css?sourceMap&modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss!sass?sourceMap'),
+                include: /flexboxgrid/,
             },
             {
                 test: /\.jpe?g$|\.gif$|\.png$|\.svg$/i,
@@ -63,9 +69,10 @@ module.exports = (options) => ({
             {
                 test: /\.json$/,
                 loader: 'json-loader',
-            }]),
+            }],
     },
     plugins: options.plugins.concat([
+        new ExtractTextPlugin("styles.css"),
         new webpack.optimize.CommonsChunkPlugin('common.js'),
         new webpack.ProvidePlugin({
             // make fetch available

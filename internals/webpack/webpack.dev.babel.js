@@ -5,7 +5,6 @@
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 // PostCSS plugins
 const cssnext = require('postcss-cssnext');
@@ -25,15 +24,6 @@ module.exports = require('./webpack.base.babel')({
         filename: '[name].js',
         chunkFilename: '[name].chunk.js',
     },
-    
-    // resolve issue with flexbox grid css loading
-    loaders: [
-        {   
-            test: /(\.css)$/,
-            loader: ExtractTextPlugin.extract('style', 'css?sourceMap&modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss!sass?sourceMap'),
-            include: /flexboxgrid/,
-        }
-    ],
 
     // Load the CSS in a style tag in development
     cssLoaders: 'style-loader!css-loader?localIdentName=[local]__[path][name]__[hash:base64:5]&modules&importLoaders=1&sourceMap!postcss-loader',
@@ -51,7 +41,6 @@ module.exports = require('./webpack.base.babel')({
 
     // Add hot reloading
     plugins: [
-        new ExtractTextPlugin("styles.css"),
         new webpack.HotModuleReplacementPlugin(), // Tell webpack we want hot reloading
         new webpack.NoErrorsPlugin(),
         new HtmlWebpackPlugin({
@@ -66,5 +55,5 @@ module.exports = require('./webpack.base.babel')({
     },
 
     // Emit a source map for easier debugging
-    devtool: 'inline-source-map',
+    devtool: 'eval',
 });

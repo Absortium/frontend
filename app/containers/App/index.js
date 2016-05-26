@@ -24,12 +24,12 @@ injectTapEventPlugin();
 
 function App(props) {
     return (
+
         <MuiThemeProvider muiTheme={getMuiTheme()}>
             <div>
                 <Header />
                 {props.children}
                 <Footer />
-
             </div>
         </MuiThemeProvider>
     );

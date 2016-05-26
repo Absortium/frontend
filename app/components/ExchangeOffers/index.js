@@ -1,6 +1,6 @@
 /**
  *
- * ExchangeBox
+ * ExchangeOffers
  *
  */
 
@@ -16,14 +16,14 @@ const style = {
 };
 
 
-class ExchangeBox extends React.Component {
+class ExchangeOffers extends React.Component {
     render() {
         return (
             <div className={ styles.exchangeBox }>
-                <Paper style={style} zDepth={2}> EXCHANGE BOX</Paper>
+                <Paper style={style} zDepth={2}> EXCHANGE OFFERS</Paper>
             </div>
         );
     }
 }
 
-export default ExchangeBox;
+export default ExchangeOffers;
