@@ -12,7 +12,7 @@ module.exports = (options) => ({
         publicPath: '/',
     }, options.output), // Merge with env dependent settings
     module: {
-        loaders: [
+        loaders: options.loaders.concat([
             {
                 test: /\.js$/, // Transform all .js files required somewhere with Babel
                 loader: 'babel',
@@ -34,6 +34,7 @@ module.exports = (options) => ({
                 test: /\.css$/,
                 include: /node_modules/,
                 loaders: ['style-loader', 'css-loader'],
+                exclude: /flexboxgrid/,
             },
             {
                 test: /\.jpe?g$|\.gif$|\.png$|\.svg$/i,
@@ -62,7 +63,7 @@ module.exports = (options) => ({
             {
                 test: /\.json$/,
                 loader: 'json-loader',
-            }],
+            }]),
     },
     plugins: options.plugins.concat([
         new webpack.optimize.CommonsChunkPlugin('common.js'),
