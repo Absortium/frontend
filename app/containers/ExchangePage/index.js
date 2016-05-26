@@ -7,10 +7,10 @@
 import React from "react";
 import {connect} from "react-redux";
 import selectExchangePage from "./selectors";
-import styles from "./styles.css";
 import {Row, Col} from "react-flexbox-grid";
 import ExchangeBox from "components/ExchangeBox";
 import ExchangeOffers from "components/ExchangeOffers";
+import styles from "./styles.css";
 
 export class ExchangePage extends React.Component {
     render() {
@@ -20,7 +20,10 @@ export class ExchangePage extends React.Component {
                     <div>
                         <Col xs={12}>
                             <Row center="xs">
-                                <Col xs={10}> <ExchangeBox/> </Col>
+                                <Col xs={4}> <ExchangeBox fee="0.25"
+                                                          price="0.219378176"
+                                                          from="BTC"
+                                                          to="ETH"/> </Col>
                             </Row>
                         </Col>
 

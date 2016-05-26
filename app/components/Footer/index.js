@@ -11,7 +11,7 @@ import styles from "./styles.css";
 
 
 const separator = {
-    "margin-left": "0"
+    "marginLeft": "0px"
 };
 
 export default class Footer extends React.Component {
