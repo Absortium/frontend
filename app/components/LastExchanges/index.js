@@ -1,6 +1,6 @@
 /**
  *
- * ExchangeOffers
+ * LastExchanges
  *
  */
 
@@ -58,12 +58,12 @@ const tableData = [
     {'amount': 0.9337597537491701, 'price': 0.23976490230043657},
     {'amount': 0.40490166565312213, 'price': 0.9866004493342432}];
 
-class ExchangeOffers extends React.Component {
+class LastExchanges extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            height: "320px",
+            height: "312",
             fixedHeader: true,
             stripedRows: false,
             showRowHover: false,
@@ -82,7 +82,7 @@ class ExchangeOffers extends React.Component {
                 <Paper style={styles.block} zDepth={2}>
                     <div>
                         <br />
-                        <Subheader>Exchange Offers Table</Subheader>
+                        <Subheader>Last Exchanges</Subheader>
                         <br />
                         <Divider />
                         <Table
@@ -119,4 +119,4 @@ class ExchangeOffers extends React.Component {
     }
 }
 
-export default ExchangeOffers;
+export default LastExchanges;

@@ -47,7 +47,13 @@ class ExchangeBox extends React.Component {
                 <Paper style={styles.block} zDepth={2}>
                     <div>
                         <br />
-                        <Subheader>{"Exchange " + this.props.from + " at " + this.props.to}</Subheader>
+                        <Subheader>
+                            {"Balance: " + this.props.balance + "  "}
+                            <CryptoIcon icon={this.props.from}/>{' '}
+                        </Subheader>
+                        <RaisedButton label="deposit" primary={true}/>{' '}{' '}{' '}
+                        <RaisedButton label="withdraw" primary={true}/>
+                        <br />
                         <br />
                         <Divider />
 
