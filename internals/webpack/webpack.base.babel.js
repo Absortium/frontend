@@ -38,6 +38,16 @@ module.exports = (options) => ({
                 exclude: /flexboxgrid/,
             },
             {
+                test: /node_modules[\\\/]auth0-lock[\\\/].*\.js$/,
+                loaders: [
+                    'transform-loader/cacheable?brfs',
+                    'transform-loader/cacheable?packageify'
+                ]
+            }, {
+                test: /node_modules[\\\/]auth0-lock[\\\/].*\.ejs$/,
+                loader: 'transform-loader/cacheable?ejsify'
+            },
+            {
                 test: /(\.css)$/,
                 loader: ExtractTextPlugin.extract('style', 'css?sourceMap&modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss!sass?sourceMap'),
                 include: /flexboxgrid/,

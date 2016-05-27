@@ -45,7 +45,7 @@ class MarketInfo extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            height: "100px",
+            height: 100,
             fixedHeader: true,
             stripedRows: false,
             showRowHover: false,

@@ -13,7 +13,7 @@ import Header from "components/Header";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import getMuiTheme from "material-ui/styles/getMuiTheme";
 import injectTapEventPlugin from "react-tap-event-plugin";
-
+import Auth0Lock from "auth0-lock";
 // Import the CSS reset, which HtmlWebpackPlugin transfers to the build folder
 
 // Needed for onTouchTap
@@ -22,17 +22,23 @@ import injectTapEventPlugin from "react-tap-event-plugin";
 injectTapEventPlugin();
 
 
-function App(props) {
-    return (
+class App extends React.Component {
+    componentWillMount() {
+        this.lock = new Auth0Lock('JmIrPzSo0nixk13ohk8KeQC2OZ7LByRI', 'absortium.auth0.com');
+    }
 
-        <MuiThemeProvider muiTheme={getMuiTheme()}>
-            <div>
-                <Header />
-                {props.children}
-                <Footer />
-            </div>
-        </MuiThemeProvider>
-    );
+
+    render() {
+        return (
+            <MuiThemeProvider muiTheme={getMuiTheme()}>
+                <div>
+                    <Header />
+                    {this.props.children}
+                    <Footer />
+                </div>
+            </MuiThemeProvider>
+        );
+    }
 }
 
 App.propTypes = {
