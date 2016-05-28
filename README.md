@@ -13,7 +13,7 @@
   * `export DEFAULT_MODE='frontend'`
 
 * Add entry to the `/etc/hosts`
-   * If you run docker containers on the docker-machine, than check your ip and pass it to the `/etc/hosts`
+   * If you run docker containers on the `docker-machine`, than check your `docker-machine` ip and pass it to the `/etc/hosts`
    ```
    $ docker-machine ip
    $ sudo bash -c `echo "absortium.com <ip>" >> /etc/hosts`
