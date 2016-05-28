@@ -1,5 +1,5 @@
-## Getting started
-* Clone repository, for that you should have ssh keys (push)
+## Getting started contributing
+* Clone repository, for that you should have ssh keys fro push access.
 ```bash
 $ git clone --recursive git@github.com:absortium/deluge.git
 ```
@@ -12,8 +12,8 @@ $ git clone --recursive git@github.com:absortium/deluge.git
   * `DELUGE_DIRECTORY=YOUR_WORK_DIRECTORY` 
   * `DEFAULT_MODE='frontend'`
 
-* Add entry to the /etc/hosts
-   * If you run docker containers on the docker-machine, than check your ip and set it to the /etc/hosts
+* Add entry to the `/etc/hosts`
+   * If you run docker containers on the docker-machine, than check your ip and pass it to the `/etc/hosts`
    ```
    $ docker-machine ip
    $ sudo bash -c 'echo "absortium.com <ip>" >> /etc/hosts'
@@ -23,18 +23,18 @@ $ git clone --recursive git@github.com:absortium/deluge.git
    $ sudo bash -c 'echo "absortium.com localhost" >> /etc/hosts'
    ```
    
-* Open new terminal and go into docker `dev` directory
+* Open new terminal and go into docker `dev` directory, if there is no such alias than you check - are aliases was preloaded?
 ```
 godd
 ```
 
 * Run `postgres` service which serve as database.
 ```
-$ docker-compose up -d postgres
+$ dc up -d postgres
 ```
 * Run `frontend` and make sure that service runs without errors.
 ```
-$ docker-compose up frontend
+$ dc up frontend
 ```
 
 * Go to the `absortium.com`
