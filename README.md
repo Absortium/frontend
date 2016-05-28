@@ -72,6 +72,8 @@
 * `dc(r| run) <service>` - run service.
 * `drmc <regex>` - delete containers that much regex expression.
 * `drmi <regex>` - delete images that much regex expression.
-* `ideluge` - init sensetive information that is needed for backend start.
+* `di` - list all images.
+* `dps` - list all working containers.
+* `ideluge` - init sensitive information that is needed for backend start.
 
 
