@@ -55,11 +55,11 @@ $ git clone --recursive git@github.com:absortium/deluge.git
 * `redis` - redis service (needed as backend for `rabbitmq` tasks store).
 
 ## Alias info
-* `god` - go to the `project` directory
+* `god` - go to the `project` directory (DELUGE_PATH).
 * `godd` - go to the `docker` dev directory (in order to run docker service)
 * `gods` - go to the `services` directory.
-* `gods <service>` - go to the <service> project directory.
-* `dcinit <mode>` - init start mode (about modes please read `README.md` in the `docker` directory)
+* `gods <service>` - go to the `<service>` project directory.
+* `dcinit <mode>` - init start mode, default mode is `DEFAULT_MODE` (for more information please read `README.md` in the `docker` directory).
 * `dc(b| build) <service>` - build service.
 * `dc(r| run) <service>` - run service.
 * `drmc <regex>` - delete containers that much regex expression.
