@@ -25,7 +25,7 @@
    
 * Open new terminal and go into docker `dev` directory, if there is no such alias than you should check - `Are aliases were preloaded?`
   ```
-  godd
+  $ godd
   ```
 
 * Run `postgres` service which serve as database.
