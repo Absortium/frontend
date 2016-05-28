@@ -32,6 +32,10 @@ $ git clone --recursive git@github.com:absortium/deluge.git
   ```
   $ dc up -d postgres
   ```
+* Migrate `m-backend` database.
+  ```
+  $ dc run m-backend migrate
+  ```  
 * Run `frontend` and make sure that service runs without errors.
   ```
   $ dc up frontend
@@ -41,3 +45,25 @@ $ git clone --recursive git@github.com:absortium/deluge.git
     
 ## Tips
 * If you use `docker-machine` than you must download project only in user directory.
+ 
+## Services
+* `m-backend` - main backend service.
+* `w-backend` - backend worker service (celery).
+* `frontend` - frontend service.
+* `postgres` - postgres service (postgres data are stored separately, even if you remove service the data would be persisted).
+* `rabbitmq` - queue service.
+* `redis` - redis service (needed as backend for `rabbitmq` tasks store).
+
+## Alias info
+* `god` - go to the `project` directory
+* `godd` - go to the `docker` dev directory (in order to run docker service)
+* `gods` - go to the `services` directory.
+* `gods <service>` - go to the <service> project directory.
+* `dcinit <mode>` - init start mode (about modes please read `README.md` in the `docker` directory)
+* `dc(b| build) <service>` - build service.
+* `dc(r| run) <service>` - run service.
+* `drmc <regex>` - delete containers that much regex expression.
+* `drmi <regex>` - delete images that much regex expression.
+* `ideluge` - init sensetive information that is needed for backend start.
+
+
