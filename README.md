@@ -4,13 +4,13 @@
   $ git clone --recursive git@github.com:absortium/deluge.git
   ```
 
-* Go into `useful` directory and copy all aliases to your alias file.
+* Go into `useful` directory and copy `deluge`,`docker` and `docker-compose` aliases to your alias file.
   * `zsh` - `~/.zsh_aliases`
   * `bash` - `~/.bash_aliases`
  
 * Set environment variables.
-  * `DELUGE_PATH=WORK_DIRECTORY_PATH` 
-  * `DEFAULT_MODE=`frontend``
+  * `export DELUGE_PATH='YOUR_WORK_DIRECTORY_PATH'` 
+  * `export DEFAULT_MODE='frontend'`
 
 * Add entry to the `/etc/hosts`
    * If you run docker containers on the docker-machine, than check your ip and pass it to the `/etc/hosts`
