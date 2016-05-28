@@ -10,17 +10,17 @@ $ git clone --recursive git@github.com:absortium/deluge.git
  
 * Set environment variables.
   * `DELUGE_PATH=WORK_DIRECTORY_PATH` 
-  * `DEFAULT_MODE='frontend'`
+  * `DEFAULT_MODE=`frontend``
 
 * Add entry to the `/etc/hosts`
    * If you run docker containers on the docker-machine, than check your ip and pass it to the `/etc/hosts`
    ```
    $ docker-machine ip
-   $ sudo bash -c 'echo "absortium.com <ip>" >> /etc/hosts'
+   $ sudo bash -c `echo "absortium.com <ip>" >> /etc/hosts`
    ```
    * Otherwise set localhost
    ```
-   $ sudo bash -c 'echo "absortium.com localhost" >> /etc/hosts'
+   $ sudo bash -c `echo "absortium.com localhost" >> /etc/hosts`
    ```
    
 * Open new terminal and go into docker `dev` directory, if there is no such alias than you should check - `Are aliases were preloaded?`
@@ -53,6 +53,7 @@ $ git clone --recursive git@github.com:absortium/deluge.git
 * `postgres` - postgres service (postgres data are stored separately, even if you remove service the data would be persisted).
 * `rabbitmq` - queue service.
 * `redis` - redis service (needed as backend for `rabbitmq` tasks store).
+* `router` - `crossbar.io` service which notify user about new offers, market info, exchange history changes.
 
 ## Alias info
 * `god` - go to the `project` directory (DELUGE_PATH).
@@ -60,6 +61,29 @@ $ git clone --recursive git@github.com:absortium/deluge.git
 * `gods` - go to the `services` directory.
 * `gods <service>` - go to the `<service>` project directory.
 * `dcinit <mode>` - init start mode, default mode is `DEFAULT_MODE` (for more information please read `README.md` in the `docker` directory).
+    * `unit`:
+        * external systems like `coinbase` and `ethwallet` are mocked.
+        * internal systems like `router` are mocked.
+        * generally, only `postgres` service  is required to be up in order to start tests.
+        * celery workers are not working and code is executing in main process.
+    * `integration`:
+        * external systems like `coinbase` are mocked.
+        * `ethwallet` service might working in private net or might be mocked (it dependence).
+        * `postgres`, `rabbitmq`, `celery`, `router` services are required to be up in order to start tests.
+        * celery workers are working and celery tasks are executing in another processes.
+    * `frontend`:
+        * external systems like `coinbase` and `ethwallet` are mocked.
+        * `postgres`, `rabbitmq`, `celery`, `router` services are required to be up in order to celery task work.
+        * celery workers are working and celery tasks are executing like in real system.
+        * (NOT EXIST YET) special service `walletnotifier` is working and emulating money notification from `coinbase` and `ethwallet` 
+    * `testnet`:
+        * `coinbase` working in sandbox environment (testnet)
+        * `ethwallet` working in testnet, creating non real addresses and transfer non real money.
+        * all necessary containers are up.         
+    * `realnet`:
+        * `coinbase` working in real net.
+        * `ethwallet` working in the real net, creating real addresses and transfer real money.
+        * all necessary containers are up.
 * `dc(b| build) <service>` - build service.
 * `dc(r| run) <service>` - run service.
 * `drmc <regex>` - delete containers that much regex expression.
