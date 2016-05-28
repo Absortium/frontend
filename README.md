@@ -1,7 +1,7 @@
 ## Getting started contributing
 * Clone repository, for that you should have ssh keys fro push access.
   ```bash
-  $ git clone --recursive git@github.com:absortium/deluge.git
+  $ git clone --recursive https://github.com/absortium/deluge.git
   ```
 
 * Go into `useful` directory and copy `deluge`,`docker` and `docker-compose` aliases to your alias file.
