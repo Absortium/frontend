@@ -23,19 +23,19 @@ $ git clone --recursive git@github.com:absortium/deluge.git
    $ sudo bash -c 'echo "absortium.com localhost" >> /etc/hosts'
    ```
    
-* Open new terminal and go into docker `dev` directory, if there is no such alias than you check - are aliases was preloaded?
-```
-godd
-```
+* Open new terminal and go into docker `dev` directory, if there is no such alias than you should check - `Are aliases were preloaded?`
+  ```
+  godd
+  ```
 
 * Run `postgres` service which serve as database.
-```
-$ dc up -d postgres
-```
+  ```
+  $ dc up -d postgres
+  ```
 * Run `frontend` and make sure that service runs without errors.
-```
-$ dc up frontend
-```
+  ```
+  $ dc up frontend
+  ```
 
 * Go to the `absortium.com`
     
