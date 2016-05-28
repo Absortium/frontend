@@ -1,8 +1,8 @@
 ## Getting started contributing
 * Clone repository, for that you should have ssh keys fro push access.
-```bash
-$ git clone --recursive git@github.com:absortium/deluge.git
-```
+  ```bash
+  $ git clone --recursive git@github.com:absortium/deluge.git
+  ```
 
 * Go into `useful` directory and copy all aliases to your alias file.
   * `zsh` - `~/.zsh_aliases`
