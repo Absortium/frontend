@@ -9,7 +9,7 @@ $ git clone --recursive git@github.com:absortium/deluge.git
   * `bash` - `~/.bash_aliases`
  
 * Set environment variables.
-  * `DELUGE_DIRECTORY=YOUR_WORK_DIRECTORY` 
+  * `DELUGE_PATH=WORK_DIRECTORY_PATH` 
   * `DEFAULT_MODE='frontend'`
 
 * Add entry to the `/etc/hosts`
