@@ -56,34 +56,18 @@ $ git clone --recursive git@github.com:absortium/deluge.git
 * `router` - `crossbar.io` service which notify user about new offers, market info, exchange history changes.
 
 ## Alias info
-* `god` - go to the `project` directory (DELUGE_PATH).
+* `god` - go to the `DELUGE_PATH` directory.
 * `godd` - go to the `docker` dev directory (in order to run docker service)
 * `gods` - go to the `services` directory.
 * `gods <service>` - go to the `<service>` project directory.
-* `dcinit <mode>` - init start mode, default mode is `DEFAULT_MODE` (for more information please read `README.md` in the `docker` directory).
-    * `unit`:
-        * external systems like `coinbase` and `ethwallet` are mocked.
-        * internal systems like `router` are mocked.
-        * generally, only `postgres` service  is required to be up in order to start tests.
-        * celery workers are not working and code is executing in main process.
-    * `integration`:
-        * external systems like `coinbase` are mocked.
-        * `ethwallet` service might working in private net or might be mocked (it dependence).
-        * `postgres`, `rabbitmq`, `celery`, `router` services are required to be up in order to start tests.
-        * celery workers are working and celery tasks are executing in another processes.
-    * `frontend`:
+* `dcinit <mode>` - init start mode, default mode is `DEFAULT_MODE` .
+    * `frontend`
         * external systems like `coinbase` and `ethwallet` are mocked.
         * `postgres`, `rabbitmq`, `celery`, `router` services are required to be up in order to celery task work.
         * celery workers are working and celery tasks are executing like in real system.
         * (NOT EXIST YET) special service `walletnotifier` is working and emulating money notification from `coinbase` and `ethwallet` 
-    * `testnet`:
-        * `coinbase` working in sandbox environment (testnet)
-        * `ethwallet` working in testnet, creating non real addresses and transfer non real money.
-        * all necessary containers are up.         
-    * `realnet`:
-        * `coinbase` working in real net.
-        * `ethwallet` working in the real net, creating real addresses and transfer real money.
-        * all necessary containers are up.
+    * (for more information please read `README.md` in the `docker` directory)         
+   
 * `dc(b| build) <service>` - build service.
 * `dc(r| run) <service>` - run service.
 * `drmc <regex>` - delete containers that much regex expression.
