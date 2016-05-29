@@ -21,13 +21,13 @@ import Divider from "material-ui/Divider";
 const styles = {
     block: {
         width: '100%',
-        margin: 20,
+        margin: "20",
         textAlign: 'center',
         display: 'inline-block',
     },
 
     propContainer: {
-        width: 200,
+        width: "200",
         overflow: 'hidden',
         margin: '20px auto 0',
     },
@@ -63,7 +63,7 @@ class LastExchanges extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            height: "312",
+            height: 312,
             fixedHeader: true,
             stripedRows: false,
             showRowHover: false,
@@ -73,7 +73,6 @@ class LastExchanges extends React.Component {
             deselectOnClickaway: true,
             showCheckboxes: false
         };
-        console.log(this);
     }
 
     render() {

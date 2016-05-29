@@ -41,11 +41,13 @@ function routeReducer(state = routeInitialState, action) {
  * Creates the main reducer with the asynchronously loaded ones
  */
 import exchangePageReducer from 'containers/ExchangePage/reducer';
+import headerReducer from 'containers/Header/reducer';
 export default function createReducer(asyncReducers) {
   return combineReducers({
     route: routeReducer,
     global: globalReducer,
     exchangePage: exchangePageReducer,
+    header: headerReducer,
     ...asyncReducers,
   });
 }

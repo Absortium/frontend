@@ -24,8 +24,8 @@ const styles = {
         display: 'inline-block',
     },
     smallIcon: {
-        width: 30,
-        height: 30,
+        width: "30",
+        height: "30",
     },
 
     middleIcon: {

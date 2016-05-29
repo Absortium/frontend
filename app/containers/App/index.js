@@ -9,11 +9,10 @@
 import React from "react";
 import "sanitize.css/sanitize.css";
 import Footer from "components/Footer";
-import Header from "components/Header";
+import Header from "containers/Header";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import getMuiTheme from "material-ui/styles/getMuiTheme";
 import injectTapEventPlugin from "react-tap-event-plugin";
-import Auth0Lock from "auth0-lock";
 // Import the CSS reset, which HtmlWebpackPlugin transfers to the build folder
 
 // Needed for onTouchTap
@@ -24,7 +23,7 @@ injectTapEventPlugin();
 
 class App extends React.Component {
     componentWillMount() {
-        this.lock = new Auth0Lock('JmIrPzSo0nixk13ohk8KeQC2OZ7LByRI', 'absortium.auth0.com');
+        // this.lock = new Auth0Lock('JmIrPzSo0nixk13ohk8KeQC2OZ7LByRI', 'absortium.auth0.com');
     }
 
 

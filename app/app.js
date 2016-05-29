@@ -58,6 +58,14 @@ const rootRoute = {
   childRoutes: createRoutes(store),
 };
 
+// Inject sagas of
+import {getHooks} from "./utils/hooks"
+import AppSagas from "containers/App/sagas"
+const {injectReducer, injectSagas} = getHooks(store);
+
+injectSagas(AppSagas);
+
+
 ReactDOM.render(
   <Provider store={store}>
     <Router

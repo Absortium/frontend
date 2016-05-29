@@ -15,49 +15,18 @@
  *    }
  */
 
-import {
-  LOAD_REPOS,
-  LOAD_REPOS_SUCCESS,
-  LOAD_REPOS_ERROR,
-} from './constants';
+import {AUTH_LOCK_LOADED} from "./constants";
 
 /**
- * Load the repositories, this action starts the getGithubData saga
+ * Dispatched when auth component is loaded.
  *
- * @return {object} An action object with a type of LOAD_REPOS
+ * @param  {object} lock The auth lock object (see Auth0 documentation)
+ *
+ * @return {object}       An action object with a type of AUTH_LOCK_LOADED passing the lock object
  */
-export function loadRepos() {
-  return {
-    type: LOAD_REPOS,
-  };
-}
-
-/**
- * Dispatched when the repositories are loaded by the getGithubData saga
- *
- * @param  {array} repos The repository data
- * @param  {string} username The current username
- *
- * @return {object}      An action object with a type of LOAD_REPOS_SUCCESS passing the repos
- */
-export function reposLoaded(repos, username) {
-  return {
-    type: LOAD_REPOS_SUCCESS,
-    repos,
-    username,
-  };
-}
-
-/**
- * Dispatched when loading the repositories fails
- *
- * @param  {object} error The error
- *
- * @return {object}       An action object with a type of LOAD_REPOS_ERROR passing the error
- */
-export function repoLoadingError(error) {
-  return {
-    type: LOAD_REPOS_ERROR,
-    error,
-  };
+export function authLockLoaded(lock) {
+    return {
+        type: AUTH_LOCK_LOADED,
+        lock,
+    };
 }
