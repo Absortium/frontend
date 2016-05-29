@@ -4,7 +4,6 @@
  *
  */
 
-import {fromJS} from "immutable";
 import {LOG_IN, LOG_OUT} from "containers/Header/constants";
 
 // const initialState = fromJS({
@@ -12,10 +11,12 @@ import {LOG_IN, LOG_OUT} from "containers/Header/constants";
 //     profile: null
 // });
 
-function exchangePageReducer(state = {
+const initialState = {
     token: null,
     profile: null
-}, action) {
+};
+
+function exchangePageReducer(state = initialState, action) {
     switch (action.type) {
         case LOG_IN:
             return Object.assign({}, state,
@@ -26,8 +27,8 @@ function exchangePageReducer(state = {
         case LOG_OUT:
             return Object.assign({}, state,
                 {
-                    token: action.token,
-                    profile: action.profile
+                    token: null,
+                    profile: null
                 });
         default:
             return state;

@@ -13,6 +13,7 @@ import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from "material-ui
 import styles from "./styles.css";
 import {logIn, logOut} from "./actions";
 import Auth0Lock from "auth0-lock";
+import axios from "axios";
 
 export default class Header extends React.Component {
     componentWillMount() {
@@ -25,12 +26,20 @@ export default class Header extends React.Component {
             if (err) {
                 console.log("Error signing in", err);
             } else {
+                axios.interceptors.request.use(function (config) {
+                    config.headers.Authorization = 'Bearer ' + token;
+                    return config;
+                });
                 component.props.logIn(token, profile)
             }
         })
     }
 
     logOut() {
+        axios.interceptors.request.use(function (config) {
+            config.headers.Authorization = null;
+            return config;
+        });
         this.props.logOut()
     }
 

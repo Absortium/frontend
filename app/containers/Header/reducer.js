@@ -12,7 +12,7 @@ import {LOG_IN, LOG_OUT} from "./constants";
 // });
 
 
-const  initialState = {
+const initialState = {
     token: null,
     profile: null
 };
@@ -26,7 +26,11 @@ function headerReducer(state = initialState, action) {
                     profile: action.profile
                 });
         case LOG_OUT:
-            return Object.assign({}, state, initialState);
+            return Object.assign({}, state,
+                {
+                    token: null,
+                    profile: null
+                });
         default:
             return state;
     }
