@@ -1,5 +1,5 @@
 ## Getting started contributing
-* Clone repository, for that you should have ssh keys fro push access.
+* First of all clone repository.  
   ```bash
   $ git clone --recursive https://github.com/absortium/deluge.git
   ```
