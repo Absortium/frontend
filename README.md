@@ -32,10 +32,11 @@
   ```
   $ dc up -d postgres
   ```
-* Migrate `m-backend` database.
+* Migrate database.
   ```
   $ dc run m-backend migrate
-  ```  
+  ```
+  
 * Run `frontend` and make sure that service runs without errors.
   ```
   $ dc up frontend
