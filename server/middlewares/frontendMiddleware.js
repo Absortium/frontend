@@ -12,6 +12,10 @@ const addDevMiddlewares = (app, options) => {
     noInfo: true,
     publicPath: options.output.publicPath,
     silent: true,
+        watchOptions: {
+        aggregateTimeout: 200,
+        poll: true
+    },
   });
 
   app.use(middleware);
