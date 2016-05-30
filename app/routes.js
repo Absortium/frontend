@@ -3,7 +3,7 @@
 // See http://blog.mxstbr.com/2016/01/react-apps-with-pages for more information
 // about the code splitting business
 import {getHooks} from "./utils/hooks";
-
+import {Redirect} from "react-router";
 const errorLoading = (err) => {
     console.error('Dynamic page loading failed', err); // eslint-disable-line no-console
 };
@@ -16,9 +16,9 @@ export default function createRoutes(store) {
     // create reusable async injectors using getHooks factory
     const {injectReducer, injectSagas} = getHooks(store);
 
-    return [
+    var routes = [
         {
-            path: '/',
+            path: '/exchange/:currency',
             name: 'exchange',
             getComponent(nextState, cb) {
                 const importModules = Promise.all([
@@ -34,7 +34,10 @@ export default function createRoutes(store) {
                 });
 
                 importModules.catch(errorLoading);
-            },
+            }
         }
     ];
+
+    return routes
+
 }

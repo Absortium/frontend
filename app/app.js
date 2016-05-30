@@ -17,7 +17,7 @@ import 'file?name=[name].[ext]!./.htaccess';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { applyRouterMiddleware, Router, browserHistory } from 'react-router';
+import { applyRouterMiddleware, Router, Redirect, IndexRedirect, DefaultRoute, browserHistory } from 'react-router';
 import { syncHistoryWithStore } from 'react-router-redux';
 import FontFaceObserver from 'fontfaceobserver';
 import useScroll from 'react-router-scroll';
@@ -50,21 +50,25 @@ const history = syncHistoryWithStore(browserHistory, store, {
   selectLocationState: selectLocationState(),
 });
 
+
+
+
+// Inject sagas of App component
+import {getHooks} from "./utils/hooks"
+import AppSagas from "containers/App/sagas"
+const {injectReducer, injectSagas} = getHooks(store);
+injectSagas(AppSagas);
+
+
 // Set up the router, wrapping all Routes in the App component
 import App from 'containers/App';
 import createRoutes from './routes';
 const rootRoute = {
-  component: App,
-  childRoutes: createRoutes(store),
+    path: "/",
+    component: App,
+    childRoutes: createRoutes(store),
+    indexRoute: { onEnter: (nextState, replace) => replace('/exchange/btc') }
 };
-
-// Inject sagas of
-import {getHooks} from "./utils/hooks"
-import AppSagas from "containers/App/sagas"
-const {injectReducer, injectSagas} = getHooks(store);
-
-injectSagas(AppSagas);
-
 
 ReactDOM.render(
   <Provider store={store}>
@@ -89,8 +93,7 @@ ReactDOM.render(
             }
           )
         )
-      }
-    />
+      }/>
   </Provider>,
   document.getElementById('app')
 );
