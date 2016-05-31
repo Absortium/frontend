@@ -1,3 +1,9 @@
+Name  | Version
+------------- | -------------
+docker-compose | 1.6.0
+Docker version | 1.10.2
+
+
 ## Getting started contributing
 * First of all clone repository.  
   ```bash
