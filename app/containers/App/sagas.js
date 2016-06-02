@@ -63,7 +63,7 @@ class AuthService {
             if (token === undefined) {
                 config.headers.Authorization = undefined;
             } else {
-                config.headers.Authorization = 'Bearer ' + token;
+                config.headers.Authorization = 'JWT ' + token;
             }
 
             return config;
@@ -71,8 +71,12 @@ class AuthService {
     }
 
     static *logIn() {
-        console.log("LOG IN");
-        const [err, profile, token] = yield call(AuthService.show);
+        var options = {
+            authParams: {
+                scope: 'openid email'
+            }
+        };
+        const [err, profile, token] = yield call(AuthService.show, options);
 
         if (err) {
             console.log("Error signing in", err);
