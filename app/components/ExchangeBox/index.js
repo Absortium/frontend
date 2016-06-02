@@ -51,7 +51,7 @@ class ExchangeBox extends React.Component {
         if (this.props.isAuthenticated) {
             top = (
                 <div>
-                    <RaisedButton label="deposit" primary={true}/>
+                    <RaisedButton label="deposit" primary={true}/>{' '}{' '}{' '}
                     <RaisedButton label="withdraw" primary={true}/>
                 </div>
             )

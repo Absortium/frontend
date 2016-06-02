@@ -9,24 +9,16 @@ const selectHeaderDomain = () => state => state.get('header');
  * Other specific selectors
  */
 
-const auth = function () {
-    return function (substate) {
-        substate.isAuthenticated = substate.profile != null;
-        return substate;
-    }
-};
-
 /**
  * Default selector used by Header
  */
 
 const selectHeader = () => createSelector(
     selectHeaderDomain(),
-    auth(),
+    (substate) => substate
 );
 
 export default selectHeader;
 export {
     selectHeaderDomain,
-    auth
 };

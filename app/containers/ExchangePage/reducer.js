@@ -7,7 +7,8 @@
 import {LOGGED_IN, LOGGED_OUT} from "containers/App/constants";
 
 const initialState = {
-    profile: null
+    profile: null,
+    isAuthenticated: false
 };
 
 function exchangePageReducer(state = initialState, action) {
@@ -15,12 +16,14 @@ function exchangePageReducer(state = initialState, action) {
         case LOGGED_IN:
             return Object.assign({}, state,
                 {
-                    profile: action.profile
+                    profile: action.profile,
+                    isAuthenticated: true
                 });
         case LOGGED_OUT:
             return Object.assign({}, state,
                 {
-                    profile: null
+                    profile: null,
+                    isAuthenticated: false
                 });
         default:
             return state;
