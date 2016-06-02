@@ -140,8 +140,7 @@ export class ExchangePage extends React.Component {
         });
 
         this.fetchExchangeOffers(from_currency, to_currency);
-        this.fetchMarketInfo('btc', 'eth');
-        this.fetchMarketInfo('eth', 'btc');
+        this.fetchMarketInfo();
         this.fetchAccounts();
         // this.fetchLastExchanges(from_currency, to_currency);
 
@@ -160,41 +159,59 @@ export class ExchangePage extends React.Component {
         var component = this;
         component.setState({offers: null});
 
-        console.log("FETCH MARKET INFO");
-
-
         var q = "?";
         q += "from_currency=" + from_currency;
         q += "&to_currency=" + to_currency;
 
         axios.get('/api/offers/' + q).then(function (response) {
-            var data = response['data'];
-            component.setState({offers: data['results']})
+            var results = response['data'];
+            component.setState({offers: results})
         })
     };
 
     fetchMarketInfo(from_currency, to_currency) {
         var component = this;
-        component.setState({
-                marketinfo: {
-                    'btc': null,
-                    'eth': null
-                }
-            }
-        );
-
-        console.log("FETCH MARKET INFO");
-
+        var newMarketInfo = component.state.marketinfo;
         var q = "?";
-        q += "from_currency=" + from_currency;
-        q += "&to_currency=" + to_currency;
+
+        if (typeof from_currency != 'undefined') {
+            q += "from_currency=" + from_currency;
+
+            if (typeof to_currency != 'undefined') {
+                q += "&to_currency=" + to_currency;
+
+                newMarketInfo[from_currency][to_currency] = {};
+            } else {
+                newMarketInfo[from_currency] = {};
+            }
+        } else {
+            newMarketInfo = {};
+        }
+        component.setState({marketinfo: newMarketInfo});
 
         axios.get('/api/marketinfo/' + q).then(function (response) {
-            var data = response['data'];
-            var result = data['results'];
+            var result = response['data'];
+            for (var info of result) {
+                let fc = info['from_currency'];
+                delete info['from_currency'];
 
-            var newMarketInfo = {...component.state.marketinfo};
-            newMarketInfo[from_currency] = result;
+                let tc = info['to_currency'];
+                delete info['to_currency'];
+
+                if (newMarketInfo[fc] === undefined) {
+                    newMarketInfo[fc] = {}
+                }
+
+                if (newMarketInfo[fc][tc] === undefined) {
+                    newMarketInfo[fc][tc] = {}
+                }
+
+                newMarketInfo[fc][tc] = info
+            }
+
+            console.log("MARKET INO");
+            console.log(newMarketInfo);
+
             component.setState({marketinfo: newMarketInfo});
         })
     };
