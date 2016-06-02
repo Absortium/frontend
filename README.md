@@ -1,45 +1,25 @@
-## Quick start
+Name  | Version
+------------- | -------------
+Docker-Compose | 1.6.0
+Docker | 1.10.2
 
-1. Clone this repo using `$ git clone --depth=1 https://github.com/mxstbr/react-boilerplate.git`
-1. Run `$ npm run setup` to install dependencies and clean the git repo.<br />
-   *At this point you can run `$ npm start` to see the example app at `http://localhost:3000`.*
-1. Run `$ npm run clean` to delete the example app.
-
-Now you're ready to rumble!
-
-## Documentation
-
-- [Intro](docs/general): What's included and why
-- [**Commands**](docs/general/commands.md): Getting the most out of this boilerplate
-- [Testing](docs/testing): How to work with the built-in test harness
-- [Styling](docs/css): How to work with the CSS tooling
-- [Your app](docs/js): Supercharging your app with Routing, Redux, simple
-  asynchronicity helpers, etc.
-
-## License
-
-This project is licensed under the MIT license, Copyright (c) 2016 Maximilian
-Stoiber. For more information see `LICENSE.md`.
-
-## Donate
-
-This project is a labor of love. I ([Max](https://twitter.com/mxstbr)) have
-spent a lot of time building and maintaining react-boilerplate, and if you're
-using it I'd be immensely grateful for [a donation](https://cash.me/$mxstbr).
-=======
 ## Getting started contributing
 * First of all clone repository.  
   ```bash
   $ git clone --recursive https://github.com/absortium/deluge.git
   ```
 
-* Go into `useful` directory and copy `deluge`,`docker` and `docker-compose` aliases to your alias file.
-  * `zsh` - `~/.zsh_aliases`
-  * `bash` - `~/.bash_aliases`
+* Add aliases from `useful` directory, for that copy this in the `.bashrc` or `.zshrc`
+  ```
+    for f in $DELUGE_PATH/useful/aliases/*; do
+      . "$f"
+    done  
+  ```
+  
  
-* Set environment variables.
-  * `export DELUGE_PATH='YOUR_WORK_DIRECTORY_PATH'` 
-  * `export DEFAULT_MODE='frontend'`
+* Set environment variables and add aliases.
+  * `export DELUGE_PATH="YOUR_WORK_DIRECTORY_PATH"`
+  * `export DEFAULT_MODE="frontend"`
 
 * Add entry to the `/etc/hosts`
    * If you run docker containers on the `docker-machine`, than check your `docker-machine` ip and pass it to the `/etc/hosts`
