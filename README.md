@@ -19,8 +19,8 @@ Docker | 1.10.2
   
  
 * Set environment variables and add aliases.
-  * `export DELUGE_PATH='YOUR_WORK_DIRECTORY_PATH'` 
-  * `export DEFAULT_MODE='frontend'`
+  * `export DELUGE_PATH="YOUR_WORK_DIRECTORY_PATH"`
+  * `export DEFAULT_MODE="frontend"`
 
 * Add entry to the `/etc/hosts`
    * If you run docker containers on the `docker-machine`, than check your `docker-machine` ip and pass it to the `/etc/hosts`
