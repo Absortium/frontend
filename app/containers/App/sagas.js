@@ -56,6 +56,8 @@ class AuthService {
     }
 
     static *logOut() {
+        console.log("LOGGED OUT");
+
         axios.interceptors.request.use(function (config) {
             config.headers.Authorization = null;
             return config;
@@ -67,7 +69,9 @@ class AuthService {
     static *setup() {
         AuthService.lock = new Auth0Lock('JmIrPzSo0nixk13ohk8KeQC2OZ7LByRI', 'absortium.auth0.com');
 
-        yield* takeEvery(LOG_IN, AuthService.logIn);
-        yield* takeEvery(LOG_OUT, AuthService.logOut);
+        yield [
+            takeEvery(LOG_OUT, AuthService.logOut),
+            takeEvery(LOG_IN, AuthService.logIn),
+        ]
     }
 }
