@@ -13,8 +13,6 @@ import RaisedButton from "material-ui/RaisedButton";
 import Divider from "material-ui/Divider";
 import ForwardTenIcon from "material-ui/svg-icons/av/forward-10";
 import CryptoIcon from "components/CryptoIcon";
-import Subheader from "material-ui/Subheader";
-import CircularProgress from "material-ui/CircularProgress";
 
 const styles = {
     block: {
@@ -47,67 +45,77 @@ class ExchangeBox extends React.Component {
         var rate = this.props.rate;
         var balance = this.props.balance;
 
-        if (rate != null) {
-            <RaisedButton label="Exchange" primary={true}/>
-            // exchangeBox =
+        console.log(this.props.isAuthenticated);
+
+        var top = null;
+        if (this.props.isAuthenticated) {
+            top = (
+                <div>
+                    <RaisedButton label="deposit" primary={true}/>
+                    <RaisedButton label="withdraw" primary={true}/>
+                </div>
+            )
+        }
+
+
+        var main = (
+            <div>
+                <Badge
+                    badgeStyle={{top: 12, right: 12}}
+                    badgeContent={4}
+                    primary={true}>
+                    <ForwardTenIcon style={styles.middleIcon}/>
+                </Badge>
+                <TextField
+                    floatingLabelText="Price (Rate) of the exchange"
+                    floatingLabelFixed={true}
+                    type="number"
+                    defaultValue={rate}
+                />
+                <br />
+
+                <CryptoIcon icon={from_currency}/>{' '}
+                <TextField
+                    floatingLabelText={"Amount of " + from_currency.toUpperCase() + " you want to sell"}
+                    floatingLabelFixed={true}
+                    type="number"
+                    defaultValue={balance}
+                />
+                <br />
+
+                <CryptoIcon icon={to_currency}/>{' '}
+                <TextField
+                    floatingLabelText={"Amount of " + to_currency.toUpperCase() + " you want to buy"}
+                    floatingLabelFixed={true}
+                    type="number"/>
+            </div>
+        );
+
+        var down;
+        if (this.props.isAuthenticated) {
+            down = <RaisedButton label="exchange" primary={true}/>
+        } else {
+            down = <RaisedButton onMouseDown={() => this.props.logIn()} label="LOG IN" primary={true}/>
         }
 
         return (
             <div className={styles.exchangeBox}>
                 <Paper style={styles.block} zDepth={2}>
                     <br />
-                    <Subheader>
-                        {"Balance: " + balance + "  "}
-                        <CryptoIcon icon={from_currency}/>{' '}
-                    </Subheader>
-                    <RaisedButton label="deposit" primary={true}/>{' '}{' '}{' '}
-                    <RaisedButton label="withdraw" primary={true}/>
-                    <br />
+                    {top}
                     <br />
                     <Divider />
-                    <div>
-                        <Badge
-                            badgeStyle={{top: 12, right: 12}}
-                            badgeContent={4}
-                            primary={true}>
-                            <ForwardTenIcon style={styles.middleIcon}/>
-                        </Badge>
-                        <TextField
-                            floatingLabelText="Price (Rate) of the exchange"
-                            floatingLabelFixed={true}
-                            type="number"
-                            defaultValue={rate}
-                        />
-                        <br />
-
-                        <CryptoIcon icon={from_currency}/>{' '}
-                        <TextField
-                            floatingLabelText={"Amount of " + from_currency.toUpperCase() + " you want to sell"}
-                            floatingLabelFixed={true}
-                            type="number"
-                            defaultValue={balance}
-                        />
-                        <br />
-
-                        <CryptoIcon icon={to_currency}/>{' '}
-                        <TextField
-                            floatingLabelText={"Amount of " + to_currency.toUpperCase() + " you want to buy"}
-                            floatingLabelFixed={true}
-                            type="number"/>
-                        <br />
-                        <br />
-
-
-
-                    </div>
                     <br />
+                    {main}
                     <br />
                     <Divider />
+                    <br />
+                    {down}
+                    <br />
                     <br />
                 </Paper>
             </div>
         )
-            ;
     }
 }
 

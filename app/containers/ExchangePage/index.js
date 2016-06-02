@@ -131,7 +131,6 @@ export class ExchangePage extends React.Component {
     };
 
     componentDidMount() {
-        console.log("COMPONENT DID MOUNT");
         var {from_currency, to_currency} = this.props.params;
 
         this.setState({
@@ -169,7 +168,6 @@ export class ExchangePage extends React.Component {
         q += "&to_currency=" + to_currency;
 
         axios.get('/api/offers/' + q).then(function (response) {
-            console.log(response);
             var data = response['data'];
             component.setState({offers: data['results']})
         })
@@ -259,8 +257,6 @@ export class ExchangePage extends React.Component {
 
         var marketsInfo = Object.keys(this.state.marketinfo).map(function (currency) {
             var info = this.state.marketinfo[currency];
-
-            console.log(this);
             var drawInfo = !(info === null);
             var marketInfo = <CircularProgress size={1.5}/>;
             if (drawInfo) {
@@ -294,7 +290,9 @@ export class ExchangePage extends React.Component {
                                     <ExchangeBox from_currency={from_currency}
                                                  to_currency={to_currency}
                                                  rate={rate}
-                                                 balance={balance}/>
+                                                 balance={balance}
+                                                 isAuthenticated={this.props.isAuthenticated}
+                                                 logIn={this.props.logIn}/>
                                 </Col>
                             </Row>
                         </Col>

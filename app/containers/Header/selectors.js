@@ -4,6 +4,11 @@ import {createSelector} from "reselect";
  * Direct selector to the header state domain
  */
 const selectHeaderDomain = () => state => state.get('header');
+
+/**
+ * Other specific selectors
+ */
+
 const auth = function () {
     return function (substate) {
         substate.isAuthenticated = substate.profile != null;
@@ -11,19 +16,12 @@ const auth = function () {
     }
 };
 
-
-/**
- * Other specific selectors
- */
-
-
 /**
  * Default selector used by Header
  */
 
 const selectHeader = () => createSelector(
     selectHeaderDomain(),
-    (substate) => substate,
     auth(),
 );
 

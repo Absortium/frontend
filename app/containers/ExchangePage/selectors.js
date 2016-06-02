@@ -9,6 +9,12 @@ const selectExchangePageDomain = () => state => state.get('exchangePage');
  * Other specific selectors
  */
 
+const auth = function () {
+    return function (substate) {
+        substate.isAuthenticated = substate.profile != null;
+        return substate;
+    }
+};
 
 /**
  * Default selector used by ExchangePage
@@ -16,10 +22,11 @@ const selectExchangePageDomain = () => state => state.get('exchangePage');
 
 const selectExchangePage = () => createSelector(
     selectExchangePageDomain(),
-    (substate) => substate
+    auth()
 );
 
 export default selectExchangePage;
 export {
     selectExchangePageDomain,
+    auth
 };
