@@ -31,9 +31,10 @@ export function logOut() {
 }
 
 
-export function loggedIn(profile) {
+export function loggedIn(token, profile) {
     return {
         type: LOGGED_IN,
+        token: token,
         profile: profile
     };
 }

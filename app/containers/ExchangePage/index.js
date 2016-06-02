@@ -131,6 +131,8 @@ export class ExchangePage extends React.Component {
     };
 
     componentDidMount() {
+        console.log("MOUNT");
+
         var {from_currency, to_currency} = this.props.params;
 
         this.setState({
@@ -142,17 +144,12 @@ export class ExchangePage extends React.Component {
         this.fetchExchangeOffers(from_currency, to_currency);
         this.fetchMarketInfo();
         this.fetchAccounts();
-        // this.fetchLastExchanges(from_currency, to_currency);
 
 
     };
 
     componentDidUpdate(prevProps) {
-        console.log("COMPONENT DID UPDATE");
-    };
-
-    componentWillUnmount() {
-        console.log("COMPONENT WILL UNMOUNT");
+        console.log("UPDATE");
     };
 
     fetchExchangeOffers(from_currency, to_currency) {

@@ -57,6 +57,25 @@ class MarketInfo extends React.Component {
     }
 
     render() {
+        var tableBody = (
+            <TableBody
+                displayRowCheckbox={this.state.showCheckboxes}
+                deselectOnClickaway={this.state.deselectOnClickaway}
+                showRowHover={this.state.showRowHover}
+                stripedRows={this.state.stripedRows}>
+                { Object.keys(this.props.marketinfo).map(function (currency) {
+                    var info = this.props.marketinfo[currency];
+                    return (
+                        <TableRow>
+                            <TableRowColumn>{currency.toUpperCase()}</TableRowColumn>
+                            <TableRowColumn>{info.volume_24h}</TableRowColumn>
+                            <TableRowColumn>{info.rate}</TableRowColumn>
+                        </TableRow>
+                    )
+                }, this)}
+            </TableBody>
+        );
+        
         return (
             <div className={styles.exchangeBox}>
                 <Paper style={styles.block} zDepth={2}>
@@ -81,22 +100,7 @@ class MarketInfo extends React.Component {
                                     <TableHeaderColumn tooltip="Coin price">Price</TableHeaderColumn>
                                 </TableRow>
                             </TableHeader>
-                            <TableBody
-                                displayRowCheckbox={this.state.showCheckboxes}
-                                deselectOnClickaway={this.state.deselectOnClickaway}
-                                showRowHover={this.state.showRowHover}
-                                stripedRows={this.state.stripedRows}>
-                                { Object.keys(this.props.marketinfo).map(function (currency) {
-                                    var info = this.props.marketinfo[currency];
-                                    return (
-                                        <TableRow>
-                                            <TableRowColumn>{currency.toUpperCase()}</TableRowColumn>
-                                            <TableRowColumn>{info.volume_24h}</TableRowColumn>
-                                            <TableRowColumn>{info.rate}</TableRowColumn>
-                                        </TableRow>
-                                    )
-                                }, this)}
-                            </TableBody>
+                            {tableBody}
                         </Table>
                     </div>
                 </Paper>

@@ -41,33 +41,66 @@ class AuthService {
         })
     }
 
+    static getToken() {
+        var token = localStorage.getItem('token');
+
+        var authHash = AuthService.lock.parseHash(window.location.hash);
+        if (!token && authHash) {
+            if (authHash.id_token) {
+                token = authHash.id_token;
+                localStorage.setItem('token', authHash.id_token);
+            }
+            if (authHash.error) {
+                return null;
+            }
+        }
+
+        return token
+    }
+
+    static setupIntercept(token) {
+        axios.interceptors.request.use(function (config) {
+            if (token === undefined) {
+                config.headers.Authorization = undefined;
+            } else {
+                config.headers.Authorization = 'Bearer ' + token;
+            }
+
+            return config;
+        });
+    }
+
     static *logIn() {
+        console.log("LOG IN");
         const [err, profile, token] = yield call(AuthService.show);
 
         if (err) {
             console.log("Error signing in", err);
         } else {
-            axios.interceptors.request.use(function (config) {
-                config.headers.Authorization = 'Bearer ' + token;
-                return config;
-            });
-            yield put(loggedIn(profile));
+            AuthService.setupIntercept(token);
+            localStorage.setItem('token', token);
+            localStorage.setItem('profile', profile);
+            yield put(loggedIn(token, profile));
         }
     }
 
     static *logOut() {
-        console.log("LOGGED OUT");
-
-        axios.interceptors.request.use(function (config) {
-            config.headers.Authorization = null;
-            return config;
-        });
-
+        AuthService.setupIntercept();
+        localStorage.removeItem('token');
+        localStorage.removeItem('profile');
         yield put(loggedOut());
     }
 
     static *setup() {
         AuthService.lock = new Auth0Lock('JmIrPzSo0nixk13ohk8KeQC2OZ7LByRI', 'absortium.auth0.com');
+
+        var token = localStorage.getItem('token');
+        var profile = localStorage.getItem('profile');
+
+        if (token != null) {
+            AuthService.setupIntercept(token);
+            yield put(loggedIn(token, profile));
+        }
 
         yield [
             takeEvery(LOG_OUT, AuthService.logOut),
