@@ -10,11 +10,15 @@ Docker | 1.10.2
   $ git clone --recursive https://github.com/absortium/deluge.git
   ```
 
-* Go into `useful` directory and copy `deluge`,`docker` and `docker-compose` aliases to your alias file.
-  * `zsh` - `~/.zsh_aliases`
-  * `bash` - `~/.bash_aliases`
+* Add aliases from `useful` directory, for that copy this in the `.bashrc` or `.zshrc`
+  ```
+    for f in $DELUGE_PATH/useful/aliases/*; do
+      . "$f"
+    done  
+  ```
+  
  
-* Set environment variables.
+* Set environment variables and add aliases.
   * `export DELUGE_PATH='YOUR_WORK_DIRECTORY_PATH'` 
   * `export DEFAULT_MODE='frontend'`
 
