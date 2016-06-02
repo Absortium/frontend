@@ -12,6 +12,7 @@ module.exports = (options) => ({
         path: path.resolve(process.cwd(), 'build'),
         publicPath: '/',
     }, options.output), // Merge with env dependent settings
+
     module: {
         loaders: [
             {

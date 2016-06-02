@@ -15,18 +15,31 @@
  *    }
  */
 
-import {AUTH_LOCK_LOADED} from "./constants";
 
-/**
- * Dispatched when auth component is loaded.
- *
- * @param  {object} lock The auth lock object (see Auth0 documentation)
- *
- * @return {object}       An action object with a type of AUTH_LOCK_LOADED passing the lock object
- */
-export function authLockLoaded(lock) {
+import {LOG_IN, LOGGED_IN, LOG_OUT, LOGGED_OUT} from "./constants";
+
+export function logIn() {
     return {
-        type: AUTH_LOCK_LOADED,
-        lock,
+        type: LOG_IN
+    };
+}
+
+export function logOut() {
+    return {
+        type: LOG_OUT
+    };
+}
+
+
+export function loggedIn(profile) {
+    return {
+        type: LOGGED_IN,
+        profile: profile
+    };
+}
+
+export function loggedOut() {
+    return {
+        type: LOGGED_OUT
     };
 }

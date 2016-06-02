@@ -11,44 +11,16 @@ import RaisedButton from "material-ui/RaisedButton";
 import FlatButton from "material-ui/FlatButton";
 import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from "material-ui/Toolbar";
 import styles from "./styles.css";
-import {logIn, logOut} from "./actions";
-import Auth0Lock from "auth0-lock";
-import axios from "axios";
+import {logIn, logOut} from "containers/App/actions";
 
 export default class Header extends React.Component {
-    componentWillMount() {
-        this.lock = new Auth0Lock('JmIrPzSo0nixk13ohk8KeQC2OZ7LByRI', 'absortium.auth0.com');
-    }
-
-    logIn() {
-        var component = this;
-        component.lock.show(function (err, profile, token) {
-            if (err) {
-                console.log("Error signing in", err);
-            } else {
-                axios.interceptors.request.use(function (config) {
-                    config.headers.Authorization = 'Bearer ' + token;
-                    return config;
-                });
-                component.props.logIn(token, profile)
-            }
-        })
-    }
-
-    logOut() {
-        axios.interceptors.request.use(function (config) {
-            config.headers.Authorization = null;
-            return config;
-        });
-        this.props.logOut()
-    }
 
     render() {
         var Button;
-        if (this.props.token === null) {
-            Button = <RaisedButton onMouseDown={() => this.logIn()} label="LOG IN" primary={true}/>
+        if (this.props.isAuthenticated) {
+            Button = <RaisedButton onMouseDown={() => this.props.logOut()} label="LOG OUT" primary={true}/>
         } else {
-            Button = <RaisedButton onMouseDown={() => this.logOut()} label="LOG OUT" primary={true}/>
+            Button = <RaisedButton onMouseDown={() => this.props.logIn()} label="LOG IN" primary={true}/>
         }
 
         return (
@@ -69,7 +41,7 @@ const mapStateToProps = selectHeader();
 
 function mapDispatchToProps(dispatch) {
     return {
-        logIn: (token, profile) => dispatch(logIn(token, profile)),
+        logIn: () => dispatch(logIn()),
         logOut: () => dispatch(logOut()),
         dispatch,
     };

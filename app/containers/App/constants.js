@@ -9,4 +9,7 @@
  * export const YOUR_ACTION_CONSTANT = 'yourproject/YourContainer/YOUR_ACTION_CONSTANT';
  */
 
-export const AUTH_LOCK_LOADED = 'boilerplate/App/AUTH_LOCK_LOADED';
+export const LOG_IN = 'app/App/LOG_IN';
+export const LOG_OUT = 'app/App/LOG_OUT';
+export const LOGGED_IN = 'app/App/LOGGED_IN';
+export const LOGGED_OUT = 'app/App/LOGGED_OUT';

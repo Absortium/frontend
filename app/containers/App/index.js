@@ -22,11 +22,6 @@ injectTapEventPlugin();
 
 
 class App extends React.Component {
-    componentWillMount() {
-        // this.lock = new Auth0Lock('JmIrPzSo0nixk13ohk8KeQC2OZ7LByRI', 'absortium.auth0.com');
-    }
-
-
     render() {
         return (
             <MuiThemeProvider muiTheme={getMuiTheme()}>

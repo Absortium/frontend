@@ -16,9 +16,9 @@ export default function createRoutes(store) {
     // create reusable async injectors using getHooks factory
     const {injectReducer, injectSagas} = getHooks(store);
 
-    var routes = [
+    return [
         {
-            path: '/exchange/:currency',
+            path: '/exchange/:from_currency/:to_currency',
             name: 'exchange',
             getComponent(nextState, cb) {
                 const importModules = Promise.all([
@@ -37,7 +37,4 @@ export default function createRoutes(store) {
             }
         }
     ];
-
-    return routes
-
 }

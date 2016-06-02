@@ -37,13 +37,12 @@ const styles = {
     },
 };
 
-const tableData = [
-    
-];
+const tableData = [];
 
 class MarketInfo extends React.Component {
     constructor(props) {
         super(props);
+
         this.state = {
             height: 100,
             fixedHeader: true,
@@ -63,7 +62,7 @@ class MarketInfo extends React.Component {
                 <Paper style={styles.block} zDepth={2}>
                     <div>
                         <Subheader>
-                            {this.props.currency}{' '}
+                            {this.props.currency.toUpperCase()}{' '}
                             <CryptoIcon icon={this.props.currency}/>
                         </Subheader>
                         <Divider />
@@ -80,8 +79,6 @@ class MarketInfo extends React.Component {
                                     <TableHeaderColumn tooltip="Crypto currency">Coin</TableHeaderColumn>
                                     <TableHeaderColumn tooltip="Market volume">Volume</TableHeaderColumn>
                                     <TableHeaderColumn tooltip="Coin price">Price</TableHeaderColumn>
-                                    <TableHeaderColumn tooltip="24h Percentage difference">Change</TableHeaderColumn>
-                                    <TableHeaderColumn tooltip="Fast exchange">Exchange now!</TableHeaderColumn>
                                 </TableRow>
                             </TableHeader>
                             <TableBody
@@ -89,15 +86,16 @@ class MarketInfo extends React.Component {
                                 deselectOnClickaway={this.state.deselectOnClickaway}
                                 showRowHover={this.state.showRowHover}
                                 stripedRows={this.state.stripedRows}>
-                                {this.props.data.map((row, index) => (
-                                    <TableRow key={index}>
-                                        <TableRowColumn>{row.coin}</TableRowColumn>
-                                        <TableRowColumn>{row.volume}</TableRowColumn>
-                                        <TableRowColumn>{row.price}</TableRowColumn>
-                                        <TableRowColumn>{row.change}</TableRowColumn>
-                                        <TableRowColumn>{row.exchange}</TableRowColumn>
-                                    </TableRow>
-                                ))}
+                                { Object.keys(this.props.marketinfo).map(function (currency) {
+                                    var info = this.props.marketinfo[currency];
+                                    return (
+                                        <TableRow>
+                                            <TableRowColumn>{currency.toUpperCase()}</TableRowColumn>
+                                            <TableRowColumn>{info.volume_24h}</TableRowColumn>
+                                            <TableRowColumn>{info.rate}</TableRowColumn>
+                                        </TableRow>
+                                    )
+                                }, this)}
                             </TableBody>
                         </Table>
                     </div>
