@@ -40,24 +40,40 @@ const styles = {
 
 class ExchangeBox extends React.Component {
     render() {
-        var from_currency = this.props.from_currency;
-        var to_currency = this.props.to_currency;
-        var rate = this.props.rate;
-        var balance = this.props.balance;
+        let from_currency = this.props.from_currency;
+        let to_currency = this.props.to_currency;
+        let rate = this.props.rate;
 
-        var top = null;
-        if (this.props.isAuthenticated) {
-            top = (
-                <div>
-                    <br />
-                    <RaisedButton label="deposit" primary={true}/>{' '}{' '}{' '}
-                    <RaisedButton label="withdraw" primary={true}/>
-                </div>
-            )
+        let accountExist = this.props.account !== null;
+        let amount = null;
+        if (accountExist) {
+            amount = this.props.account.amount;
+            console.log("Amount");
+            console.log(amount);
         }
 
+        let top = null;
+        if (this.props.isAuthenticated) {
+            if (accountExist) {
+                top = (
+                    <div>
+                        <br />
+                        <RaisedButton label="deposit" primary={true}/>{' '}{' '}{' '}
+                        <RaisedButton label="withdraw" primary={true}/>
+                    </div>
+                )
+            } else {
+                top = (
+                    <div>
+                        <br />
+                        <RaisedButton label="create account" primary={true}/>
+                    </div>
+                )
+            }
 
-        var main;
+        }
+
+        let main = null;
         if (rate != null) {
             main = (
                 <div>
@@ -80,7 +96,7 @@ class ExchangeBox extends React.Component {
                         floatingLabelText={"Amount of " + from_currency.toUpperCase() + " you want to sell"}
                         floatingLabelFixed={true}
                         type="number"
-                        defaultValue={balance}
+                        defaultValue={amount}
                     />
                     <br />
 
@@ -100,7 +116,7 @@ class ExchangeBox extends React.Component {
             )
         }
 
-        var down;
+        let down = null;
         if (this.props.isAuthenticated) {
             down = <RaisedButton label="exchange" primary={true}/>
         } else {

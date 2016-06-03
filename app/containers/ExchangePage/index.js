@@ -121,18 +121,23 @@ export class ExchangePage extends React.Component {
         super(props);
 
         this.state = {
-            offers: [],
+            offers: null,
             history: history,
             marketinfo: {},
-            accounts: [],
-            from_currency: 'eth',
-            to_currency: 'btc'
+            account: null,
+            from_currency: null,
+            to_currency: null
         }
     };
+    componentWillUpdate(){
+        console.log("WILL UPDATE")
+    }
+
+    componentDidUpdate(){
+        console.log("DID UPDATE")
+    }
 
     componentDidMount() {
-        console.log("MOUNT");
-
         var {from_currency, to_currency} = this.props.params;
 
         this.setState({
@@ -144,13 +149,9 @@ export class ExchangePage extends React.Component {
         this.fetchMarketInfo();
 
         if (this.props.isAuthenticated) {
-            this.fetchAccounts();
+            this.fetchAccount(from_currency);
         }
 
-    };
-
-    componentDidUpdate(prevProps) {
-        console.log("UPDATE");
     };
 
     fetchExchangeOffers(from_currency, to_currency) {
@@ -163,6 +164,7 @@ export class ExchangePage extends React.Component {
 
         axios.get('/api/offers/' + q).then(function (response) {
             var results = response['data'];
+            console.log("FETCH OFFERS");
             component.setState({offers: results})
         })
     };
@@ -170,6 +172,7 @@ export class ExchangePage extends React.Component {
     fetchMarketInfo(from_currency, to_currency) {
         var component = this;
         var newMarketInfo = component.state.marketinfo;
+
         var q = "?";
 
         if (typeof from_currency != 'undefined') {
@@ -207,26 +210,25 @@ export class ExchangePage extends React.Component {
                 newMarketInfo[fc][tc] = info
             }
 
-            console.log("MARKET INO");
-            console.log(newMarketInfo);
-
+            console.log("FETCH MARKET INFO");
             component.setState({marketinfo: newMarketInfo});
         })
     };
 
-    fetchLastExchanges(from_currency, to_currency) {
-        console.log("FETCH LAST EXCHANGES");
-    };
-
-    fetchAccounts() {
+    fetchAccount(currency) {
         var component = this;
-        component.setState({accounts: null});
-
-        console.log("FETCH ACCOUNT INFO");
+        component.setState({account: null});
 
         axios.get('/api/accounts/').then(function (response) {
-            var data = response['data'];
-            component.setState({accounts: data['results']})
+            var accounts = response['data'];
+            for (var account of accounts) {
+                if (currency === account['currency']) {
+                    console.log("FETCH ACCOUNT");
+                    component.setState({account: account});
+                    break;
+                }
+            }
+            
         })
     }
 
@@ -236,18 +238,10 @@ export class ExchangePage extends React.Component {
         var to_currency = this.state.to_currency;
 
         var marketinfo = this.state.marketinfo;
-        var info = null;
         var rate = null;
-        if (marketinfo && marketinfo[from_currency] && marketinfo[from_currency][to_currency]) {
-            info = marketinfo[from_currency][to_currency];
+        if (marketinfo[from_currency] && marketinfo[from_currency][to_currency]) {
+            let info = marketinfo[from_currency][to_currency];
             rate = info.rate;
-        }
-
-
-        var accounts = this.state.accounts;
-        var balance = null;
-        if (accounts && accounts[from_currency]) {
-            balance = accounts[from_currency].balance;
         }
 
         var history = this.state.history;
@@ -305,7 +299,7 @@ export class ExchangePage extends React.Component {
                                     <ExchangeBox from_currency={from_currency}
                                                  to_currency={to_currency}
                                                  rate={rate}
-                                                 balance={balance}
+                                                 account={this.state.account}
                                                  isAuthenticated={this.props.isAuthenticated}
                                                  logIn={this.props.logIn}/>
                                 </Col>
