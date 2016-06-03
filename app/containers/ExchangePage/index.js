@@ -121,10 +121,10 @@ export class ExchangePage extends React.Component {
         super(props);
 
         this.state = {
-            offers: offers,
+            offers: [],
             history: history,
-            marketinfo: marketinfo,
-            accounts: accounts,
+            marketinfo: {},
+            accounts: [],
             from_currency: 'eth',
             to_currency: 'btc'
         }
@@ -138,13 +138,14 @@ export class ExchangePage extends React.Component {
         this.setState({
             from_currency: from_currency,
             to_currency: to_currency,
-            accounts: null,
         });
 
         this.fetchExchangeOffers(from_currency, to_currency);
         this.fetchMarketInfo();
-        this.fetchAccounts();
 
+        if (this.props.isAuthenticated) {
+            this.fetchAccounts();
+        }
 
     };
 

@@ -22,13 +22,13 @@ import CryptoIcon from "components/CryptoIcon";
 const styles = {
     block: {
         width: '100%',
-        margin: "20",
+        margin: "20px",
         textAlign: 'center',
         display: 'inline-block',
     },
 
     propContainer: {
-        width: "200",
+        width: "200px",
         overflow: 'hidden',
         margin: '20px auto 0',
     },
@@ -44,7 +44,7 @@ class MarketInfo extends React.Component {
         super(props);
 
         this.state = {
-            height: 100,
+            height: '100px',
             fixedHeader: true,
             stripedRows: false,
             showRowHover: false,
@@ -66,7 +66,7 @@ class MarketInfo extends React.Component {
                 { Object.keys(this.props.marketinfo).map(function (currency) {
                     var info = this.props.marketinfo[currency];
                     return (
-                        <TableRow>
+                        <TableRow key={currency}>
                             <TableRowColumn>{currency.toUpperCase()}</TableRowColumn>
                             <TableRowColumn>{info.volume_24h}</TableRowColumn>
                             <TableRowColumn>{info.rate}</TableRowColumn>
