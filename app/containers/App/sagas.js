@@ -1,7 +1,7 @@
 import {take, call, put, select, cps} from "redux-saga/effects";
 import {takeEvery, takeLatest} from "redux-saga";
-import {loggedOut, loggedIn, accountsReceived} from "./actions";
-import {LOG_IN, LOG_OUT, LOGGED_IN} from "./constants";
+import {loggedOut, loggedIn, accountsReceived, marketInfoReceived} from "./actions";
+import {LOG_IN, LOG_OUT, LOGGED_IN, MARKET_CHANGED} from "./constants";
 import axios from "axios";
 import Auth0Lock from "auth0-lock";
 
@@ -15,14 +15,15 @@ export default [
 export function* defaultSaga() {
     yield [
         AccountsService.setup(),
-        AuthService.setup()
+        AuthService.setup(),
+        MarketInfoService.setup()
     ]
 }
 
 /*
  Description:
- After receiving the auth event middleware would showed pop up 'Auth0' window,
- saved token in the local storage and set up the 'axios' interceptor.
+ After receiving the auth event middleware would showed pop up "Auth0" window,
+ saved token in the local storage and set up the "axios" interceptor.
  Intercept events:
  - LOG_IN
  - LOG_OUT
@@ -35,7 +36,7 @@ class AuthService {
 
     /*
      This method was designed because we encounter the problem of yield in callback,
-     so I wrapped lock show method and use in with 'call' method.
+     so I wrapped lock show method and use in with "call" method.
      */
     static show(...args) {
         return new Promise((resolve, reject) => {
@@ -44,13 +45,13 @@ class AuthService {
     }
 
     static getToken() {
-        var token = localStorage.getItem('token');
+        var token = localStorage.getItem("token");
 
         var authHash = AuthService.lock.parseHash(window.location.hash);
         if (!token && authHash) {
             if (authHash.id_token) {
                 token = authHash.id_token;
-                localStorage.setItem('token', authHash.id_token);
+                localStorage.setItem("token", authHash.id_token);
             }
             if (authHash.error) {
                 return null;
@@ -65,7 +66,7 @@ class AuthService {
             if (token === undefined) {
                 config.headers.Authorization = undefined;
             } else {
-                config.headers.Authorization = 'JWT ' + token;
+                config.headers.Authorization = "JWT " + token;
             }
 
             return config;
@@ -75,7 +76,7 @@ class AuthService {
     static *logIn() {
         var options = {
             authParams: {
-                scope: 'openid email'
+                scope: "openid email"
             }
         };
         const [err, profile, token] = yield call(AuthService.show, options);
@@ -84,24 +85,24 @@ class AuthService {
             console.log("Error signing in", err);
         } else {
             AuthService.setupIntercept(token);
-            localStorage.setItem('token', token);
-            localStorage.setItem('profile', profile);
+            localStorage.setItem("token", token);
+            localStorage.setItem("profile", profile);
             yield put(loggedIn(token, profile));
         }
     }
 
     static *logOut() {
         AuthService.setupIntercept();
-        localStorage.removeItem('token');
-        localStorage.removeItem('profile');
+        localStorage.removeItem("token");
+        localStorage.removeItem("profile");
         yield put(loggedOut());
     }
 
     static *setup() {
-        AuthService.lock = new Auth0Lock('JmIrPzSo0nixk13ohk8KeQC2OZ7LByRI', 'absortium.auth0.com');
+        AuthService.lock = new Auth0Lock("JmIrPzSo0nixk13ohk8KeQC2OZ7LByRI", "absortium.auth0.com");
 
-        var token = localStorage.getItem('token');
-        var profile = localStorage.getItem('profile');
+        var token = localStorage.getItem("token");
+        var profile = localStorage.getItem("profile");
 
         if (token != null) {
             AuthService.setupIntercept(token);
@@ -117,12 +118,64 @@ class AuthService {
 
 class AccountsService {
     static *get() {
-        const response = yield call(axios.get, '/api/accounts/');
-        var accounts = response['data'];
+        const response = yield call(axios.get, "/api/accounts/");
+        var accounts = response["data"];
         yield put(accountsReceived(accounts));
     }
 
     static *setup() {
         yield* takeEvery(LOGGED_IN, AccountsService.get)
+    }
+}
+
+class MarketInfoService {
+
+    static * get(action) {
+
+        //var from_currency = action.from_currency;
+        //var to_currency = action.to_currency;
+        let from_currency = null;
+        let to_currency = null;
+
+        console.log("ASADOMSDOSDO");
+
+        let q = "";
+        console.log(from_currency != null);
+        if (from_currency != null) {
+            q += "?";
+            q += "from_currency=" + from_currency;
+
+            if (to_currency != null) {
+                q += "&to_currency=" + to_currency;
+            }
+        }
+
+        const response = yield call(axios.get, "/api/marketinfo/" + q);
+        var result = response["data"];
+
+        let marketInfo = {};
+        for (let info of result) {
+            let fc = info["from_currency"];
+            delete info["from_currency"];
+
+            let tc = info["to_currency"];
+            delete info["to_currency"];
+
+            if (marketInfo[fc] === undefined) {
+                marketInfo[fc] = {}
+            }
+
+            if (marketInfo[fc][tc] === undefined) {
+                marketInfo[fc][tc] = {}
+            }
+
+            marketInfo[fc][tc] = info
+        }
+
+        yield put(marketInfoReceived(marketInfo));
+    };
+
+    static *setup() {
+        yield* takeEvery(MARKET_CHANGED, MarketInfoService.get)
     }
 }

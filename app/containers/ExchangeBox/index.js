@@ -7,7 +7,7 @@
 import React from "react";
 import Paper from "material-ui/Paper";
 import {Row, Col} from "react-flexbox-grid";
-import {loggedIn, accountsReceived} from "containers/App/actions";
+import {loggedIn, accountsReceived, marketChanged} from "containers/App/actions";
 import TextField from "material-ui/TextField";
 import Badge from "material-ui/Badge";
 import RaisedButton from "material-ui/RaisedButton";

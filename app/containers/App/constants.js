@@ -14,4 +14,6 @@ export const LOG_OUT = 'app/App/LOG_OUT';
 export const LOGGED_IN = 'app/App/LOGGED_IN';
 export const LOGGED_OUT = 'app/App/LOGGED_OUT';
 export const ACCOUNTS_RECEIVED = 'app/App/ACCOUNTS_RECEIVED';
+export const MARKET_INFO_RECEIVED = 'app/App/MARKET_INFO_RECEIVED';
+export const MARKET_CHANGED = 'app/App/MARKET_CHANGED';
 

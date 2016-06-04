@@ -19,22 +19,22 @@ import globalReducer from 'containers/App/reducer';
 
 // Initial routing state
 const routeInitialState = fromJS({
-  locationBeforeTransitions: null,
+    locationBeforeTransitions: null,
 });
 
 /**
  * Merge route into the global application state
  */
 function routeReducer(state = routeInitialState, action) {
-  switch (action.type) {
-    /* istanbul ignore next */
-    case LOCATION_CHANGE:
-      return state.merge({
-        locationBeforeTransitions: action.payload,
-      });
-    default:
-      return state;
-  }
+    switch (action.type) {
+        /* istanbul ignore next */
+        case LOCATION_CHANGE:
+            return state.merge({
+                locationBeforeTransitions: action.payload,
+            });
+        default:
+            return state;
+    }
 }
 
 /**
@@ -43,14 +43,16 @@ function routeReducer(state = routeInitialState, action) {
 import exchangePageReducer from 'containers/ExchangePage/reducer';
 import headerReducer from 'containers/Header/reducer';
 import exchangeBoxReducer from 'containers/ExchangeBox/reducer';
+import marketInfoReducer from 'containers/MarketInfo/reducer';
 
 export default function createReducer(asyncReducers) {
-  return combineReducers({
-    route: routeReducer,
-    global: globalReducer,
-    exchangePage: exchangePageReducer,
-    header: headerReducer,
-    exchangeBox: exchangeBoxReducer,
-    ...asyncReducers,
-  });
+    return combineReducers({
+        route: routeReducer,
+        global: globalReducer,
+        exchangePage: exchangePageReducer,
+        header: headerReducer,
+        exchangeBox: exchangeBoxReducer,
+        marketInfo: marketInfoReducer,
+        ...asyncReducers,
+    });
 }

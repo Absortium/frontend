@@ -16,7 +16,15 @@
  */
 
 
-import {LOG_IN, LOGGED_IN, LOG_OUT, LOGGED_OUT, ACCOUNTS_RECEIVED} from "./constants";
+import {
+    LOG_IN,
+    LOGGED_IN,
+    LOG_OUT,
+    LOGGED_OUT,
+    ACCOUNTS_RECEIVED,
+    MARKET_CHANGED,
+    MARKET_INFO_RECEIVED
+} from "./constants";
 
 export function logIn() {
     return {
@@ -49,5 +57,20 @@ export function accountsReceived(accounts) {
     return {
         type: ACCOUNTS_RECEIVED,
         accounts: accounts
+    };
+}
+
+export function marketChanged(from_currency, to_currency) {
+    return {
+        type: MARKET_CHANGED,
+        from_currency: from_currency,
+        to_currency: to_currency
+    };
+}
+
+export function marketInfoReceived(marketInfo) {
+    return {
+        type: MARKET_INFO_RECEIVED,
+        marketInfo: marketInfo
     };
 }

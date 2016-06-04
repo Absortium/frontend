@@ -9,13 +9,13 @@ import {connect} from "react-redux";
 import selectExchangePage from "./selectors";
 import {Row, Col} from "react-flexbox-grid";
 import ExchangeBox from "containers/ExchangeBox";
-import MarketInfo from "components/MarketInfo";
+import MarketInfo from "containers/MarketInfo";
 import ExchangeOffers from "components/ExchangeOffers";
 import LastExchanges from "components/LastExchanges";
 import styles from "./styles.css";
 import axios from "axios";
 import CircularProgress from "material-ui/CircularProgress";
-import {logIn} from "containers/App/actions";
+import {logIn, marketChanged} from "containers/App/actions";
 
 const marketinfo = {
     'btc': {
@@ -120,6 +120,8 @@ export class ExchangePage extends React.Component {
     constructor(props) {
         super(props);
 
+        var {from_currency, to_currency} = this.props.params;
+
         this.state = {
             offers: null,
             history: history,
@@ -140,6 +142,7 @@ export class ExchangePage extends React.Component {
 
     componentWillMount() {
         var {from_currency, to_currency} = this.props.params;
+        this.props.marketChanged(from_currency, to_currency);
 
         this.setState({
             from_currency: from_currency,
@@ -147,7 +150,6 @@ export class ExchangePage extends React.Component {
         });
 
         this.fetchExchangeOffers(from_currency, to_currency);
-        this.fetchMarketInfo();
     };
 
     fetchExchangeOffers(from_currency, to_currency) {
@@ -162,52 +164,6 @@ export class ExchangePage extends React.Component {
             var results = response['data'];
             console.log("FETCH OFFERS");
             component.setState({offers: results})
-        })
-    };
-
-    fetchMarketInfo(from_currency, to_currency) {
-        var component = this;
-        var newMarketInfo = component.state.marketinfo;
-
-        var q = "?";
-
-        if (typeof from_currency != 'undefined') {
-            q += "from_currency=" + from_currency;
-
-            if (typeof to_currency != 'undefined') {
-                q += "&to_currency=" + to_currency;
-
-                newMarketInfo[from_currency][to_currency] = {};
-            } else {
-                newMarketInfo[from_currency] = {};
-            }
-        } else {
-            newMarketInfo = {};
-        }
-        component.setState({marketinfo: newMarketInfo});
-
-        axios.get('/api/marketinfo/' + q).then(function (response) {
-            var result = response['data'];
-            for (var info of result) {
-                let fc = info['from_currency'];
-                delete info['from_currency'];
-
-                let tc = info['to_currency'];
-                delete info['to_currency'];
-
-                if (newMarketInfo[fc] === undefined) {
-                    newMarketInfo[fc] = {}
-                }
-
-                if (newMarketInfo[fc][tc] === undefined) {
-                    newMarketInfo[fc][tc] = {}
-                }
-
-                newMarketInfo[fc][tc] = info
-            }
-
-            console.log("FETCH MARKET INFO");
-            component.setState({marketinfo: newMarketInfo});
         })
     };
 
@@ -242,29 +198,6 @@ export class ExchangePage extends React.Component {
                                              offers={offers}/>
         }
 
-
-        var marketsInfo = Object.keys(this.state.marketinfo).map(function (currency) {
-            var info = this.state.marketinfo[currency];
-            var drawInfo = !(info === null);
-            var marketInfo = <CircularProgress size={1.5}/>;
-            if (drawInfo) {
-                marketInfo = <MarketInfo currency={currency}
-                                         marketinfo={info}/>
-            }
-
-            return (
-
-                <Col xs={12}>
-                    <Row center="xs">
-                        <Col xs={10}>
-                            {marketInfo}
-                        </Col>
-                    </Row>
-                </Col>
-            )
-        }, this);
-
-
         return (
             <div className={styles.main}>
                 <div className={styles.content}>
@@ -297,7 +230,7 @@ export class ExchangePage extends React.Component {
                     <Col xs={12}>
                         <Row center="xs">
                             <Col xs={10} align="center">
-                                {marketsInfo}
+                                <MarketInfo />
                             </Col>
                         </Row>
                     </Col>
@@ -312,6 +245,7 @@ const mapStateToProps = selectExchangePage();
 function mapDispatchToProps(dispatch) {
     return {
         logIn: () => dispatch(logIn()),
+        marketChanged: (from_currency, to_currency) => dispatch(marketChanged(from_currency, to_currency)),
         dispatch,
     };
 }
