@@ -27,7 +27,7 @@ Then `import` the CSS file in your component JavaScript file, and reference the
 class name in the `className` prop.
 
 ```javascript
-// index.js
+// index.jsx
 
 import styles from './styles.css';
 

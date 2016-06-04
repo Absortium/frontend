@@ -42,12 +42,15 @@ function routeReducer(state = routeInitialState, action) {
  */
 import exchangePageReducer from 'containers/ExchangePage/reducer';
 import headerReducer from 'containers/Header/reducer';
+import exchangeBoxReducer from 'containers/ExchangeBox/reducer';
+
 export default function createReducer(asyncReducers) {
   return combineReducers({
     route: routeReducer,
     global: globalReducer,
     exchangePage: exchangePageReducer,
     header: headerReducer,
+    exchangeBox: exchangeBoxReducer,
     ...asyncReducers,
   });
 }

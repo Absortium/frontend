@@ -13,3 +13,5 @@ export const LOG_IN = 'app/App/LOG_IN';
 export const LOG_OUT = 'app/App/LOG_OUT';
 export const LOGGED_IN = 'app/App/LOGGED_IN';
 export const LOGGED_OUT = 'app/App/LOGGED_OUT';
+export const ACCOUNTS_RECEIVED = 'app/App/ACCOUNTS_RECEIVED';
+

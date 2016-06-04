@@ -1,7 +1,7 @@
 import {take, call, put, select, cps} from "redux-saga/effects";
 import {takeEvery, takeLatest} from "redux-saga";
-import {loggedOut, loggedIn} from "./actions";
-import {LOG_IN, LOG_OUT} from "./constants";
+import {loggedOut, loggedIn, accountsReceived} from "./actions";
+import {LOG_IN, LOG_OUT, LOGGED_IN} from "./constants";
 import axios from "axios";
 import Auth0Lock from "auth0-lock";
 
@@ -13,8 +13,10 @@ export default [
 
 // Individual exports for testing
 export function* defaultSaga() {
-    yield AuthService.setup();
-
+    yield [
+        AccountsService.setup(),
+        AuthService.setup()
+    ]
 }
 
 /*
@@ -110,5 +112,17 @@ class AuthService {
             takeEvery(LOG_OUT, AuthService.logOut),
             takeEvery(LOG_IN, AuthService.logIn),
         ]
+    }
+}
+
+class AccountsService {
+    static *get() {
+        const response = yield call(axios.get, '/api/accounts/');
+        var accounts = response['data'];
+        yield put(accountsReceived(accounts));
+    }
+
+    static *setup() {
+        yield* takeEvery(LOGGED_IN, AccountsService.get)
     }
 }

@@ -8,7 +8,7 @@ import React from "react";
 import {connect} from "react-redux";
 import selectExchangePage from "./selectors";
 import {Row, Col} from "react-flexbox-grid";
-import ExchangeBox from "components/ExchangeBox";
+import ExchangeBox from "containers/ExchangeBox";
 import MarketInfo from "components/MarketInfo";
 import ExchangeOffers from "components/ExchangeOffers";
 import LastExchanges from "components/LastExchanges";
@@ -129,15 +129,16 @@ export class ExchangePage extends React.Component {
             to_currency: null
         }
     };
-    componentWillUpdate(){
+
+    componentWillUpdate() {
         console.log("WILL UPDATE")
     }
 
-    componentDidUpdate(){
+    componentDidUpdate() {
         console.log("DID UPDATE")
     }
 
-    componentDidMount() {
+    componentWillMount() {
         var {from_currency, to_currency} = this.props.params;
 
         this.setState({
@@ -147,11 +148,6 @@ export class ExchangePage extends React.Component {
 
         this.fetchExchangeOffers(from_currency, to_currency);
         this.fetchMarketInfo();
-
-        if (this.props.isAuthenticated) {
-            this.fetchAccount(from_currency);
-        }
-
     };
 
     fetchExchangeOffers(from_currency, to_currency) {
@@ -214,23 +210,6 @@ export class ExchangePage extends React.Component {
             component.setState({marketinfo: newMarketInfo});
         })
     };
-
-    fetchAccount(currency) {
-        var component = this;
-        component.setState({account: null});
-
-        axios.get('/api/accounts/').then(function (response) {
-            var accounts = response['data'];
-            for (var account of accounts) {
-                if (currency === account['currency']) {
-                    console.log("FETCH ACCOUNT");
-                    component.setState({account: account});
-                    break;
-                }
-            }
-            
-        })
-    }
 
     render() {
 

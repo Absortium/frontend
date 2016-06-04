@@ -16,7 +16,7 @@
  */
 
 
-import {LOG_IN, LOGGED_IN, LOG_OUT, LOGGED_OUT} from "./constants";
+import {LOG_IN, LOGGED_IN, LOG_OUT, LOGGED_OUT, ACCOUNTS_RECEIVED} from "./constants";
 
 export function logIn() {
     return {
@@ -42,5 +42,12 @@ export function loggedIn(token, profile) {
 export function loggedOut() {
     return {
         type: LOGGED_OUT
+    };
+}
+
+export function accountsReceived(accounts) {
+    return {
+        type: ACCOUNTS_RECEIVED,
+        accounts: accounts
     };
 }
