@@ -1,7 +1,7 @@
 import {take, call, put, select, cps} from "redux-saga/effects";
 import {takeEvery, takeLatest} from "redux-saga";
 import {loggedOut, loggedIn, accountsReceived, marketInfoReceived} from "./actions";
-import {LOG_IN, LOG_OUT, LOGGED_IN, MARKET_CHANGED} from "./constants";
+import {LOG_IN, LOG_OUT, LOGGED_IN, LOGGED_OUT, MARKET_CHANGED} from "./constants";
 import axios from "axios";
 import Auth0Lock from "auth0-lock";
 
@@ -73,7 +73,7 @@ class AuthService {
         });
     }
 
-    static *logIn() {
+    static *handlerLogIn() {
         var options = {
             authParams: {
                 scope: "openid email"
@@ -91,7 +91,7 @@ class AuthService {
         }
     }
 
-    static *logOut() {
+    static *handlerLogOut() {
         AuthService.setupIntercept();
         localStorage.removeItem("token");
         localStorage.removeItem("profile");
@@ -110,26 +110,55 @@ class AuthService {
         }
 
         yield [
-            takeEvery(LOG_OUT, AuthService.logOut),
-            takeEvery(LOG_IN, AuthService.logIn),
+            takeEvery(LOG_OUT, AuthService.handlerLogOut),
+            takeEvery(LOG_IN, AuthService.handlerLogIn),
         ]
     }
 }
 
 class AccountsService {
+    static isAuthenticated = false;
+    static isMarketInit = false;
+
+    static *handlerLoggedIn() {
+        AccountsService.isAuthenticated = true;
+        yield* AccountsService.get();
+    }
+
+    static *handlerLoggedOut() {
+        AccountsService.isAuthenticated = false;
+    }
+
+    static *handlerMarketInitialized() {
+        AccountsService.isMarketInit = true;
+        yield* AccountsService.get();
+    }
+
     static *get() {
-        const response = yield call(axios.get, "/api/accounts/");
-        var accounts = response["data"];
-        yield put(accountsReceived(accounts));
+        if (AccountsService.isAuthenticated && AccountsService.isMarketInit) {
+            const response = yield call(axios.get, "/api/accounts/");
+            var accounts = response["data"];
+
+            let newAccounts = {};
+            for (let account of accounts) {
+                let currency = account['currency'];
+                delete account['currency'];
+                newAccounts[currency] = account;
+            }
+            yield put(accountsReceived(newAccounts));
+        }
     }
 
     static *setup() {
-        yield* takeEvery(LOGGED_IN, AccountsService.get)
+        yield [
+            takeEvery(LOGGED_IN, AccountsService.handlerLoggedIn),
+            takeEvery(LOGGED_OUT, AccountsService.handlerLoggedOut),
+            takeEvery(MARKET_CHANGED, AccountsService.handlerMarketInitialized)
+        ]
     }
 }
 
 class MarketInfoService {
-
     static * get(action) {
 
         //var from_currency = action.from_currency;
@@ -137,10 +166,7 @@ class MarketInfoService {
         let from_currency = null;
         let to_currency = null;
 
-        console.log("ASADOMSDOSDO");
-
         let q = "";
-        console.log(from_currency != null);
         if (from_currency != null) {
             q += "?";
             q += "from_currency=" + from_currency;

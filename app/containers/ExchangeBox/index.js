@@ -18,6 +18,8 @@ import CircularProgress from "material-ui/CircularProgress";
 import selectExchangeBox from "./selectors"
 import {connect} from "react-redux";
 import axios from "axios";
+import RefreshIndicator from 'material-ui/RefreshIndicator';
+import Decimal from 'decimal.js';
 
 const styles = {
     block: {
@@ -38,8 +40,30 @@ const styles = {
     small: {
         width: 72,
         height: 72,
-    }
+    },
+    container: {
+        position: 'relative',
+    },
+    refresh: {
+        display: 'inline-block',
+        position: 'relative',
+    },
 };
+
+
+const RefreshIndicatorExampleLoading = () => (
+    <div style={style.container}>
+
+        <RefreshIndicator
+            size={50}
+            left={70}
+            top={0}
+            loadingColor={"#FF9800"}
+            status="loading"
+            style={style.refresh}
+        />
+    </div>
+);
 
 
 class ExchangeBox extends React.Component {
@@ -47,7 +71,6 @@ class ExchangeBox extends React.Component {
     constructor(props) {
         super(props);
 
-        console.log("BOX CONSTRUCTOR");
         this.state = {
             from_amount: null,
             to_amount: null,
@@ -55,17 +78,7 @@ class ExchangeBox extends React.Component {
         }
     }
 
-
-    componentDidMount() {
-        console.log("BOX DID MOUNT")
-    }
-
-    componentDidUpdate() {
-        console.log("BOX DID UPDATE")
-    }
-
     createExchange = () => {
-
         var from_currency = this.props.from_currency;
         var to_currency = this.props.to_currency;
 
@@ -84,49 +97,99 @@ class ExchangeBox extends React.Component {
         })
     };
 
-    linkTo = (name) => (event) => {
-        let newState = {};
-        newState[name] = event.target.value;
-        this.setState(newState);
+    fromAmountChange = (event) => {
+        let value = Decimal(event.target.value);
+        value = value.replace(new RegExp("-", 'g'), "");
+
+        console.log(value);
+
+        let from_amount = value;
+        this.setState({
+            from_amount: from_amount,
+            to_amount: from_amount * this.state.rate
+        });
+    };
+
+    toAmountChange = (event) => {
+        let to_amount = Decimal(event.target.value);
+        this.setState({
+            from_amount: to_amount * this.state.rate,
+            to_amount: to_amount
+        });
+    };
+
+    rateChange = (event) => {
+        let rate = Decimal(event.target.value);
+        this.setState({
+            rate: rate,
+            to_amount: this.state.from_amount * rate
+        });
+    };
+
+    getRate = () => {
+        return this.state.rate != null ? this.state.rate : this.props.rate;
+    };
+
+    getToAmount = () => {
+        let to_amount;
+
+        if (this.props.isAccountLoaded && this.state.to_amount == null) {
+            to_amount = Decimal(this.getFromAmount()) * Decimal(this.getRate);
+        } else {
+            to_amount = this.state.to_amount;
+        }
+
+        return to_amount
+    };
+
+    getFromAmount = () => {
+        let from_amount;
+
+        if (this.props.isAccountLoaded && this.state.from_amount == null) {
+            from_amount = this.props.account.amount;
+        } else {
+            from_amount = this.state.from_amount;
+        }
+
+        return from_amount;
     };
 
 
     render = () => {
+        console.log(Decimal("0.000001") * Decimal("3"));
 
         let from_currency = this.props.from_currency;
         let to_currency = this.props.to_currency;
 
-        let accountExist = this.props.account !== null;
-        let amount = null;
-        if (accountExist) {
-            amount = this.props.account.amount;
-            console.log("Amount");
-            console.log(amount);
-        }
-
         let top = null;
-        if (this.props.isAuthenticated) {
-            if (accountExist) {
-                top = (
-                    <div>
-                        <br />
-                        <RaisedButton label="deposit" primary={true}/>{' '}{' '}{' '}
-                        <RaisedButton label="withdraw" primary={true}/>
-                    </div>
-                )
-            } else {
-                top = (
-                    <div>
-                        <br />
-                        <RaisedButton label="create account" primary={true}/>
-                    </div>
-                )
-            }
+        let main = null;
+        let down = null;
 
+        if (this.props.isRateLoaded &&
+            this.props.isAuthenticated &&
+            this.props.isAccountLoaded &&
+            this.props.isAccountExist) {
+
+            top = (
+                <div>
+                    <br />
+                    <RaisedButton label="deposit" primary={true}/>{' '}{' '}{' '}
+                    <RaisedButton label="withdraw" primary={true}/>
+                </div>
+            )
+        } else {
+            top = (
+                <div>
+                    <br />
+                </div>
+            )
         }
 
-        let main = null;
-        if (this.state.rate != null) {
+        if (this.props.isRateLoaded) {
+            let rate = this.getRate();
+            let from_amount = this.getFromAmount();
+            let to_amount = this.getToAmount();
+
             main = (
                 <div>
                     <Badge
@@ -139,8 +202,8 @@ class ExchangeBox extends React.Component {
                         floatingLabelText="Price (Rate) of the exchange"
                         floatingLabelFixed={true}
                         type="number"
-                        onChange={this.linkTo('rate')}
-                        value={this.state.rate}
+                        onChange={this.rateChange}
+                        value={rate}
                     />
                     <br />
 
@@ -149,9 +212,9 @@ class ExchangeBox extends React.Component {
                         floatingLabelText={"Amount of " + from_currency.toUpperCase() + " you want to sell"}
                         floatingLabelFixed={true}
                         type="number"
-                        onChange={this.linkTo('from_amount')}
-                        value={this.state.from_amount}
-                        defaultValue={amount}
+                        step={0.0001}
+                        onChange={this.fromAmountChange}
+                        value={from_amount}
                     />
                     <br />
 
@@ -159,25 +222,53 @@ class ExchangeBox extends React.Component {
                     <TextField
                         floatingLabelText={"Amount of " + to_currency.toUpperCase() + " you want to buy"}
                         floatingLabelFixed={true}
-                        type="number"/>
-                    onChange={this.linkTo('to_amount')}
-                    value={this.state.to_amount}
+                        type="number"
+                        onChange={this.toAmountChange}
+                        value={to_amount}/>
                 </div>
-            );
+            )
         } else {
             main = (
                 <div>
-                    <CircularProgress size={1.5}/>
+                    <RefreshIndicator
+                        size={70}
+                        top={0}
+                        left={0}
+                        status="loading"
+                        style={styles.refresh}
+                    />
                     <br />
                 </div>
             )
         }
 
-        let down = null;
-        if (this.props.isAuthenticated) {
-            down = <RaisedButton label="exchange" onMouseDown={this.createExchange} primary={true}/>
-        } else {
-            down = <RaisedButton onMouseDown={() => this.props.logIn()} label="LOG IN" primary={true}/>
+
+        if (this.props.isRateLoaded) {
+            if (this.props.isAuthenticated) {
+                if (this.props.isAccountLoaded && this.props.isAccountExist) {
+                    down = (
+                        <div>
+                            <RaisedButton label="exchange" onMouseDown={this.createExchange} primary={true}/>
+                            <br/>
+                        </div>
+                    )
+                } else if (this.props.isAccountLoaded && !this.props.isAccountExist) {
+                    down = (
+                        <div>
+                            <RaisedButton label="create account" primary={true}/>
+                            <br/>
+                        </div>
+                    )
+                }
+            } else {
+                down = (
+                    <div>
+                        <RaisedButton onMouseDown={() => this.props.logIn()} label="log in" primary={true}/>
+                        <br/>
+                    </div>
+                )
+
+            }
         }
 
         return (
@@ -193,21 +284,32 @@ class ExchangeBox extends React.Component {
                     <br />
                     {down}
                     <br />
-                    <br />
                 </Paper>
             </div>
         )
     }
 }
 
-export default ExchangeBox;
+export
+default
+ExchangeBox;
 
 const mapStateToProps = selectExchangeBox();
 
-function mapDispatchToProps(dispatch) {
+function
+
+mapDispatchToProps(dispatch) {
     return {
         dispatch,
     };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ExchangeBox);
+export
+default
+
+connect(mapStateToProps, mapDispatchToProps)
+
+(
+    ExchangeBox
+)
+;

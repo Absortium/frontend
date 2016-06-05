@@ -4,14 +4,17 @@
  *
  */
 
-import {LOGGED_IN, LOGGED_OUT, ACCOUNTS_RECEIVED, MARKET_INFO_RECEIVED} from "containers/App/constants";
+import {LOGGED_IN, LOGGED_OUT, ACCOUNTS_RECEIVED, MARKET_CHANGED, MARKET_INFO_RECEIVED} from "containers/App/constants";
 
 const initialState = {
     isAuthenticated: false,
-    accountsLoaded: false,
-    marketInfoLoaded: false,
-    marketInfo: null,
-    accounts: null
+    isRateLoaded: false,
+    isAccountExist: false,
+    isAccountLoaded: false,
+    rate: null,
+    account: null,
+    from_currency: null,
+    to_currency: null,
 };
 
 function exchangeBoxReducer(state = initialState, action) {
@@ -27,17 +30,32 @@ function exchangeBoxReducer(state = initialState, action) {
                     isAuthenticated: false
                 });
         case ACCOUNTS_RECEIVED:
+            let isAccountLoaded = action.accounts[state.from_currency] != null;
+            let isAccountExist = action.accounts[state.from_currency] != {};
+            let account = isAccountLoaded && isAccountExist ? action.accounts[state.from_currency] : null;
+
+            if (account != null) {
+                account['amount'] = parseFloat(account['amount'])
+            }
+
             return Object.assign({}, state,
                 {
-                    accountsLoaded: true,
-                    accounts: action.data
+                    isAccountLoaded: isAccountLoaded,
+                    isAccountExist: isAccountLoaded && isAccountExist,
+                    account: account
                 });
         case MARKET_INFO_RECEIVED:
-            //TODO: Get from market info only what wee need
             return Object.assign({}, state,
                 {
-                    marketInfoLoaded: true,
-                    marketInfo: action.data
+                    isRateLoaded: true,
+                    rate: parseFloat(action.marketInfo[state.from_currency][state.to_currency].rate)
+                });
+
+        case MARKET_CHANGED:
+            return Object.assign({}, state,
+                {
+                    from_currency: action.from_currency,
+                    to_currency: action.to_currency,
                 });
 
         default:

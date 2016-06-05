@@ -132,14 +132,6 @@ export class ExchangePage extends React.Component {
         }
     };
 
-    componentWillUpdate() {
-        console.log("WILL UPDATE")
-    }
-
-    componentDidUpdate() {
-        console.log("DID UPDATE")
-    }
-
     componentWillMount() {
         var {from_currency, to_currency} = this.props.params;
         this.props.marketChanged(from_currency, to_currency);
@@ -162,7 +154,6 @@ export class ExchangePage extends React.Component {
 
         axios.get('/api/offers/' + q).then(function (response) {
             var results = response['data'];
-            console.log("FETCH OFFERS");
             component.setState({offers: results})
         })
     };
@@ -208,12 +199,7 @@ export class ExchangePage extends React.Component {
                                     {lastExchanges}
                                 </Col>
                                 <Col xs={5} align="center">
-                                    <ExchangeBox from_currency={from_currency}
-                                                 to_currency={to_currency}
-                                                 rate={rate}
-                                                 account={this.state.account}
-                                                 isAuthenticated={this.props.isAuthenticated}
-                                                 logIn={this.props.logIn}/>
+                                    <ExchangeBox />
                                 </Col>
                             </Row>
                         </Col>
