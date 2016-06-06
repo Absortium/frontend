@@ -6,20 +6,22 @@
 
 import React from "react";
 import Paper from "material-ui/Paper";
-import {Row, Col} from "react-flexbox-grid";
-import {loggedIn, accountsReceived, marketChanged} from "containers/App/actions";
+import {
+    loggedIn,
+    accountsReceived,
+    marketChanged
+} from "containers/App/actions";
 import TextField from "material-ui/TextField";
 import Badge from "material-ui/Badge";
 import RaisedButton from "material-ui/RaisedButton";
 import Divider from "material-ui/Divider";
 import ForwardTenIcon from "material-ui/svg-icons/av/forward-10";
 import CryptoIcon from "components/CryptoIcon";
-import CircularProgress from "material-ui/CircularProgress";
-import selectExchangeBox from "./selectors"
-import {connect} from "react-redux";
+import selectExchangeBox from "./selectors";
+import { connect } from "react-redux";
 import axios from "axios";
-import RefreshIndicator from 'material-ui/RefreshIndicator';
-import Decimal from 'decimal.js';
+import RefreshIndicator from "material-ui/RefreshIndicator";
+import Decimal from "decimal";
 
 const styles = {
     block: {
