@@ -5,7 +5,7 @@ module.exports = (config) => {
     config.set({
         frameworks: ['mocha'],
         reporters: ['coverage', 'mocha'],
-        browsers: ['PhantomJS', 'PhantomJS_custom'],
+        browsers: ['PhantomJS'],
 
         // you can define custom flags
         customLaunchers: {

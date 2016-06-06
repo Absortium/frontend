@@ -1,16 +1,16 @@
-/**
- *
- * ExchangeBox
- *
- */
-
 import React from "react";
 import Paper from "material-ui/Paper";
 import {
     loggedIn,
+    logIn,
     accountsReceived,
     marketChanged
 } from "containers/App/actions";
+import {
+    changeFromAmount,
+    changeRate,
+    changeToAmount
+} from "./actions";
 import TextField from "material-ui/TextField";
 import Badge from "material-ui/Badge";
 import RaisedButton from "material-ui/RaisedButton";
@@ -21,7 +21,7 @@ import selectExchangeBox from "./selectors";
 import { connect } from "react-redux";
 import axios from "axios";
 import RefreshIndicator from "material-ui/RefreshIndicator";
-import Decimal from "decimal";
+
 
 const styles = {
     block: {
@@ -49,36 +49,10 @@ const styles = {
     refresh: {
         display: 'inline-block',
         position: 'relative',
-    },
+    }
 };
 
-
-const RefreshIndicatorExampleLoading = () => (
-    <div style={style.container}>
-
-        <RefreshIndicator
-            size={50}
-            left={70}
-            top={0}
-            loadingColor={"#FF9800"}
-            status="loading"
-            style={style.refresh}
-        />
-    </div>
-);
-
-
 class ExchangeBox extends React.Component {
-
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            from_amount: null,
-            to_amount: null,
-            rate: null,
-        }
-    }
 
     createExchange = () => {
         var from_currency = this.props.from_currency;
@@ -99,67 +73,8 @@ class ExchangeBox extends React.Component {
         })
     };
 
-    fromAmountChange = (event) => {
-        let value = Decimal(event.target.value);
-        value = value.replace(new RegExp("-", 'g'), "");
-
-        console.log(value);
-
-        let from_amount = value;
-        this.setState({
-            from_amount: from_amount,
-            to_amount: from_amount * this.state.rate
-        });
-    };
-
-    toAmountChange = (event) => {
-        let to_amount = Decimal(event.target.value);
-        this.setState({
-            from_amount: to_amount * this.state.rate,
-            to_amount: to_amount
-        });
-    };
-
-    rateChange = (event) => {
-        let rate = Decimal(event.target.value);
-        this.setState({
-            rate: rate,
-            to_amount: this.state.from_amount * rate
-        });
-    };
-
-    getRate = () => {
-        return this.state.rate != null ? this.state.rate : this.props.rate;
-    };
-
-    getToAmount = () => {
-        let to_amount;
-
-        if (this.props.isAccountLoaded && this.state.to_amount == null) {
-            to_amount = Decimal(this.getFromAmount()) * Decimal(this.getRate);
-        } else {
-            to_amount = this.state.to_amount;
-        }
-
-        return to_amount
-    };
-
-    getFromAmount = () => {
-        let from_amount;
-
-        if (this.props.isAccountLoaded && this.state.from_amount == null) {
-            from_amount = this.props.account.amount;
-        } else {
-            from_amount = this.state.from_amount;
-        }
-
-        return from_amount;
-    };
-
 
     render = () => {
-        console.log(Decimal("0.000001") * Decimal("3"));
-
         let from_currency = this.props.from_currency;
         let to_currency = this.props.to_currency;
 
@@ -188,10 +103,6 @@ class ExchangeBox extends React.Component {
         }
 
         if (this.props.isRateLoaded) {
-            let rate = this.getRate();
-            let from_amount = this.getFromAmount();
-            let to_amount = this.getToAmount();
-
             main = (
                 <div>
                     <Badge
@@ -204,8 +115,8 @@ class ExchangeBox extends React.Component {
                         floatingLabelText="Price (Rate) of the exchange"
                         floatingLabelFixed={true}
                         type="number"
-                        onChange={this.rateChange}
-                        value={rate}
+                        onChange={this.props.handlerRate}
+                        value={this.props.rate}
                     />
                     <br />
 
@@ -215,8 +126,8 @@ class ExchangeBox extends React.Component {
                         floatingLabelFixed={true}
                         type="number"
                         step={0.0001}
-                        onChange={this.fromAmountChange}
-                        value={from_amount}
+                        onChange={this.props.handlerFromAmount}
+                        value={this.props.from_amount}
                     />
                     <br />
 
@@ -225,8 +136,8 @@ class ExchangeBox extends React.Component {
                         floatingLabelText={"Amount of " + to_currency.toUpperCase() + " you want to buy"}
                         floatingLabelFixed={true}
                         type="number"
-                        onChange={this.toAmountChange}
-                        value={to_amount}/>
+                        onChange={this.props.handlerToAmount}
+                        value={this.props.to_amount}/>
                 </div>
             )
         } else {
@@ -292,9 +203,7 @@ class ExchangeBox extends React.Component {
     }
 }
 
-export
-default
-ExchangeBox;
+export default ExchangeBox;
 
 const mapStateToProps = selectExchangeBox();
 
@@ -302,16 +211,12 @@ function
 
 mapDispatchToProps(dispatch) {
     return {
+        handlerFromAmount: (event) => dispatch(changeFromAmount(event.target.value)),
+        handlerToAmount: (event) => dispatch(changeToAmount(event.target.value)),
+        handlerRate: (event) => dispatch(changeRate(event.target.value)),
+        logIn: () => dispatch(logIn()),
         dispatch,
     };
 }
 
-export
-default
-
-connect(mapStateToProps, mapDispatchToProps)
-
-(
-    ExchangeBox
-)
-;
+export default connect(mapStateToProps, mapDispatchToProps)(ExchangeBox);

@@ -152,7 +152,7 @@
     "chalk": "^1.1.3",
     "classnames": "^2.2.5",
     "compression": "^1.6.1",
-    "decimal": "0.0.2",
+    "decimal.js": "^5.0.8",
     "ejs-loader": "^0.2.1",
     "express": "^4.13.4",
     "extract-text-webpack-plugin": "^1.0.1",
