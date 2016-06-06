@@ -10,7 +10,7 @@ Docker | 1.10.2
   ```
 
 * Add aliases from `useful` directory, for that copy this in the `.bashrc` or `.zshrc`
-  ```
+  ```bash
     for f in $DELUGE_PATH/useful/aliases/*; do
       . "$f"
     done  
@@ -23,31 +23,31 @@ Docker | 1.10.2
 
 * Add entry to the `/etc/hosts`
    * If you run docker containers on the `docker-machine`, than check your `docker-machine` ip and pass it to the `/etc/hosts`
-   ```
+   ```bash
    $ docker-machine ip
    $ sudo bash -c `echo "absortium.com <ip>" >> /etc/hosts`
    ```
    * Otherwise set localhost
-   ```
+   ```bash
    $ sudo bash -c `echo "absortium.com localhost" >> /etc/hosts`
    ```
    
 * Open new terminal and go into docker `dev` directory, if there is no such alias than you should check - `Are aliases were preloaded?`
-  ```
+  ```bash
   $ godd
   ```
 
 * Run `postgres` service which serve as database.
-  ```
+  ```bash
   $ dc up -d postgres
   ```
 * Migrate database.
-  ```
+  ```bash
   $ dc run m-backend migrate
   ```
   
 * Run `frontend` and make sure that service runs without errors.
-  ```
+  ```bash
   $ dc up frontend
   ```
 
