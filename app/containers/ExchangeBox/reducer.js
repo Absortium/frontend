@@ -64,11 +64,10 @@ function exchangeBoxReducer(state = initialState, action) {
 
                 if (!isDirty(state.from_amount)) {
                     let from_amount = Number(account.amount);
-                    substate['from_amount'] = num2str(from_amount);
+                    substate['from_amount'] = from_amount;
 
                     if (!isEmpty(state.rate)) {
-                        let to_amount = Number(state.rate) * from_amount;
-                        substate['to_amount'] = num2str(to_amount);
+                        substate['to_amount'] = state.rate * from_amount;
                     }
                 }
             }
@@ -89,16 +88,14 @@ function exchangeBoxReducer(state = initialState, action) {
             let to_amount = state.to_amount;
 
             if (!isDirty(rate)) {
-                substate['rate'] = num2str(market_rate);
+                substate['rate'] = market_rate;
 
                 if (!isEmpty(from_amount)) {
-                    from_amount = Number(from_amount);
-                    to_amount = market_rate * from_amount
-                    substate['to_amount'] = num2str(to_amount);
+                    to_amount = market_rate * from_amount;
+                    substate['to_amount'] = to_amount;
                 } else if (!isEmpty(to_amount) && isEmpty(from_amount)) {
-                    to_amount = Number(to_amount);
                     from_amount = to_amount / market_rate;
-                    substate['from_amount'] = num2str(from_amount);
+                    substate['from_amount'] = from_amount;
                 }
 
             }
@@ -113,13 +110,13 @@ function exchangeBoxReducer(state = initialState, action) {
             let rate = state.rate;
             let substate = {};
 
-            if (!isEmpty(rate)) {
-                from_amount = Number(from_amount);
-                substate['from_amount'] = num2str(from_amount);
+            if (!isEmpty(from_amount)) {
+                from_amount = convert(from_amount);
+                substate['from_amount'] = from_amount;
 
-                rate = Number(rate);
-                let to_amount = rate * from_amount;
-                substate['to_amount'] = num2str(to_amount);
+                if (!isEmpty(rate)) {
+                    substate['to_amount'] = rate * from_amount;
+                }
             } else {
                 substate['from_amount'] = from_amount
             }
@@ -135,13 +132,13 @@ function exchangeBoxReducer(state = initialState, action) {
             let rate = state.rate;
             let substate = {};
 
-            if (!isEmpty(rate)) {
-                to_amount = Number(to_amount);
-                substate['to_amount'] = num2str(to_amount);
+            if (!isEmpty(to_amount)) {
+                to_amount = convert(to_amount);
+                substate['to_amount'] = to_amount;
 
-                rate = Number(rate);
-                let from_amount = to_amount / rate;
-                substate['from_amount'] = num2str(from_amount);
+                if (!isEmpty(rate)) {
+                    substate['from_amount'] = to_amount / rate;
+                }
             } else {
                 substate['to_amount'] = to_amount
             }
@@ -158,19 +155,15 @@ function exchangeBoxReducer(state = initialState, action) {
             let substate = {};
 
             if (!isEmpty(rate)) {
-                rate = Number(rate);
-                substate['rate'] = num2str(rate);
+                substate['rate'] = rate;
 
                 if (!isEmpty(from_amount)) {
-                    from_amount = Number(from_amount);
                     to_amount = rate * from_amount;
-                    console.log(to_amount);
-                    substate['to_amount'] = num2str(to_amount);
+                    substate['to_amount'] = to_amount;
 
                 } else if (!isEmpty(to_amount) && isEmpty(from_amount)) {
-                    to_amount = Number(to_amount);
                     from_amount = to_amount / rate;
-                    substate['from_amount'] = num2str(from_amount);
+                    substate['from_amount'] = from_amount;
                 }
             } else {
                 substate['rate'] = rate
@@ -207,4 +200,15 @@ function isDirty(value) {
 function num2str(value) {
     return value.toPrecision(8) * 1 + ''
 }
+
+function deconvert(value) {
+    return Number(value) / Number(Math.pow(10, 8));
+
+}
+
+function convert(value) {
+    return Number(value) * Number(Math.pow(10, 8));
+
+}
+
 export default exchangeBoxReducer;

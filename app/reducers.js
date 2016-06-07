@@ -3,11 +3,14 @@
  * If we were to do this in store.js, reducers wouldn't be hot reloadable.
  */
 
-import { fromJS } from 'immutable';
-import { combineReducers } from 'redux-immutable';
-import { LOCATION_CHANGE } from 'react-router-redux';
-
-import globalReducer from 'containers/App/reducer';
+import { fromJS } from "immutable";
+import { combineReducers } from "redux-immutable";
+import { LOCATION_CHANGE } from "react-router-redux";
+import globalReducer from "containers/App/reducer";
+import exchangePageReducer from "containers/ExchangePage/reducer";
+import headerReducer from "containers/Header/reducer";
+import exchangeBoxReducer from "containers/ExchangeBox/reducer";
+import marketInfoReducer from "containers/MarketInfo/reducer";
 
 /*
  * routeReducer
@@ -40,10 +43,6 @@ function routeReducer(state = routeInitialState, action) {
 /**
  * Creates the main reducer with the asynchronously loaded ones
  */
-import exchangePageReducer from 'containers/ExchangePage/reducer';
-import headerReducer from 'containers/Header/reducer';
-import exchangeBoxReducer from 'containers/ExchangeBox/reducer';
-import marketInfoReducer from 'containers/MarketInfo/reducer';
 
 export default function createReducer(asyncReducers) {
     return combineReducers({

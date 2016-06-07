@@ -54,6 +54,11 @@ const styles = {
 
 class ExchangeBox extends React.Component {
 
+    deconvert = (value) => {
+        return Number(value) / Number(Math.pow(10, 8));
+
+    };
+
     createExchange = () => {
         var from_currency = this.props.from_currency;
         var to_currency = this.props.to_currency;
@@ -127,7 +132,7 @@ class ExchangeBox extends React.Component {
                         type="number"
                         step={0.0001}
                         onChange={this.props.handlerFromAmount}
-                        value={this.props.from_amount}
+                        value={this.deconvert(this.props.from_amount)}
                     />
                     <br />
 
@@ -137,7 +142,7 @@ class ExchangeBox extends React.Component {
                         floatingLabelFixed={true}
                         type="number"
                         onChange={this.props.handlerToAmount}
-                        value={this.props.to_amount}/>
+                        value={this.deconvert(this.props.to_amount)}/>
                 </div>
             )
         } else {

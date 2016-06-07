@@ -128,8 +128,8 @@ module.exports = {
     if (data.wantSagas) {
       actions.push({
         type: 'add',
-        path: '../../app/containers/{{properCase name}}/sagas.jsx',
-        templateFile: './container/sagas.jsx.hbs',
+        path: '../../app/containers/{{properCase name}}/sagas.js',
+        templateFile: './container/sagas.js.hbs',
         abortOnFail: true,
       });
       actions.push({
