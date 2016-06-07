@@ -6,7 +6,6 @@
 
 import React from "react";
 import { connect } from "react-redux";
-import selectExchangePage from "./selectors";
 import {
     Row,
     Col
@@ -232,14 +231,12 @@ export class ExchangePage extends React.Component {
     }
 }
 
-const mapStateToProps = selectExchangePage();
 
 function mapDispatchToProps(dispatch) {
     return {
-        logIn: () => dispatch(logIn()),
         marketChanged: (from_currency, to_currency) => dispatch(marketChanged(from_currency, to_currency)),
         dispatch,
     };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ExchangePage);
+export default connect(null, mapDispatchToProps)(ExchangePage);
