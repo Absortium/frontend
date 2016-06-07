@@ -21,7 +21,7 @@ import selectExchangeBox from "./selectors";
 import { connect } from "react-redux";
 import axios from "axios";
 import RefreshIndicator from "material-ui/RefreshIndicator";
-
+import Decimal from "decimal.js"
 
 const styles = {
     block: {
@@ -52,12 +52,16 @@ const styles = {
     }
 };
 
+function isEmpty(value) {
+    return value == null || value === ""
+}
+
+function deconvert(value) {
+    return Decimal(value) / Decimal(Math.pow(10, 8));
+
+};
+
 class ExchangeBox extends React.Component {
-
-    deconvert = (value) => {
-        return Number(value) / Number(Math.pow(10, 8));
-
-    };
 
     createExchange = () => {
         var from_currency = this.props.from_currency;
@@ -82,6 +86,16 @@ class ExchangeBox extends React.Component {
     render = () => {
         let from_currency = this.props.from_currency;
         let to_currency = this.props.to_currency;
+
+        let from_amount = this.props.from_amount;
+        if (!isEmpty(from_amount)) {
+            from_amount = deconvert(from_amount);
+        }
+
+        let to_amount = this.props.to_amount;
+        if (!isEmpty(to_amount)) {
+            to_amount = deconvert(to_amount);
+        }
 
         let top = null;
         let main = null;
@@ -119,7 +133,7 @@ class ExchangeBox extends React.Component {
                     <TextField
                         floatingLabelText="Price (Rate) of the exchange"
                         floatingLabelFixed={true}
-                        type="number"
+                        type="Decimal"
                         onChange={this.props.handlerRate}
                         value={this.props.rate}
                     />
@@ -129,10 +143,9 @@ class ExchangeBox extends React.Component {
                     <TextField
                         floatingLabelText={"Amount of " + from_currency.toUpperCase() + " you want to sell"}
                         floatingLabelFixed={true}
-                        type="number"
-                        step={0.0001}
+                        type="Decimal"
                         onChange={this.props.handlerFromAmount}
-                        value={this.deconvert(this.props.from_amount)}
+                        value={from_amount}
                     />
                     <br />
 
@@ -140,9 +153,9 @@ class ExchangeBox extends React.Component {
                     <TextField
                         floatingLabelText={"Amount of " + to_currency.toUpperCase() + " you want to buy"}
                         floatingLabelFixed={true}
-                        type="number"
+                        type="Decimal"
                         onChange={this.props.handlerToAmount}
-                        value={this.deconvert(this.props.to_amount)}/>
+                        value={to_amount}/>
                 </div>
             )
         } else {

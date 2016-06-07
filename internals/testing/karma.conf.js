@@ -48,6 +48,10 @@ module.exports = (config) => {
         // make Webpack bundle generation quiet
         webpackMiddleware: {
             noInfo: true,
+            watchOptions: {
+                aggregateTimeout: 200,
+                poll: true
+            },
         },
 
         coverageReporter: {

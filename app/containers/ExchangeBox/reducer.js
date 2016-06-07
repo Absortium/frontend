@@ -30,6 +30,8 @@ const initialState = {
     to_currency: null,
 };
 
+
+
 function exchangeBoxReducer(state = initialState, action) {
     switch (action.type) {
         case LOGGED_IN:
@@ -64,6 +66,7 @@ function exchangeBoxReducer(state = initialState, action) {
 
                 if (!isDirty(state.from_amount)) {
                     let from_amount = Number(account.amount);
+
                     substate['from_amount'] = from_amount;
 
                     if (!isEmpty(state.rate)) {
@@ -72,7 +75,6 @@ function exchangeBoxReducer(state = initialState, action) {
                 }
             }
 
-            console.log(substate);
             return Object.assign({}, state, substate);
         }
 
@@ -118,7 +120,7 @@ function exchangeBoxReducer(state = initialState, action) {
                     substate['to_amount'] = rate * from_amount;
                 }
             } else {
-                substate['from_amount'] = from_amount
+                substate['from_amount'] = from_amount;
             }
 
             console.log(substate);
@@ -155,6 +157,7 @@ function exchangeBoxReducer(state = initialState, action) {
             let substate = {};
 
             if (!isEmpty(rate)) {
+                rate = Number(rate);
                 substate['rate'] = rate;
 
                 if (!isEmpty(from_amount)) {
@@ -190,7 +193,7 @@ function exchangeBoxReducer(state = initialState, action) {
 }
 
 function isEmpty(value) {
-    return value == null || value == ""
+    return value == null || value === ""
 }
 
 function isDirty(value) {

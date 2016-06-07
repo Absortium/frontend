@@ -16,6 +16,7 @@ import createReducer from "./reducers";
 const sagaMiddleware = createSagaMiddleware();
 const devtools = window.devToolsExtension || (() => noop => noop);
 const logger = createLogger();
+const isDev = process.env.NODE_ENV === 'development';
 
 export default function configureStore(initialState = {}, history) {
     // Create the store with two middlewares
@@ -24,8 +25,11 @@ export default function configureStore(initialState = {}, history) {
     const middlewares = [
         sagaMiddleware,
         routerMiddleware(history),
-        logger,
     ];
+
+    if (isDev) {
+        middlewares.push(logger);
+    }
 
     const enhancers = [
         applyMiddleware(...middlewares),

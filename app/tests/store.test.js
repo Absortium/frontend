@@ -8,6 +8,7 @@ import { browserHistory } from "react-router";
 
 describe('configureStore', () => {
     let store;
+    let store2;
 
     before(() => {
         store = configureStore({}, browserHistory);
