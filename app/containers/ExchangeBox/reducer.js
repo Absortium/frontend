@@ -23,7 +23,8 @@ import {
     convert,
     isDirty,
     isEmpty,
-    errExist
+    errExist,
+    deconvert
 } from "../../utils/general";
 import Decimal from "decimal.js";
 
@@ -48,7 +49,7 @@ const initialState = {
     },
 
     from_currency: null,
-    to_currency: null,
+    to_currency: null
 };
 
 function genParam(value, error) {
@@ -93,12 +94,13 @@ function exchangeBoxReducer(state = initialState, action) {
 
                 if (isAccountExist && !isDirty(state.from_amount.value)) {
                     let from_amount = parseInt(account.amount);
-                    substate.from_amount = genParam(from_amount, null);
+                    substate.from_amount = genParam(deconvert(from_amount), null);
 
                     let rate = state.rate.value;
 
                     if (!isEmpty(rate) && !errExist(state.rate.error)) {
-                        substate.to_amount = genParam(Math.round(rate * from_amount), null);
+                        let to_amount = deconvert(Math.round(rate * from_amount));
+                        substate.to_amount = genParam(to_amount, null);
                     }
                 }
             }
@@ -119,14 +121,14 @@ function exchangeBoxReducer(state = initialState, action) {
                 substate.rate = genParam(market_rate, null);
 
                 if (!errExist(state.from_amount.error)) {
-                    let from_amount = state.from_amount.value;
-                    let to_amount = Math.round(from_amount * market_rate);
+                    let from_amount = convert(state.from_amount.value);
+                    let to_amount = deconvert(Math.round(from_amount * market_rate));
 
                     substate.to_amount = genParam(to_amount, null);
 
                 } else if (!errExist(state.to_amount.error)) {
-                    let to_amount = state.to_amount.value;
-                    let from_amount = Math.round(to_amount / market_rate);
+                    let to_amount = convert(state.to_amount.value);
+                    let from_amount = deconvert(Math.round(to_amount / market_rate));
 
                     substate.from_amount = genParam(from_amount, null);
                 }
@@ -146,7 +148,7 @@ function exchangeBoxReducer(state = initialState, action) {
             if (!isEmpty(from_amount)) {
                 if (isConvertable(from_amount)) {
                     if (!errExist(state.rate.error)) {
-                        substate.to_amount = genParam(Math.round(rate * convert(from_amount)), null);
+                        substate.to_amount = genParam(deconvert(Math.round(convert(from_amount) * rate)), null);
                     }
                 } else {
                     error = FIELD_NOT_VALID;
@@ -170,7 +172,7 @@ function exchangeBoxReducer(state = initialState, action) {
             if (!isEmpty(to_amount)) {
                 if (isConvertable(to_amount)) {
                     if (!errExist(state.rate.error)) {
-                        substate.from_amount = genParam(Math.round(convert(to_amount) / rate), null);
+                        substate.from_amount = genParam(deconvert(Math.round(convert(to_amount) / rate)), null);
                     }
                 } else {
                     error = FIELD_NOT_VALID;
@@ -194,11 +196,11 @@ function exchangeBoxReducer(state = initialState, action) {
             if (!isEmpty(rate)) {
                 if (isConvertable(rate)) {
                     if (!errExist(state.from_amount.error)) {
-                        to_amount = Math.round(Decimal(rate) * from_amount);
+                        to_amount = deconvert(Math.round(Decimal(rate) * convert(from_amount)));
                         substate.to_amount = genParam(to_amount, null);
 
                     } else if (!errExist(state.to_amount.error)) {
-                        from_amount = Math.round(to_amount / Decimal(rate));
+                        from_amount = deconvert(Math.round(convert(to_amount) / Decimal(rate)));
                         substate.from_amount = genParam(from_amount, null);
                     }
                 }

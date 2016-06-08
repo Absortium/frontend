@@ -41,7 +41,7 @@ class Rate extends React.Component {
                 <TextField
                     floatingLabelText="Price (Rate) of the exchange"
                     floatingLabelFixed={true}
-                    type="Decimal"
+                    type="number"
                     onChange={this.props.handler}
                     errorText={errorText}
                     value={this.props.rate}

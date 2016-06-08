@@ -26,8 +26,6 @@ class ToAmount extends React.Component {
 
         } else if (this.props.error == FIELD_IS_REQUIRED) {
             errorText = "This field is required";
-        } else {
-            amount = deconvert(amount);
         }
 
 
@@ -37,7 +35,7 @@ class ToAmount extends React.Component {
                 <TextField
                     floatingLabelText={"Amount of " + this.props.currency.toUpperCase() + " you want to buy"}
                     floatingLabelFixed={true}
-                    type="Decimal"
+                    type="number"
                     onChange={this.props.handler}
                     errorText={errorText}
                     value={amount}/>
