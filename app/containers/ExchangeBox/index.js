@@ -11,17 +11,15 @@ import {
     changeRate,
     changeToAmount
 } from "./actions";
-import TextField from "material-ui/TextField";
-import Badge from "material-ui/Badge";
 import RaisedButton from "material-ui/RaisedButton";
 import Divider from "material-ui/Divider";
-import ForwardTenIcon from "material-ui/svg-icons/av/forward-10";
-import CryptoIcon from "components/CryptoIcon";
+import FromAmount from "components/FromAmount";
+import ToAmount from "components/ToAmount";
+import Rate from "components/Rate";
 import selectExchangeBox from "./selectors";
 import { connect } from "react-redux";
 import axios from "axios";
 import RefreshIndicator from "material-ui/RefreshIndicator";
-import Decimal from "decimal.js"
 
 const styles = {
     block: {
@@ -52,14 +50,6 @@ const styles = {
     }
 };
 
-function isEmpty(value) {
-    return value == null || value === ""
-}
-
-function deconvert(value) {
-    return Decimal(value) / Decimal(Math.pow(10, 8));
-
-};
 
 class ExchangeBox extends React.Component {
 
@@ -84,19 +74,6 @@ class ExchangeBox extends React.Component {
 
 
     render = () => {
-        let from_currency = this.props.from_currency;
-        let to_currency = this.props.to_currency;
-
-        let from_amount = this.props.from_amount;
-        if (!isEmpty(from_amount)) {
-            from_amount = deconvert(from_amount);
-        }
-
-        let to_amount = this.props.to_amount;
-        if (!isEmpty(to_amount)) {
-            to_amount = deconvert(to_amount);
-        }
-
         let top = null;
         let main = null;
         let down = null;
@@ -124,38 +101,17 @@ class ExchangeBox extends React.Component {
         if (this.props.isRateLoaded) {
             main = (
                 <div>
-                    <Badge
-                        badgeStyle={{top: 12, right: 12}}
-                        badgeContent={4}
-                        primary={true}>
-                        <ForwardTenIcon style={styles.middleIcon}/>
-                    </Badge>
-                    <TextField
-                        floatingLabelText="Price (Rate) of the exchange"
-                        floatingLabelFixed={true}
-                        type="Decimal"
-                        onChange={this.props.handlerRate}
-                        value={this.props.rate}
-                    />
-                    <br />
+                    <Rate handler={this.props.handlerRate}
+                          rate={this.props.rate}/>
 
-                    <CryptoIcon icon={from_currency}/>{' '}
-                    <TextField
-                        floatingLabelText={"Amount of " + from_currency.toUpperCase() + " you want to sell"}
-                        floatingLabelFixed={true}
-                        type="Decimal"
-                        onChange={this.props.handlerFromAmount}
-                        value={from_amount}
-                    />
-                    <br />
+                    <FromAmount currency={this.props.from_currency}
+                                handler={this.props.handlerFromAmount}
+                                amount={this.props.from_amount}/>
 
-                    <CryptoIcon icon={to_currency}/>{' '}
-                    <TextField
-                        floatingLabelText={"Amount of " + to_currency.toUpperCase() + " you want to buy"}
-                        floatingLabelFixed={true}
-                        type="Decimal"
-                        onChange={this.props.handlerToAmount}
-                        value={to_amount}/>
+                    <ToAmount currency={this.props.to_currency}
+                              handler={this.props.handlerToAmount}
+                              amount={this.props.to_amount}/>
+
                 </div>
             )
         } else {

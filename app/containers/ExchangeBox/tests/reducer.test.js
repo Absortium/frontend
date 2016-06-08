@@ -1,5 +1,5 @@
 import {expect} from "chai";
-import {shallow} from 'enzyme';
+import {shallow, mount} from 'enzyme';
 import React from 'react';
 import exchageBoxReducer from "../reducer";
 import { fromJS } from "immutable";
@@ -113,19 +113,19 @@ describe('ExchangeBoxReducer', () => {
         expect(state).to.deep.equal(expectedState);
     });
 
-    // it('calculation #1', () => {
-    //     let [state, expectedState] = preinit();
-    //
-    //     state = exchageBoxReducer(state, accountsReceived(accounts));
-    //     expectedState['account'] = accounts['btc'];
-    //     expectedState['isAccountLoaded'] = true;
-    //     expectedState['isAccountExist'] = true;
-    //     expectedState['from_amount'] = 400000000;
-    //
-    //     const wrapper = shallow(<ExchangeBox />);
-    //     console.log(wrapper);
-    //
-    // });
+    it('calculation #1', () => {
+        let [state, expectedState] = preinit();
+
+        state = exchageBoxReducer(state, accountsReceived(accounts));
+        expectedState['account'] = accounts['btc'];
+        expectedState['isAccountLoaded'] = true;
+        expectedState['isAccountExist'] = true;
+        expectedState['from_amount'] = 400000000;
+
+        const wrapper = mount(<ExchangeBox />);
+        console.log(wrapper);
+
+    });
 });
 
 function preinit() {
