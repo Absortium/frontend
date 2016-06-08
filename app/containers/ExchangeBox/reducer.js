@@ -28,9 +28,12 @@ import {
     isDirty,
     isEmpty,
     errExist,
-    deconvert
+    deconvert,
+    cut
 } from "../../utils/general";
-import Decimal from "decimal.js";
+
+import BigNumber from "bignumber.js";
+BigNumber.config({DECIMAL_PLACES : 20});
 
 const initialState = {
     isAuthenticated: false,
@@ -123,7 +126,7 @@ function exchangeBoxReducer(state = initialState, action) {
                 isRateLoaded: true
             };
 
-            let market_rate = Decimal(action.marketInfo[state.from_currency][state.to_currency].rate);
+            let market_rate = new BigNumber(action.marketInfo[state.from_currency][state.to_currency].rate);
             let rate = state.rate.value;
 
             if (!isDirty(rate)) {
@@ -156,10 +159,8 @@ function exchangeBoxReducer(state = initialState, action) {
 
             if (!isEmpty(from_amount)) {
                 if (isConvertable(from_amount)) {
-                    from_amount = Decimal(from_amount);
-
                     if (!errExist(state.rate.error)) {
-                        substate.to_amount = genParam(from_amount * rate, null);
+                        substate.to_amount = genParam(cut(new BigNumber(from_amount) * rate), null);
                     }
 
                 } else {
@@ -189,10 +190,8 @@ function exchangeBoxReducer(state = initialState, action) {
             if (!isEmpty(to_amount)) {
                 if (isConvertable(to_amount)) {
                     if (!errExist(state.rate.error)) {
-                        to_amount = Decimal(to_amount);
-
                         let balance = isAccountExist ? state.balance : null;
-                        let from_amount = to_amount / rate;
+                        let from_amount = cut(new BigNumber(to_amount) / rate);
 
                         if (balance != null && from_amount > balance) {
                             substate.from_amount = genParam(from_amount, ERROR_FROM_AMOUNT_GT_BALANCE);
@@ -235,21 +234,21 @@ function exchangeBoxReducer(state = initialState, action) {
 
                 } else {
 
-                    rate = Decimal(rate);
-                    if (rate > RATE_MAX) {
+                    let brate = new BigNumber(rate);
+                    if (brate > RATE_MAX) {
                         error = ERROR_RATE_GT_MAX
 
-                    } else if (rate < RATE_MIN) {
+                    } else if (brate < RATE_MIN) {
                         error = ERROR_RATE_LT_MIN
 
                     } else {
                         if (!errExist(state.from_amount.error)) {
-                            to_amount = rate * from_amount;
+                            to_amount = cut(brate * from_amount);
                             substate.to_amount = genParam(to_amount, null);
 
                         } else if (!errExist(state.to_amount.error)) {
                             let balance = isAccountExist ? state.balance : null;
-                            from_amount = to_amount / rate;
+                            from_amount = cut(to_amount / brate);
 
                             if (balance != null && from_amount > balance) {
                                 substate.from_amount = genParam(from_amount, ERROR_FROM_AMOUNT_GT_BALANCE);

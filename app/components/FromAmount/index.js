@@ -20,7 +20,7 @@ class FromAmount extends React.Component {
         let amount = this.props.amount;
         if (errorText == null) {
             console.log(amount);
-            amount = cut(amount);
+            // amount = cut(amount);
         }
 
         return (

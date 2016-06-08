@@ -8,21 +8,19 @@ import React from "react";
 import TextField from "material-ui/TextField";
 import CryptoIcon from "components/CryptoIcon";
 import {
-    cut,
     convertable,
     getErrorText
 } from "../../utils/general";
-
 
 
 class ToAmount extends React.Component {
     render() {
         let errorText = getErrorText(this.props.error);
         let amount = this.props.amount;
-        
+
         if (errorText == null) {
             console.log(amount);
-            amount = cut(amount);
+            // amount = cut(amount);
         }
 
 

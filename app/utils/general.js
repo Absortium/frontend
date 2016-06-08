@@ -2,7 +2,7 @@
  * Created by andrey on 08/06/16.
  */
 
-import Decimal from "decimal.js";
+import BigNumber from "bignumber.js";
 import {
     ERROR_FIELD_IS_REQUIRED,
     ERROR_FIELD_NOT_VALID,
@@ -21,17 +21,17 @@ export function isDirty(value) {
 }
 
 export function deconvert(value) {
-    return value / Decimal(Math.pow(10, precision))
+    return value / new BigNumber(Math.pow(10, precision))
 
 }
 export function convert(value) {
-    return Math.round(Decimal(value) * Math.pow(10, precision));
+    return Math.round(new BigNumber(value) * Math.pow(10, precision));
 
 }
 
 export function isConvertable(value) {
     try {
-        Decimal(value);
+        new BigNumber(value);
         return true
     } catch (err) {
         return false
@@ -46,7 +46,7 @@ export function num2str(value) {
 }
 
 export function cut(value) {
-    return parseFloat(value.toPrecision(precision)).toString();
+    return parseFloat(value.toPrecision(15)).toString();
 }
 
 export function getErrorText(error) {
