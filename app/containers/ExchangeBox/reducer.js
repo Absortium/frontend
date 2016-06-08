@@ -15,12 +15,16 @@ import {
     CHANGE_FROM_AMOUNT,
     CHANGE_RATE,
     CHANGE_TO_AMOUNT,
-    FIELD_IS_REQUIRED,
-    FIELD_NOT_VALID
+    ERROR_FIELD_IS_REQUIRED,
+    ERROR_FIELD_NOT_VALID,
+    ERROR_RATE_LT_MIN,
+    ERROR_RATE_GT_MAX,
+    ERROR_FROM_AMOUNT_GT_BALANCE,
+    RATE_MAX,
+    RATE_MIN
 } from "./constants";
 import {
     isConvertable,
-    convert,
     isDirty,
     isEmpty,
     errExist,
@@ -34,18 +38,19 @@ const initialState = {
     isAccountExist: false,
     isAccountLoaded: false,
     account: null,
+    balance: null,
 
     rate: {
         value: null,
-        error: FIELD_IS_REQUIRED
+        error: ERROR_FIELD_IS_REQUIRED
     },
     from_amount: {
         value: null,
-        error: FIELD_IS_REQUIRED
+        error: ERROR_FIELD_IS_REQUIRED
     },
     to_amount: {
         value: null,
-        error: FIELD_IS_REQUIRED
+        error: ERROR_FIELD_IS_REQUIRED
     },
 
     from_currency: null,
@@ -57,7 +62,6 @@ function genParam(value, error) {
         value: value,
         error: error
     }
-
 }
 
 function exchangeBoxReducer(state = initialState, action) {
@@ -92,15 +96,20 @@ function exchangeBoxReducer(state = initialState, action) {
             if (!isEmpty(account)) {
                 substate.account = account;
 
-                if (isAccountExist && !isDirty(state.from_amount.value)) {
-                    let from_amount = parseInt(account.amount);
-                    substate.from_amount = genParam(deconvert(from_amount), null);
+                if (isAccountExist) {
+                    let balance = deconvert(parseInt(account.amount));
+                    substate.balance = account;
 
-                    let rate = state.rate.value;
+                    if (!isDirty(state.from_amount.value)) {
+                        let rate = state.rate.value;
 
-                    if (!isEmpty(rate) && !errExist(state.rate.error)) {
-                        let to_amount = deconvert(Math.round(rate * from_amount));
-                        substate.to_amount = genParam(to_amount, null);
+                        let from_amount = balance;
+                        substate.from_amount = genParam(from_amount, null);
+
+                        if (!isEmpty(rate) && !errExist(state.rate.error)) {
+                            let to_amount = rate * from_amount;
+                            substate.to_amount = genParam(to_amount, null);
+                        }
                     }
                 }
             }
@@ -121,14 +130,14 @@ function exchangeBoxReducer(state = initialState, action) {
                 substate.rate = genParam(market_rate, null);
 
                 if (!errExist(state.from_amount.error)) {
-                    let from_amount = convert(state.from_amount.value);
-                    let to_amount = deconvert(Math.round(from_amount * market_rate));
+                    let from_amount = state.from_amount.value;
+                    let to_amount = from_amount * market_rate;
 
                     substate.to_amount = genParam(to_amount, null);
 
                 } else if (!errExist(state.to_amount.error)) {
-                    let to_amount = convert(state.to_amount.value);
-                    let from_amount = deconvert(Math.round(to_amount / market_rate));
+                    let to_amount = state.to_amount.value;
+                    let from_amount = to_amount / market_rate;
 
                     substate.from_amount = genParam(from_amount, null);
                 }
@@ -147,14 +156,18 @@ function exchangeBoxReducer(state = initialState, action) {
 
             if (!isEmpty(from_amount)) {
                 if (isConvertable(from_amount)) {
+                    from_amount = Decimal(from_amount);
+
                     if (!errExist(state.rate.error)) {
-                        substate.to_amount = genParam(deconvert(Math.round(convert(from_amount) * rate)), null);
+                        substate.to_amount = genParam(from_amount * rate, null);
                     }
+
                 } else {
-                    error = FIELD_NOT_VALID;
+                    error = ERROR_FIELD_NOT_VALID;
                 }
             } else {
-                error = FIELD_IS_REQUIRED;
+                error = ERROR_FIELD_IS_REQUIRED;
+                substate.to_amount = genParam("", ERROR_FIELD_IS_REQUIRED);
             }
 
             substate.from_amount = genParam(from_amount, error);
@@ -165,20 +178,35 @@ function exchangeBoxReducer(state = initialState, action) {
         case CHANGE_TO_AMOUNT:
         {
             let to_amount = action.to_amount;
+            
             let rate = state.rate.value;
+
+            let isAccountExist = state.isAccountExist;
+            
             let substate = {};
             let error = null;
 
             if (!isEmpty(to_amount)) {
                 if (isConvertable(to_amount)) {
                     if (!errExist(state.rate.error)) {
-                        substate.from_amount = genParam(deconvert(Math.round(convert(to_amount) / rate)), null);
+                        to_amount = Decimal(to_amount);
+
+                        let balance = isAccountExist ? state.balance : null;
+                        let from_amount = to_amount / rate;
+
+                        if (balance != null && from_amount > balance) {
+                            substate.from_amount = genParam(from_amount, ERROR_FROM_AMOUNT_GT_BALANCE);
+                        } else {
+                            substate.from_amount = genParam(from_amount, null);
+                        }
+
                     }
                 } else {
-                    error = FIELD_NOT_VALID;
+                    error = ERROR_FIELD_NOT_VALID;
                 }
             } else {
-                error = FIELD_IS_REQUIRED;
+                substate.from_amount = genParam("", ERROR_FIELD_IS_REQUIRED);
+                error = ERROR_FIELD_IS_REQUIRED;
             }
 
             substate.to_amount = genParam(to_amount, error);
@@ -187,32 +215,55 @@ function exchangeBoxReducer(state = initialState, action) {
 
         case CHANGE_RATE:
         {
+            let rate = action.rate;
+
             let to_amount = state.to_amount.value;
             let from_amount = state.from_amount.value;
-            let rate = action.rate;
+
+            let isAccountExist = state.isAccountExist;
+
             let substate = {};
             let error = null;
 
-            if (!isEmpty(rate)) {
-                if (isConvertable(rate)) {
-                    if (!errExist(state.from_amount.error)) {
-                        to_amount = deconvert(Math.round(Decimal(rate) * convert(from_amount)));
-                        substate.to_amount = genParam(to_amount, null);
+            if (isEmpty(rate)) {
+                error = ERROR_FIELD_IS_REQUIRED;
+                substate.to_amount = genParam("", ERROR_FIELD_IS_REQUIRED);
 
-                    } else if (!errExist(state.to_amount.error)) {
-                        from_amount = deconvert(Math.round(convert(to_amount) / Decimal(rate)));
-                        substate.from_amount = genParam(from_amount, null);
+            } else {
+                if (!isConvertable(rate)) {
+                    error = ERROR_FIELD_NOT_VALID;
+
+                } else {
+
+                    rate = Decimal(rate);
+                    if (rate > RATE_MAX) {
+                        error = ERROR_RATE_GT_MAX
+
+                    } else if (rate < RATE_MIN) {
+                        error = ERROR_RATE_LT_MIN
+
+                    } else {
+                        if (!errExist(state.from_amount.error)) {
+                            to_amount = rate * from_amount;
+                            substate.to_amount = genParam(to_amount, null);
+
+                        } else if (!errExist(state.to_amount.error)) {
+                            let balance = isAccountExist ? state.balance : null;
+                            from_amount = to_amount / rate;
+
+                            if (balance != null && from_amount > balance) {
+                                substate.from_amount = genParam(from_amount, ERROR_FROM_AMOUNT_GT_BALANCE);
+                            } else {
+                                substate.from_amount = genParam(from_amount, null);
+                            }
+                        }
                     }
                 }
-                else {
-                    error = FIELD_NOT_VALID;
-                }
-            } else {
-                error = FIELD_IS_REQUIRED;
             }
 
             substate.rate = genParam(rate, error);
             return Object.assign({}, state, substate);
+
         }
 
 

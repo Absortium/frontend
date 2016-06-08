@@ -8,24 +8,19 @@ import React from "react";
 import TextField from "material-ui/TextField";
 import CryptoIcon from "components/CryptoIcon";
 import {
-    isEmpty,
-    deconvert,
-    convertable
-} from "utils/general";
-import {
-    FIELD_NOT_VALID,
-    FIELD_IS_REQUIRED
-} from "containers/ExchangeBox/constants";
-
+    convertable,
+    cut,
+    getErrorText
+} from "../../utils/general";
 
 class FromAmount extends React.Component {
     render() {
-        let errorText;
+        let errorText = getErrorText(this.props.error);
+
         let amount = this.props.amount;
-        if (this.props.error == FIELD_NOT_VALID) {
-            errorText = "This field is not valid";
-        } else if (this.props.error == FIELD_IS_REQUIRED) {
-            errorText = "This field is required";
+        if (errorText == null) {
+            console.log(amount);
+            amount = cut(amount);
         }
 
         return (
@@ -35,6 +30,7 @@ class FromAmount extends React.Component {
                     floatingLabelText={"Amount of " + this.props.currency.toUpperCase() + " you want to sell"}
                     floatingLabelFixed={true}
                     type="number"
+                    min={0}
                     onChange={this.props.handler}
                     errorText={errorText}
                     value={amount}

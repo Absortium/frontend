@@ -3,6 +3,14 @@
  */
 
 import Decimal from "decimal.js";
+import {
+    ERROR_FIELD_IS_REQUIRED,
+    ERROR_FIELD_NOT_VALID,
+    ERROR_RATE_LT_MIN,
+    ERROR_RATE_GT_MAX
+} from "../containers/ExchangeBox/constants";
+
+const precision = 8;
 
 export function isEmpty(value) {
     return value == null || value === ""
@@ -13,11 +21,11 @@ export function isDirty(value) {
 }
 
 export function deconvert(value) {
-    return value / Decimal(Math.pow(10, 8))
+    return value / Decimal(Math.pow(10, precision))
 
 }
 export function convert(value) {
-    return Math.round(Decimal(value) * Math.pow(10, 8));
+    return Math.round(Decimal(value) * Math.pow(10, precision));
 
 }
 
@@ -33,6 +41,29 @@ export function isConvertable(value) {
 export function errExist(error) {
     return error != null
 }
-export function num2str(value){
+export function num2str(value) {
     return value + ''
+}
+
+export function cut(value) {
+    return parseFloat(value.toPrecision(precision)).toString();
+}
+
+export function getErrorText(error) {
+    switch (error) {
+        case ERROR_FIELD_NOT_VALID:
+            return "This field is not valid";
+
+        case ERROR_FIELD_IS_REQUIRED:
+            return "This field is required";
+
+        case ERROR_RATE_LT_MIN:
+            return "Rate is lower that minimum value";
+
+        case ERROR_RATE_GT_MAX:
+            return "Rate is greater than maximum value";
+
+        default:
+            return null
+    }
 }
