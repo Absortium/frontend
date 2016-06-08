@@ -102,15 +102,18 @@ class ExchangeBox extends React.Component {
             main = (
                 <div>
                     <Rate handler={this.props.handlerRate}
-                          rate={this.props.rate}/>
+                          rate={this.props.rate.value}
+                          error={this.props.rate.error}/>
 
                     <FromAmount currency={this.props.from_currency}
                                 handler={this.props.handlerFromAmount}
-                                amount={this.props.from_amount}/>
+                                amount={this.props.from_amount.value}
+                                error={this.props.from_amount.error}/>
 
                     <ToAmount currency={this.props.to_currency}
                               handler={this.props.handlerToAmount}
-                              amount={this.props.to_amount}/>
+                              amount={this.props.to_amount.value}
+                              error={this.props.to_amount.error}/>
 
                 </div>
             )
@@ -133,9 +136,20 @@ class ExchangeBox extends React.Component {
         if (this.props.isRateLoaded) {
             if (this.props.isAuthenticated) {
                 if (this.props.isAccountLoaded && this.props.isAccountExist) {
+                    let isDisabled = true;
+                    if (this.props.rate.error == null &&
+                        this.props.from_amount.error == null &&
+                        this.props.to_amount.error == null) {
+                        isDisabled = false;
+                    }
+
+
                     down = (
                         <div>
-                            <RaisedButton label="exchange" onMouseDown={this.createExchange} primary={true}/>
+                            <RaisedButton label="exchange"
+                                          onMouseDown={this.createExchange}
+                                          disabled={isDisabled}
+                                          primary={true}/>
                             <br/>
                         </div>
                     )

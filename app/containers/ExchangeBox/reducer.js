@@ -14,8 +14,18 @@ import {
 import {
     CHANGE_FROM_AMOUNT,
     CHANGE_RATE,
-    CHANGE_TO_AMOUNT
+    CHANGE_TO_AMOUNT,
+    FIELD_IS_REQUIRED,
+    FIELD_NOT_VALID
 } from "./constants";
+import {
+    isConvertable,
+    convert,
+    isDirty,
+    isEmpty,
+    errExist
+} from "../../utils/general";
+import Decimal from "decimal.js";
 
 const initialState = {
     isAuthenticated: false,
@@ -23,14 +33,31 @@ const initialState = {
     isAccountExist: false,
     isAccountLoaded: false,
     account: null,
-    rate: null,
-    from_amount: null,
-    to_amount: null,
+
+    rate: {
+        value: null,
+        error: FIELD_IS_REQUIRED
+    },
+    from_amount: {
+        value: null,
+        error: FIELD_IS_REQUIRED
+    },
+    to_amount: {
+        value: null,
+        error: FIELD_IS_REQUIRED
+    },
+
     from_currency: null,
     to_currency: null,
 };
 
+function genParam(value, error) {
+    return {
+        value: value,
+        error: error
+    }
 
+}
 
 function exchangeBoxReducer(state = initialState, action) {
     switch (action.type) {
@@ -62,15 +89,16 @@ function exchangeBoxReducer(state = initialState, action) {
             };
 
             if (!isEmpty(account)) {
-                substate['account'] = account;
+                substate.account = account;
 
-                if (!isDirty(state.from_amount)) {
-                    let from_amount = Number(account.amount);
+                if (isAccountExist && !isDirty(state.from_amount.value)) {
+                    let from_amount = parseInt(account.amount);
+                    substate.from_amount = genParam(from_amount, null);
 
-                    substate['from_amount'] = from_amount;
+                    let rate = state.rate.value;
 
-                    if (!isEmpty(state.rate)) {
-                        substate['to_amount'] = state.rate * from_amount;
+                    if (!isEmpty(rate) && !errExist(state.rate.error)) {
+                        substate.to_amount = genParam(Math.round(rate * from_amount), null);
                     }
                 }
             }
@@ -84,46 +112,50 @@ function exchangeBoxReducer(state = initialState, action) {
                 isRateLoaded: true
             };
 
-            let market_rate = Number(action.marketInfo[state.from_currency][state.to_currency].rate);
-            let rate = state.rate;
-            let from_amount = state.from_amount;
-            let to_amount = state.to_amount;
+            let market_rate = Decimal(action.marketInfo[state.from_currency][state.to_currency].rate);
+            let rate = state.rate.value;
 
             if (!isDirty(rate)) {
-                substate['rate'] = market_rate;
+                substate.rate = genParam(market_rate, null);
 
-                if (!isEmpty(from_amount)) {
-                    to_amount = market_rate * from_amount;
-                    substate['to_amount'] = to_amount;
-                } else if (!isEmpty(to_amount) && isEmpty(from_amount)) {
-                    from_amount = to_amount / market_rate;
-                    substate['from_amount'] = from_amount;
+                if (!errExist(state.from_amount.error)) {
+                    let from_amount = state.from_amount.value;
+                    let to_amount = Math.round(from_amount * market_rate);
+
+                    substate.to_amount = genParam(to_amount, null);
+
+                } else if (!errExist(state.to_amount.error)) {
+                    let to_amount = state.to_amount.value;
+                    let from_amount = Math.round(to_amount / market_rate);
+
+                    substate.from_amount = genParam(from_amount, null);
                 }
 
             }
 
-            console.log(substate);
             return Object.assign({}, state, substate);
         }
 
         case CHANGE_FROM_AMOUNT:
         {
             let from_amount = action.from_amount;
-            let rate = state.rate;
+            let rate = state.rate.value;
             let substate = {};
+            let error = null;
 
             if (!isEmpty(from_amount)) {
-                from_amount = convert(from_amount);
-                substate['from_amount'] = from_amount;
-
-                if (!isEmpty(rate)) {
-                    substate['to_amount'] = rate * from_amount;
+                if (isConvertable(from_amount)) {
+                    if (!errExist(state.rate.error)) {
+                        substate.to_amount = genParam(Math.round(rate * convert(from_amount)), null);
+                    }
+                } else {
+                    error = FIELD_NOT_VALID;
                 }
             } else {
-                substate['from_amount'] = from_amount;
+                error = FIELD_IS_REQUIRED;
             }
 
-            console.log(substate);
+            substate.from_amount = genParam(from_amount, error);
             return Object.assign({}, state, substate);
         }
 
@@ -131,48 +163,53 @@ function exchangeBoxReducer(state = initialState, action) {
         case CHANGE_TO_AMOUNT:
         {
             let to_amount = action.to_amount;
-            let rate = state.rate;
+            let rate = state.rate.value;
             let substate = {};
+            let error = null;
 
             if (!isEmpty(to_amount)) {
-                to_amount = convert(to_amount);
-                substate['to_amount'] = to_amount;
-
-                if (!isEmpty(rate)) {
-                    substate['from_amount'] = to_amount / rate;
+                if (isConvertable(to_amount)) {
+                    if (!errExist(state.rate.error)) {
+                        substate.from_amount = genParam(Math.round(convert(to_amount) / rate), null);
+                    }
+                } else {
+                    error = FIELD_NOT_VALID;
                 }
             } else {
-                substate['to_amount'] = to_amount
+                error = FIELD_IS_REQUIRED;
             }
 
-            console.log(substate);
+            substate.to_amount = genParam(to_amount, error);
             return Object.assign({}, state, substate);
         }
 
         case CHANGE_RATE:
         {
-            let to_amount = state.to_amount;
-            let from_amount = state.from_amount;
+            let to_amount = state.to_amount.value;
+            let from_amount = state.from_amount.value;
             let rate = action.rate;
             let substate = {};
+            let error = null;
 
             if (!isEmpty(rate)) {
-                rate = Number(rate);
-                substate['rate'] = rate;
+                if (isConvertable(rate)) {
+                    if (!errExist(state.from_amount.error)) {
+                        to_amount = Math.round(Decimal(rate) * from_amount);
+                        substate.to_amount = genParam(to_amount, null);
 
-                if (!isEmpty(from_amount)) {
-                    to_amount = rate * from_amount;
-                    substate['to_amount'] = to_amount;
-
-                } else if (!isEmpty(to_amount) && isEmpty(from_amount)) {
-                    from_amount = to_amount / rate;
-                    substate['from_amount'] = from_amount;
+                    } else if (!errExist(state.to_amount.error)) {
+                        from_amount = Math.round(to_amount / Decimal(rate));
+                        substate.from_amount = genParam(from_amount, null);
+                    }
+                }
+                else {
+                    error = FIELD_NOT_VALID;
                 }
             } else {
-                substate['rate'] = rate
+                error = FIELD_IS_REQUIRED;
             }
 
-            console.log(substate);
+            substate.rate = genParam(rate, error);
             return Object.assign({}, state, substate);
         }
 
@@ -192,26 +229,5 @@ function exchangeBoxReducer(state = initialState, action) {
     }
 }
 
-function isEmpty(value) {
-    return value == null || value === ""
-}
-
-function isDirty(value) {
-    return value != null
-}
-
-function num2str(value) {
-    return value.toPrecision(8) * 1 + ''
-}
-
-function deconvert(value) {
-    return Number(value) / Number(Math.pow(10, 8));
-
-}
-
-function convert(value) {
-    return Number(value) * Number(Math.pow(10, 8));
-
-}
 
 export default exchangeBoxReducer;
