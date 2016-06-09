@@ -14,13 +14,16 @@ import {
 
 const styles = {
     div: {
-        height: "80px"
+        height: "6em",
+        marginLeft: "4em",
+        marginRight: "3em"
+    },
+    textField: {
+        width: "15em"
     },
     icon: {
         verticalAlign: "top",
-        marginTop: "37px",
-        marginRight: "5px",
-        marginLeft: "40px"
+        marginTop: "2em"
     }
 };
 
@@ -31,19 +34,20 @@ class FromAmount extends React.Component {
         let amount = this.props.amount;
 
 
-
         return (
             <div style={styles.div}>
-                <CryptoIcon style={styles.icon} icon={this.props.currency}/>{' '}
                 <TextField
-                    floatingLabelText={"Amount of " + this.props.currency.toUpperCase() + " you want to sell"}
+                    floatingLabelText={"Amount of " + this.props.currency.toUpperCase() + " for exchange"}
                     floatingLabelFixed={true}
+                    style={styles.textField}
                     type="number"
                     min={0}
                     onChange={this.props.handler}
                     errorText={errorText}
                     value={amount}
-                /><br />
+                />
+                <CryptoIcon style={styles.icon} icon={this.props.currency}/>
+                <br />
             </div>
         );
     }

@@ -144,17 +144,17 @@ export class ExchangePage extends React.Component {
             <div className={styles.main}>
                 <div className={styles.content}>
                     <div>
-                        <Col xs={20}>
+                        <Col xs={12}>
                             <Row center="xs">
                                 <Col xs={5}>
                                     {lastExchanges}
                                 </Col>
-                                <Col xs={5}>
+                                <Col xs={4}>
                                     <ExchangeBox />
                                 </Col>
                             </Row>
                         </Col>
-                        <Col xs={20}>
+                        <Col xs={12}>
                             <Row center="xs">
                                 <Col xs={10}>
                                     {exchangeOffers}
@@ -164,9 +164,9 @@ export class ExchangePage extends React.Component {
                     </div>
                 </div>
                 <div className={styles.market}>
-                    <Col xs={20}>
-                        <Row center="xs">
-                            <Col xs={10} align="center">
+                    <Col xs={12}>
+                        <Row>
+                            <Col xs={12}>
                                 <MarketInfo />
                             </Col>
                         </Row>

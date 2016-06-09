@@ -6,24 +6,22 @@
 
 import React from "react";
 import TextField from "material-ui/TextField";
-import Badge from "material-ui/Badge";
-import ForwardTenIcon from "material-ui/svg-icons/av/forward-10";
 import { getErrorText } from "utils/general";
 
 
 const styles = {
     div: {
-        height: "80px",
+        height: "5em",
+        marginLeft: "3em",
+        marginRight: "3em"
+    },
+    textField: {
+        width: "15em"
     },
 
-    badget: {
+    icon: {
         verticalAlign: "top",
-        marginTop: "8px"
-    },
-
-    middleIcon: {
-        width: "36px",
-        height: "36px",
+        marginTop: "2em"
     }
 };
 
@@ -33,17 +31,10 @@ class Rate extends React.Component {
 
         return (
             <div style={styles.div}>
-                <Badge
-                    style={styles.badget}
-                    badgeStyle={{top: "12px", right: "12px"}}
-                    badgeContent={4}
-                    primary={true}>
-                    <ForwardTenIcon style={styles.middleIcon}/>
-                </Badge>
-
                 <TextField
                     floatingLabelText="Price (Rate) of the exchange"
                     floatingLabelFixed={true}
+                    style={styles.textField}
                     type="number"
                     min={0}
                     onChange={this.props.handler}
