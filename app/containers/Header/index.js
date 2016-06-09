@@ -20,6 +20,7 @@ import {
     logOut
 } from "containers/App/actions";
 import Avatar from "material-ui/Avatar";
+import Balance from "components/Balance";
 
 const styles = {
     avatar: {
@@ -52,7 +53,16 @@ export default class Header extends React.Component {
                         <RaisedButton onMouseDown={() => this.props.logOut()} label="LOG OUT" primary={true}/> :
                         <RaisedButton onMouseDown={() => this.props.logIn()} label="LOG IN" primary={true}/>
                     }
-                    <ToolbarSeparator />
+
+                    {this.props.isAccountLoaded ?
+                        <ToolbarSeparator />
+                        : null
+                    }
+                    {this.props.isAccountLoaded ?
+                        <Balance currency={this.props.from_currency} account={this.props.account}/>
+                        : null
+                    }
+
                 </ToolbarGroup>
             </Toolbar>
         );

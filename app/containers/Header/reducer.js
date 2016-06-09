@@ -7,13 +7,19 @@
 import {
     LOGGED_IN,
     LOGGED_OUT,
-    ACCOUNTS_RECEIVED
+    ACCOUNTS_RECEIVED,
+    MARKET_CHANGED
 } from "containers/App/constants";
-
+import { deconvert } from "utils/general";
 
 const initialState = {
     isAuthenticated: false,
     isAvatarLoaded: false,
+    isAccountLoaded: false,
+    isAccountExist: false,
+    account: null,
+    from_currency: null,
+    to_currency: null,
     avatar: null
 };
 
@@ -37,8 +43,43 @@ function headerReducer(state = initialState, action) {
                 {
                     isAuthenticated: false,
                     isAvatarLoaded: false,
-                    avatar: null
+                    isAccountLoaded: false,
+                    isAccountExist: false,
+                    avatar: null,
+                    account: null
+
                 });
+
+        case ACCOUNTS_RECEIVED:
+        {
+            let isAccountLoaded = action.accounts[state.from_currency] != null;
+            let isAccountNotEmpty = action.accounts[state.from_currency] != {};
+            let isAccountExist = isAccountLoaded && isAccountNotEmpty;
+
+            let substate = {
+                isAccountLoaded: isAccountLoaded,
+                isAccountExist: isAccountExist
+            };
+
+            if (isAccountExist) {
+                let account = action.accounts[state.from_currency];
+                account.balance = deconvert(parseInt(account.amount));
+                substate.account = account;
+            }
+
+            return Object.assign({}, state, substate);
+        }
+
+        case MARKET_CHANGED:
+        {
+            return Object.assign({}, state,
+                {
+                    from_currency: action.from_currency,
+                    to_currency: action.to_currency
+                });
+        }
+
+
         default:
             return state;
     }

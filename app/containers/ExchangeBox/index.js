@@ -4,18 +4,17 @@ import {
     loggedIn,
     logIn,
     accountsReceived,
-    marketChanged,
+    marketChanged
 } from "containers/App/actions";
 import {
     changeFromAmount,
     changeRate,
     changeToAmount
 } from "./actions";
-
 import {
-    convert
-} from "utils/general"
-
+    convert,
+    convertCurrencyName
+} from "utils/general";
 import RaisedButton from "material-ui/RaisedButton";
 import Divider from "material-ui/Divider";
 import FromAmount from "components/FromAmount";
@@ -25,10 +24,23 @@ import selectExchangeBox from "./selectors";
 import { connect } from "react-redux";
 import axios from "axios";
 import RefreshIndicator from "material-ui/RefreshIndicator";
-import TopEcxhangeBox from "components/TopExchangeBox";
-
 
 const styles = {
+
+    top: {
+        padding: "0.5em",
+
+        text: {
+            color: "#B9BCBD",
+            fontSize: "1em"
+        },
+
+        icon: {
+            marginLeft: "0.5em",
+            marginBottom: "0.2em"
+        }
+    },
+
     block: {
         width: "100%",
         margin: "20px",
@@ -75,9 +87,11 @@ class ExchangeBox extends React.Component {
             this.props.isAuthenticated &&
             this.props.isAccountExist) {
 
-            top = <TopEcxhangeBox account={this.props.account}
-                                  currency={this.props.from_currency}
-                                  error={this.props.from_amount.error}/>
+            top = <div style={styles.top}>
+                    <span style={styles.top.text}>
+                        Exchange {this.props.from_currency.toUpperCase()} on {this.props.to_currency.toUpperCase()}
+                    </span>
+            </div>
 
         } else {
             top = (
@@ -168,6 +182,7 @@ class ExchangeBox extends React.Component {
             <div>
                 <Paper style={styles.block} zDepth={2}>
                     {top}
+                    <Divider />
                     {main}
                     <Divider />
                     <br />
