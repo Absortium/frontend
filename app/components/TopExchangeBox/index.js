@@ -38,7 +38,7 @@ const styles = {
         },
 
         balance: {
-            color: "rgba(0, 0, 0, 0.298039)",
+            color: "#ACAFB0",
             fontSize: "0.86em",
             display: "inline-block",
             verticalAlign: "middle",

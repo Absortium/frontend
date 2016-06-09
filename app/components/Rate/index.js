@@ -22,6 +22,9 @@ const styles = {
     icon: {
         verticalAlign: "top",
         marginTop: "2em"
+    },
+    errorStyle: {
+        color: "#E87272"
     }
 };
 
@@ -34,12 +37,13 @@ class Rate extends React.Component {
                 <TextField
                     floatingLabelText="Price (Rate) of the exchange"
                     floatingLabelFixed={true}
+                    errorText={errorText}
                     style={styles.textField}
+                    errorStyle={styles.errorStyle}
                     type="number"
                     min={0}
-                    onChange={this.props.handler}
-                    errorText={errorText}
                     value={this.props.rate}
+                    onChange={this.props.handler}
                 />
                 <br />
             </div>

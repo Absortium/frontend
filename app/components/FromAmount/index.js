@@ -24,6 +24,9 @@ const styles = {
     icon: {
         verticalAlign: "top",
         marginTop: "2em"
+    },
+    errorStyle: {
+        color: "#E87272"
     }
 };
 
@@ -44,6 +47,7 @@ class FromAmount extends React.Component {
                     min={0}
                     onChange={this.props.handler}
                     errorText={errorText}
+                    errorStyle={styles.errorStyle}
                     value={amount}
                 />
                 <CryptoIcon style={styles.icon} icon={this.props.currency}/>
