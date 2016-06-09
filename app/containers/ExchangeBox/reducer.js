@@ -21,12 +21,13 @@ import {
     ERROR_RATE_GT_MAX,
     ERROR_FROM_AMOUNT_GT_BALANCE,
     ERROR_TO_AMOUNT_LT_MIN,
+    ERROR_FIELD_LT_ZERO,
     RATE_MAX,
     RATE_MIN,
     TO_AMOUNT_MIN
 } from "./constants";
 import {
-    isConvertable,
+    isValid,
     isDirty,
     isEmpty,
     errExist,
@@ -134,27 +135,30 @@ function exchangeBoxReducer(state = initialState, action) {
                 isRateLoaded: true
             };
 
+            let error = null;
             let market_rate = new BigNumber(action.marketInfo[state.from_currency][state.to_currency].rate);
             let rate = state.rate.value;
 
             if (!isDirty(rate)) {
-                substate.rate = genParam(market_rate, null);
+                if (rate > RATE_MIN) {
+                    if (!errExist(state.from_amount.error)) {
+                        let from_amount = state.from_amount.value;
+                        let to_amount = from_amount * market_rate;
 
-                if (!errExist(state.from_amount.error)) {
-                    let from_amount = state.from_amount.value;
-                    let to_amount = from_amount * market_rate;
+                        substate.to_amount = genParam(to_amount, null);
 
-                    substate.to_amount = genParam(to_amount, null);
+                    } else if (!errExist(state.to_amount.error)) {
+                        let to_amount = state.to_amount.value;
+                        let from_amount = to_amount / market_rate;
 
-                } else if (!errExist(state.to_amount.error)) {
-                    let to_amount = state.to_amount.value;
-                    let from_amount = to_amount / market_rate;
-
-                    substate.from_amount = genParam(from_amount, null);
+                        substate.from_amount = genParam(from_amount, null);
+                    }
+                } else {
+                    error = ERROR_RATE_LT_MIN;
                 }
-
             }
 
+            substate.rate = genParam(market_rate, error);
             return Object.assign({}, state, substate);
         }
 
@@ -170,22 +174,27 @@ function exchangeBoxReducer(state = initialState, action) {
             let error = null;
 
             if (!isEmpty(from_amount)) {
-                if (isConvertable(from_amount)) {
+                if (isValid(from_amount)) {
+                    from_amount = new BigNumber(from_amount);
 
-                    let enoughMoney = !(isAccountExist && from_amount > state.account.balance);
+                    if (from_amount > 0) {
+                        let enoughMoney = !(isAccountExist && from_amount > state.account.balance);
 
-                    if (enoughMoney) {
-                        if (!errExist(state.rate.error)) {
-                            let to_amount = cut(new BigNumber(from_amount) * rate);
+                        if (enoughMoney) {
+                            if (!errExist(state.rate.error)) {
+                                let to_amount = cut(from_amount * rate);
 
-                            if (to_amount < TO_AMOUNT_MIN) {
-                                substate.to_amount = genParam(to_amount, ERROR_TO_AMOUNT_LT_MIN);
-                            } else {
-                                substate.to_amount = genParam(to_amount, null);
+                                if (to_amount < TO_AMOUNT_MIN) {
+                                    substate.to_amount = genParam(to_amount, ERROR_TO_AMOUNT_LT_MIN);
+                                } else {
+                                    substate.to_amount = genParam(to_amount, null);
+                                }
                             }
+                        } else {
+                            error = ERROR_FROM_AMOUNT_GT_BALANCE
                         }
                     } else {
-                        error = ERROR_FROM_AMOUNT_GT_BALANCE
+                        error = ERROR_FIELD_LT_ZERO
                     }
                 } else {
                     error = ERROR_FIELD_NOT_VALID;
@@ -195,7 +204,7 @@ function exchangeBoxReducer(state = initialState, action) {
                 substate.to_amount = genParam("", ERROR_FIELD_IS_REQUIRED);
             }
 
-            substate.from_amount = genParam(from_amount, error);
+            substate.from_amount = genParam(action.from_amount, error);
             return Object.assign({}, state, substate);
         }
 
@@ -212,18 +221,24 @@ function exchangeBoxReducer(state = initialState, action) {
             let error = null;
 
             if (!isEmpty(to_amount)) {
-                if (isConvertable(to_amount)) {
-                    if (!errExist(state.rate.error)) {
-                        let from_amount = cut(new BigNumber(to_amount) / rate);
+                if (isValid(to_amount)) {
+                    to_amount = new BigNumber(to_amount);
 
-                        console.log(isAccountExist && from_amount > state.account.balance);
-                        if (isAccountExist && from_amount > state.account.balance) {
-                            substate.from_amount = genParam(from_amount, ERROR_FROM_AMOUNT_GT_BALANCE);
-                        } else {
+                    if (to_amount > TO_AMOUNT_MIN) {
+                        if (!errExist(state.rate.error)) {
+                            let error = null;
+                            let from_amount = cut(to_amount / rate);
+                            let enoughMoney = !(isAccountExist && from_amount > state.account.balance);
 
-                            substate.from_amount = genParam(from_amount, null);
+                            if (!enoughMoney) {
+                                error = ERROR_FROM_AMOUNT_GT_BALANCE;
+                            } else if (from_amount < 0) {
+                                error = ERROR_FIELD_LT_ZERO;
+                            }
+                            substate.from_amount = genParam(from_amount, error);
                         }
-
+                    } else {
+                        error = ERROR_TO_AMOUNT_LT_MIN;
                     }
                 } else {
                     error = ERROR_FIELD_NOT_VALID;
@@ -233,12 +248,7 @@ function exchangeBoxReducer(state = initialState, action) {
                 error = ERROR_FIELD_IS_REQUIRED;
             }
 
-            if (!errExist(error) && to_amount < TO_AMOUNT_MIN) {
-                substate.to_amount = genParam(to_amount, ERROR_TO_AMOUNT_LT_MIN);
-            } else {
-                substate.to_amount = genParam(to_amount, error);
-            }
-
+            substate.to_amount = genParam(action.to_amount, error);
             return Object.assign({}, state, substate);
         }
 
@@ -254,46 +264,49 @@ function exchangeBoxReducer(state = initialState, action) {
             let substate = {};
             let error = null;
 
-            if (isEmpty(rate)) {
+            if (!isEmpty(rate)) {
+                if (isValid(rate)) {
+                    rate = new BigNumber(rate);
+
+                    if (rate < RATE_MAX) {
+                        if (rate > RATE_MIN) {
+                            if (!errExist(state.from_amount.error)) {
+                                let error = null;
+                                to_amount = cut(rate * from_amount);
+
+                                if (to_amount < TO_AMOUNT_MIN) {
+                                    error = ERROR_TO_AMOUNT_LT_MIN;
+                                }
+                                substate.to_amount = genParam(to_amount, error);
+
+                            } else if (!errExist(state.to_amount.error)) {
+                                let error = null;
+                                from_amount = cut(to_amount / rate);
+
+                                let enoughMoney = !(isAccountExist && from_amount > state.account.balance);
+
+                                if (!enoughMoney) {
+                                    error = ERROR_FROM_AMOUNT_GT_BALANCE;
+                                } else if (from_amount < 0) {
+                                    error = ERROR_FIELD_LT_ZERO;
+                                }
+                                substate.from_amount = genParam(from_amount, error);
+                            }
+                        } else {
+                            error = ERROR_RATE_LT_MIN
+                        }
+                    } else {
+                            error = ERROR_RATE_GT_MAX
+                    }
+                } else {
+                    error = ERROR_FIELD_NOT_VALID;
+                }
+            } else {
                 error = ERROR_FIELD_IS_REQUIRED;
                 substate.to_amount = genParam("", ERROR_FIELD_IS_REQUIRED);
-
-            } else {
-                if (!isConvertable(rate)) {
-                    error = ERROR_FIELD_NOT_VALID;
-
-                } else {
-
-                    let brate = new BigNumber(rate);
-                    if (brate > RATE_MAX) {
-                        error = ERROR_RATE_GT_MAX
-
-                    } else if (brate < RATE_MIN) {
-                        error = ERROR_RATE_LT_MIN
-
-                    } else {
-                        if (!errExist(state.from_amount.error)) {
-                            to_amount = cut(brate * from_amount);
-
-                            if (to_amount < TO_AMOUNT_MIN) {
-                                substate.to_amount = genParam(to_amount, ERROR_TO_AMOUNT_LT_MIN);
-                            } else {
-                                substate.to_amount = genParam(to_amount, null);
-                            }
-                        } else if (!errExist(state.to_amount.error)) {
-                            from_amount = cut(to_amount / brate);
-
-                            if (isAccountExist && from_amount > state.account.balance) {
-                                substate.from_amount = genParam(from_amount, ERROR_FROM_AMOUNT_GT_BALANCE);
-                            } else {
-                                substate.from_amount = genParam(from_amount, null);
-                            }
-                        }
-                    }
-                }
             }
 
-            substate.rate = genParam(rate, error);
+            substate.rate = genParam(action.rate, error);
             return Object.assign({}, state, substate);
 
         }

@@ -10,6 +10,7 @@ import {
     ERROR_RATE_GT_MAX,
     ERROR_FROM_AMOUNT_GT_BALANCE,
     ERROR_TO_AMOUNT_LT_MIN,
+    ERROR_FIELD_LT_ZERO,
     TO_AMOUNT_MIN,
     RATE_MIN,
     RATE_MAX
@@ -34,7 +35,7 @@ export function convert(value) {
 
 }
 
-export function isConvertable(value) {
+export function isValid(value) {
     try {
         new BigNumber(value);
         return true
@@ -73,6 +74,9 @@ export function getErrorText(error) {
 
         case ERROR_TO_AMOUNT_LT_MIN:
             return "Total amount lower than " + TO_AMOUNT_MIN;
+        
+        case ERROR_FIELD_LT_ZERO:
+            return "Field is negative";
 
         default:
             return null

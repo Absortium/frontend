@@ -17,7 +17,7 @@ import {
 } from "../../App/actions";
 import Decimal from "decimal.js"
 
-import {isConvertable} from "../../../utils/general"
+import {isValid} from "../../../utils/general"
 
 const initialState = {
     isAuthenticated: false,
