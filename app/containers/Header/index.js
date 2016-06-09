@@ -52,6 +52,7 @@ export default class Header extends React.Component {
                         <RaisedButton onMouseDown={() => this.props.logOut()} label="LOG OUT" primary={true}/> :
                         <RaisedButton onMouseDown={() => this.props.logIn()} label="LOG IN" primary={true}/>
                     }
+                    <ToolbarSeparator />
                 </ToolbarGroup>
             </Toolbar>
         );

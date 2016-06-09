@@ -165,8 +165,8 @@ export class ExchangePage extends React.Component {
                 </div>
                 <div className={styles.market}>
                     <Col xs={12}>
-                        <Row>
-                            <Col xs={12}>
+                        <Row center="xs">
+                            <Col xs={8}>
                                 <MarketInfo />
                             </Col>
                         </Row>
