@@ -45,6 +45,7 @@ class FromAmount extends React.Component {
                     style={styles.textField}
                     type="number"
                     min={0}
+                    step={0.1}
                     onChange={this.props.handler}
                     errorText={errorText}
                     errorStyle={styles.errorStyle}

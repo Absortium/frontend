@@ -8,7 +8,11 @@ import {
     ERROR_FIELD_NOT_VALID,
     ERROR_RATE_LT_MIN,
     ERROR_RATE_GT_MAX,
-    ERROR_FROM_AMOUNT_GT_BALANCE
+    ERROR_FROM_AMOUNT_GT_BALANCE,
+    ERROR_TO_AMOUNT_LT_MIN,
+    TO_AMOUNT_MIN,
+    RATE_MIN,
+    RATE_MAX
 } from "../containers/ExchangeBox/constants";
 
 const precision = 8;
@@ -59,13 +63,16 @@ export function getErrorText(error) {
             return "This field is required";
 
         case ERROR_RATE_LT_MIN:
-            return "Rate is lower that minimum value";
+            return "Rate is lower than " +  RATE_MIN;
 
         case ERROR_RATE_GT_MAX:
-            return "Rate is greater than maximum value";
+            return "Rate is greater than" + RATE_MAX;
 
         case ERROR_FROM_AMOUNT_GT_BALANCE:
             return "Not enough money";
+
+        case ERROR_TO_AMOUNT_LT_MIN:
+            return "Total amount lower than " + TO_AMOUNT_MIN;
 
         default:
             return null

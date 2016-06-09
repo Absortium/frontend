@@ -42,6 +42,7 @@ class Rate extends React.Component {
                     errorStyle={styles.errorStyle}
                     type="number"
                     min={0}
+                    step={0.01}
                     value={this.props.rate}
                     onChange={this.props.handler}
                 />

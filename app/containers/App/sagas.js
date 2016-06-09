@@ -86,7 +86,7 @@ class AuthService {
         } else {
             AuthService.setupIntercept(token);
             localStorage.setItem("token", token);
-            localStorage.setItem("profile", profile);
+            localStorage.setItem("profile", JSON.stringify(profile));
             yield put(loggedIn(token, profile));
         }
     }
@@ -102,8 +102,9 @@ class AuthService {
         AuthService.lock = new Auth0Lock("JmIrPzSo0nixk13ohk8KeQC2OZ7LByRI", "absortium.auth0.com");
 
         var token = localStorage.getItem("token");
-        var profile = localStorage.getItem("profile");
+        var profile = JSON.parse(localStorage.getItem("profile"));
 
+        console.log(profile);
         if (token != null) {
             AuthService.setupIntercept(token);
             yield put(loggedIn(token, profile));

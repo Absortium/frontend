@@ -20,8 +20,10 @@ import {
     ERROR_RATE_LT_MIN,
     ERROR_RATE_GT_MAX,
     ERROR_FROM_AMOUNT_GT_BALANCE,
+    ERROR_TO_AMOUNT_LT_MIN,
     RATE_MAX,
-    RATE_MIN
+    RATE_MIN,
+    TO_AMOUNT_MIN
 } from "./constants";
 import {
     isConvertable,
@@ -174,7 +176,13 @@ function exchangeBoxReducer(state = initialState, action) {
 
                     if (enoughMoney) {
                         if (!errExist(state.rate.error)) {
-                            substate.to_amount = genParam(cut(new BigNumber(from_amount) * rate), null);
+                            let to_amount = cut(new BigNumber(from_amount) * rate);
+
+                            if (to_amount < TO_AMOUNT_MIN) {
+                                substate.to_amount = genParam(to_amount, ERROR_TO_AMOUNT_LT_MIN);
+                            } else {
+                                substate.to_amount = genParam(to_amount, null);
+                            }
                         }
                     } else {
                         error = ERROR_FROM_AMOUNT_GT_BALANCE
@@ -212,6 +220,7 @@ function exchangeBoxReducer(state = initialState, action) {
                         if (isAccountExist && from_amount > state.account.balance) {
                             substate.from_amount = genParam(from_amount, ERROR_FROM_AMOUNT_GT_BALANCE);
                         } else {
+
                             substate.from_amount = genParam(from_amount, null);
                         }
 
@@ -224,7 +233,12 @@ function exchangeBoxReducer(state = initialState, action) {
                 error = ERROR_FIELD_IS_REQUIRED;
             }
 
-            substate.to_amount = genParam(to_amount, error);
+            if (!errExist(error) && to_amount < TO_AMOUNT_MIN) {
+                substate.to_amount = genParam(to_amount, ERROR_TO_AMOUNT_LT_MIN);
+            } else {
+                substate.to_amount = genParam(to_amount, error);
+            }
+
             return Object.assign({}, state, substate);
         }
 
@@ -260,8 +274,12 @@ function exchangeBoxReducer(state = initialState, action) {
                     } else {
                         if (!errExist(state.from_amount.error)) {
                             to_amount = cut(brate * from_amount);
-                            substate.to_amount = genParam(to_amount, null);
 
+                            if (to_amount < TO_AMOUNT_MIN) {
+                                substate.to_amount = genParam(to_amount, ERROR_TO_AMOUNT_LT_MIN);
+                            } else {
+                                substate.to_amount = genParam(to_amount, null);
+                            }
                         } else if (!errExist(state.to_amount.error)) {
                             from_amount = cut(to_amount / brate);
 

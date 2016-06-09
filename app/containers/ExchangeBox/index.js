@@ -4,13 +4,18 @@ import {
     loggedIn,
     logIn,
     accountsReceived,
-    marketChanged
+    marketChanged,
 } from "containers/App/actions";
 import {
     changeFromAmount,
     changeRate,
     changeToAmount
 } from "./actions";
+
+import {
+    convert
+} from "utils/general"
+
 import RaisedButton from "material-ui/RaisedButton";
 import Divider from "material-ui/Divider";
 import FromAmount from "components/FromAmount";
@@ -22,32 +27,18 @@ import axios from "axios";
 import RefreshIndicator from "material-ui/RefreshIndicator";
 import TopEcxhangeBox from "components/TopExchangeBox";
 
+
 const styles = {
     block: {
-        width: '100%',
-        margin: 20,
-        textAlign: 'center',
-        display: 'inline-block',
-    },
-    smallIcon: {
-        width: "30",
-        height: "30",
+        width: "100%",
+        margin: "20px",
+        textAlign: "center",
+        display: "inline-block"
     },
 
-    middleIcon: {
-        width: 36,
-        height: 36,
-    },
-    small: {
-        width: 72,
-        height: 72,
-    },
-    container: {
-        position: 'relative',
-    },
     refresh: {
-        display: 'inline-block',
-        position: 'relative',
+        display: "inline-block",
+        position: "relative"
     }
 };
 
@@ -58,8 +49,9 @@ class ExchangeBox extends React.Component {
         var from_currency = this.props.from_currency;
         var to_currency = this.props.to_currency;
 
-        var amount = this.state.amount;
-        var price = this.state.price;
+        console.log(this.props.from_amount.value);
+        var amount = convert(this.props.from_amount.value);
+        var price = this.props.rate.value;
 
         var data = {
             from_currency: from_currency,
@@ -68,7 +60,7 @@ class ExchangeBox extends React.Component {
             price: price
         };
 
-        axios.post('/api/exchanges/', data).then(function (response) {
+        axios.post("/api/exchanges/", data).then(function (response) {
             console.log(response)
         })
     };
@@ -81,7 +73,6 @@ class ExchangeBox extends React.Component {
 
         if (this.props.isRateLoaded &&
             this.props.isAuthenticated &&
-            this.props.isAccountLoaded &&
             this.props.isAccountExist) {
 
             top = <TopEcxhangeBox account={this.props.account}
@@ -118,6 +109,8 @@ class ExchangeBox extends React.Component {
         } else {
             main = (
                 <div>
+                    <Divider />
+                    <br />
                     <RefreshIndicator
                         size={70}
                         top={0}
@@ -125,6 +118,7 @@ class ExchangeBox extends React.Component {
                         status="loading"
                         style={styles.refresh}
                     />
+                    <br />
                     <br />
                 </div>
             )
@@ -171,7 +165,7 @@ class ExchangeBox extends React.Component {
         }
 
         return (
-            <div className={styles.exchangeBox}>
+            <div>
                 <Paper style={styles.block} zDepth={2}>
                     {top}
                     {main}
