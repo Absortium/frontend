@@ -13,20 +13,26 @@ import {
 } from "../../utils/general";
 
 
+const styles = {
+    div: {
+        height: "80px"
+    },
+    icon: {
+        verticalAlign: "top",
+        marginTop: "37px",
+        marginRight: "5px",
+        marginLeft: "40px"
+    }
+};
+
 class ToAmount extends React.Component {
     render() {
         let errorText = getErrorText(this.props.error);
         let amount = this.props.amount;
 
-        if (errorText == null) {
-            console.log(amount);
-            // amount = cut(amount);
-        }
-
-
         return (
-            <div>
-                <CryptoIcon icon={this.props.currency}/>{' '}
+            <div style={styles.div}>
+                <CryptoIcon style={styles.icon} icon={this.props.currency}/>{' '}
                 <TextField
                     floatingLabelText={"Amount of " + this.props.currency.toUpperCase() + " you want to buy"}
                     floatingLabelFixed={true}

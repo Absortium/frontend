@@ -22,51 +22,6 @@ import {
     marketChanged
 } from "containers/App/actions";
 
-const marketinfo = {
-    'btc': {
-        "eth": {
-            'rate': '123.000000',
-            'rate_24h_max': '123.1230000000',
-            'rate_24h_min': '234.00234000000',
-            'volume_24h': '756.120000000'
-        },
-        "usdt": {
-            'rate': '26.17654',
-            'rate_24h_max': '784.229',
-            'rate_24h_min': '0.00000000',
-            'volume_24h': '0.00000000'
-        }
-    },
-    'eth': {
-        "btc": {
-            'rate': '23.7654',
-            'rate_24h_max': '0.00000000',
-            'rate_24h_min': '0.00000000',
-            'volume_24h': '722.234234'
-        },
-        "usdt": {
-            'rate': '24324.23234',
-            'rate_24h_max': '0.00000000',
-            'rate_24h_min': '0.00000000',
-            'volume_24h': '223.7978'
-        }
-    },
-    'usdt': {
-        "btc": {
-            'rate': '21345.2343',
-            'rate_24h_max': '0.00000000',
-            'rate_24h_min': '0.00000000',
-            'volume_24h': '22.234657'
-        },
-        "eth": {
-            'rate': '2334.5434',
-            'rate_24h_max': '0.00000000',
-            'rate_24h_min': '0.00000000',
-            'volume_24h': '435.2378'
-        }
-    }
-};
-
 const offers = [
     { 'amount': 0.3426930378589339, 'price': 0.254547166514305 },
     { 'amount': 0.927685008594914, 'price': 0.3655291233387701 },
@@ -110,15 +65,6 @@ const history = [
     { 'amount': 0.3295550993500569, 'price': 0.4742447209542531 },
     { 'amount': 0.9337597537491701, 'price': 0.23976490230043657 },
     { 'amount': 0.40490166565312213, 'price': 0.9866004493342432 }];
-
-const accounts = {
-    'btc': {
-        'balance': 1.23123
-    },
-    'eth': {
-        'balance': 2.324
-    }
-};
 
 export class ExchangePage extends React.Component {
 
@@ -198,19 +144,19 @@ export class ExchangePage extends React.Component {
             <div className={styles.main}>
                 <div className={styles.content}>
                     <div>
-                        <Col xs={12}>
+                        <Col xs={20}>
                             <Row center="xs">
-                                <Col xs={5} align="center">
+                                <Col xs={5}>
                                     {lastExchanges}
                                 </Col>
-                                <Col xs={5} align="center">
+                                <Col xs={5}>
                                     <ExchangeBox />
                                 </Col>
                             </Row>
                         </Col>
-                        <Col xs={12}>
+                        <Col xs={20}>
                             <Row center="xs">
-                                <Col xs={10} align="center">
+                                <Col xs={10}>
                                     {exchangeOffers}
                                 </Col>
                             </Row>
@@ -218,7 +164,7 @@ export class ExchangePage extends React.Component {
                     </div>
                 </div>
                 <div className={styles.market}>
-                    <Col xs={12}>
+                    <Col xs={20}>
                         <Row center="xs">
                             <Col xs={10} align="center">
                                 <MarketInfo />

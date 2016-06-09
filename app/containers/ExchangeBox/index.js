@@ -20,6 +20,7 @@ import selectExchangeBox from "./selectors";
 import { connect } from "react-redux";
 import axios from "axios";
 import RefreshIndicator from "material-ui/RefreshIndicator";
+import TopEcxhangeBox from "components/TopExchangeBox";
 
 const styles = {
     block: {
@@ -83,13 +84,8 @@ class ExchangeBox extends React.Component {
             this.props.isAccountLoaded &&
             this.props.isAccountExist) {
 
-            top = (
-                <div>
-                    <br />
-                    <RaisedButton label="deposit" primary={true}/>{' '}{' '}{' '}
-                    <RaisedButton label="withdraw" primary={true}/>
-                </div>
-            )
+            top = <TopEcxhangeBox />
+
         } else {
             top = (
                 <div>

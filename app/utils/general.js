@@ -46,7 +46,7 @@ export function num2str(value) {
 }
 
 export function cut(value) {
-    return parseFloat(value.toPrecision(15)).toString();
+    return parseFloat(value.toPrecision(precision)).toString();
 }
 
 export function getErrorText(error) {
