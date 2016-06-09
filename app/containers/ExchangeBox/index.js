@@ -84,8 +84,7 @@ class ExchangeBox extends React.Component {
             this.props.isAccountLoaded &&
             this.props.isAccountExist) {
 
-            top = <TopEcxhangeBox balance="0.00000001"
-                                  address={this.props.account.address}
+            top = <TopEcxhangeBox account={this.props.account}
                                   currency={this.props.from_currency}/>
 
         } else {
@@ -174,11 +173,7 @@ class ExchangeBox extends React.Component {
             <div className={styles.exchangeBox}>
                 <Paper style={styles.block} zDepth={2}>
                     {top}
-                    <br />
-                    <Divider />
-                    <br />
                     {main}
-                    <br />
                     <Divider />
                     <br />
                     {down}

@@ -7,7 +7,8 @@ import {
     ERROR_FIELD_IS_REQUIRED,
     ERROR_FIELD_NOT_VALID,
     ERROR_RATE_LT_MIN,
-    ERROR_RATE_GT_MAX
+    ERROR_RATE_GT_MAX,
+    ERROR_FROM_AMOUNT_GT_BALANCE
 } from "../containers/ExchangeBox/constants";
 
 const precision = 8;
@@ -63,7 +64,20 @@ export function getErrorText(error) {
         case ERROR_RATE_GT_MAX:
             return "Rate is greater than maximum value";
 
+        case ERROR_FROM_AMOUNT_GT_BALANCE:
+            return "Not enough money";
+
         default:
             return null
     }
+}
+
+export function convertCurrencyName(short){
+    switch(short) {
+        case 'btc': 
+            return 'Bitcoin';
+        case 'eth': 
+            return 'Ethereum';    
+    }
+    
 }
