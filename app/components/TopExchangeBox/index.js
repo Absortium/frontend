@@ -11,9 +11,10 @@ import FloatingActionButton from "material-ui/FloatingActionButton";
 import Divider from "material-ui/Divider";
 import CryptoIcon from "components/CryptoIcon";
 import DepositDialog from "components/DepositDialog";
-
+import {ERROR_FROM_AMOUNT_GT_BALANCE} from "../../containers/ExchangeBox/constants"
 import {convertCurrencyName} from "utils/general"
-const styles = {
+
+var styles = {
     top: {
         padding: "0.5em",
 
@@ -38,7 +39,6 @@ const styles = {
         },
 
         balance: {
-            color: "#ACAFB0",
             fontSize: "0.86em",
             display: "inline-block",
             verticalAlign: "middle",
@@ -74,6 +74,13 @@ class TopExchangeBox extends React.Component {
     };
 
     render() {
+
+        if (this.props.error == ERROR_FROM_AMOUNT_GT_BALANCE) {
+            styles.bottom.balance.color = "#E87272"
+        } else {
+            styles.bottom.balance.color = "#ACAFB0"
+        }
+
         return (
             <div>
                 <div style={styles.top}>

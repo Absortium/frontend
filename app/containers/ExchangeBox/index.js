@@ -85,7 +85,8 @@ class ExchangeBox extends React.Component {
             this.props.isAccountExist) {
 
             top = <TopEcxhangeBox account={this.props.account}
-                                  currency={this.props.from_currency}/>
+                                  currency={this.props.from_currency}
+                                  error={this.props.from_amount.error}/>
 
         } else {
             top = (
