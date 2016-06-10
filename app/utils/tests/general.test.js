@@ -11,7 +11,7 @@ describe("general", () => {
     describe("extractCurrencies", () => {
         it("s => '/'", () => {
 
-            let s = "/"
+            let s = "/";
             expect(extractCurrencies(s),);
         });
     });

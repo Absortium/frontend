@@ -52,7 +52,7 @@ export function num2str(value) {
 }
 
 export function cut(value) {
-    return parseFloat(value.toPrecision(precision)).toString();
+    return new BigNumber((value.toPrecision(precision)).toString());
 }
 
 export function getErrorText(error) {
