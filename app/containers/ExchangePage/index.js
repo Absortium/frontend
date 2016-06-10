@@ -85,11 +85,10 @@ export class ExchangePage extends React.Component {
 
     componentWillMount() {
         var { from_currency, to_currency } = this.props.params;
-        this.props.marketChanged(from_currency, to_currency);
 
         this.setState({
             from_currency: from_currency,
-            to_currency: to_currency,
+            to_currency: to_currency
         });
 
         this.fetchExchangeOffers(from_currency, to_currency);

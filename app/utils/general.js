@@ -64,17 +64,17 @@ export function getErrorText(error) {
             return "This field is required";
 
         case ERROR_RATE_LT_MIN:
-            return "Rate is lower than " +  RATE_MIN;
+            return "Rate is lower than " + RATE_MIN;
 
         case ERROR_RATE_GT_MAX:
-            return "Rate is greater than" + RATE_MAX;
+            return "Rate is greater than " + RATE_MAX;
 
         case ERROR_FROM_AMOUNT_GT_BALANCE:
             return "Not enough money";
 
         case ERROR_TO_AMOUNT_LT_MIN:
             return "Total amount lower than " + TO_AMOUNT_MIN;
-        
+
         case ERROR_FIELD_LT_ZERO:
             return "Field is negative";
 
@@ -83,12 +83,12 @@ export function getErrorText(error) {
     }
 }
 
-export function convertCurrencyName(short){
-    switch(short) {
-        case 'btc': 
+export function convertCurrencyName(short) {
+    switch (short) {
+        case 'btc':
             return 'Bitcoin';
-        case 'eth': 
-            return 'Ethereum';    
+        case 'eth':
+            return 'Ethereum';
     }
-    
+
 }

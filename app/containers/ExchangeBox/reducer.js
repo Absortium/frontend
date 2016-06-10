@@ -140,7 +140,7 @@ function exchangeBoxReducer(state = initialState, action) {
             let rate = state.rate.value;
 
             if (!isDirty(rate)) {
-                if (rate > RATE_MIN) {
+                if (market_rate > RATE_MIN) {
                     if (!errExist(state.from_amount.error)) {
                         let from_amount = state.from_amount.value;
                         let to_amount = from_amount * market_rate;
@@ -317,7 +317,7 @@ function exchangeBoxReducer(state = initialState, action) {
             return Object.assign({}, state,
                 {
                     from_currency: action.from_currency,
-                    to_currency: action.to_currency,
+                    to_currency: action.to_currency
                 });
         }
 

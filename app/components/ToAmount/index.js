@@ -39,7 +39,7 @@ class ToAmount extends React.Component {
         return (
             <div style={styles.div}>
                 <TextField
-                    floatingLabelText={"Amount of " + this.props.currency.toUpperCase() + " for exchange"}
+                    floatingLabelText={"Amount of " + this.props.currency.toUpperCase() + " you will get"}
                     floatingLabelFixed={true}
                     style={styles.textField}
                     type="number"

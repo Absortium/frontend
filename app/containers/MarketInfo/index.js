@@ -6,6 +6,7 @@
 
 import React from "react";
 import { connect } from "react-redux";
+import { replace } from 'react-router-redux';
 import selectMarketInfo from "./selectors";
 import MarketInfoBox from "components/MarketInfoBox";
 import {
@@ -27,14 +28,14 @@ const styles = {
         textAlign: "center",
         display: "inline-block"
     }
-}
+};
 
 export class MarketInfo extends React.Component {
     render() {
         return (
             <div>
                 { this.props.marketInfoLoaded ?
-                    <Paper style={styles.block} zDepth="2">
+                    <Paper style={styles.block} zDepth={2}>
                         <Tabs>
                             {
                                 Object.keys(this.props.marketInfo).map(function (currency) {
@@ -43,7 +44,7 @@ export class MarketInfo extends React.Component {
                                     if (info != null) {
                                         return <Tab icon={<CryptoIcon icon={currency}/>}
                                                     label={convertCurrencyName(currency)}>
-                                            <MarketInfoBox currency={currency} info={info}/>
+                                            <MarketInfoBox currency={currency} changeMarket={this.props.changeMarket} info={info}/>
                                         </Tab>
                                     }
                                 }, this)
@@ -60,6 +61,7 @@ const mapStateToProps = selectMarketInfo();
 
 function mapDispatchToProps(dispatch) {
     return {
+        changeMarket: (from_currency, to_currency) => dispatch(replace("/exchange/" + from_currency + "-" + to_currency)),
         dispatch,
     };
 }

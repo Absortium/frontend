@@ -42,22 +42,20 @@ openSansObserver.check().then(() => {
 const initialState = {};
 const store = configureStore(initialState, browserHistory);
 
-// Sync history and store, as the react-router-redux reducer
-// is under the non-default key ("routing"), selectLocationState
-// must be provided for resolving how to retrieve the "route" in the state
-import { selectLocationState } from 'containers/App/selectors';
-const history = syncHistoryWithStore(browserHistory, store, {
-  selectLocationState: selectLocationState(),
-});
-
-
-
-
 // Inject sagas of App component
 import {getHooks} from "./utils/hooks"
 import AppSagas from "containers/App/sagas"
 const {injectReducer, injectSagas} = getHooks(store);
 injectSagas(AppSagas);
+
+// Sync history and store, as the react-router-redux reducer
+// is under the non-default key ("routing"), selectLocationState
+// must be provided for resolving how to retrieve the "route" in the state
+import { selectLocationState } from 'containers/App/selectors';
+const history = syncHistoryWithStore(browserHistory, store, {
+  selectLocationState: selectLocationState()
+});
+
 
 
 // Set up the router, wrapping all Routes in the App component
@@ -67,7 +65,7 @@ const rootRoute = {
     path: "/",
     component: App,
     childRoutes: createRoutes(store),
-    indexRoute: { onEnter: (nextState, replace) => replace('/exchange/eth/btc') }
+    indexRoute: { onEnter: (nextState, replace) => replace('/exchange/btc-eth') }
 };
 
 ReactDOM.render(

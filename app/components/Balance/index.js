@@ -14,7 +14,7 @@ import CryptoIcon from "components/CryptoIcon";
 
 var styles = {
     main: {
-        marginLeft: "0.8em",
+        marginLeft: "2em",
         marginTop: "0.4em"
     },
     
@@ -34,7 +34,7 @@ var styles = {
 
     deposit: {
         backgroundColor: "#9CD689",
-        marginRight: "0.6em"
+        marginRight: "0.6em",
     },
     withdrawal: {
         backgroundColor: "#E87272",

@@ -83,23 +83,20 @@ class ExchangeBox extends React.Component {
         let main = null;
         let down = null;
 
-        if (this.props.isRateLoaded &&
-            this.props.isAuthenticated &&
-            this.props.isAccountExist) {
 
+        if (this.props.isAuthenticated &&
+            this.props.isAccountLoaded) {
             top = <div style={styles.top}>
-                    <span style={styles.top.text}>
-                        Exchange {this.props.from_currency.toUpperCase()} on {this.props.to_currency.toUpperCase()}
-                    </span>
-            </div>
-
+                <span style={styles.top.text}>
+                    Exchange {this.props.from_currency.toUpperCase()} on {this.props.to_currency.toUpperCase()}
+                </span>
+            </div>;
         } else {
-            top = (
-                <div>
-                    <br />
-                </div>
-            )
+            top = <div>
+                <br/>
+            </div>;
         }
+
 
         if (this.props.isRateLoaded) {
             main = (
@@ -123,7 +120,6 @@ class ExchangeBox extends React.Component {
         } else {
             main = (
                 <div>
-                    <Divider />
                     <br />
                     <RefreshIndicator
                         size={70}
@@ -157,6 +153,7 @@ class ExchangeBox extends React.Component {
                                           disabled={isDisabled}
                                           primary={true}/>
                             <br/>
+                            <br />
                         </div>
                     )
                 } else if (this.props.isAccountLoaded && !this.props.isAccountExist) {
@@ -164,6 +161,7 @@ class ExchangeBox extends React.Component {
                         <div>
                             <RaisedButton label="create account" primary={true}/>
                             <br/>
+                            <br />
                         </div>
                     )
                 }
@@ -172,6 +170,7 @@ class ExchangeBox extends React.Component {
                     <div>
                         <RaisedButton onMouseDown={() => this.props.logIn()} label="log in" primary={true}/>
                         <br/>
+                        <br />
                     </div>
                 )
 
@@ -187,7 +186,6 @@ class ExchangeBox extends React.Component {
                     <Divider />
                     <br />
                     {down}
-                    <br />
                 </Paper>
             </div>
         )

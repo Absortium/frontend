@@ -1,7 +1,29 @@
-import {take, call, put, select, cps} from "redux-saga/effects";
-import {takeEvery, takeLatest} from "redux-saga";
-import {loggedOut, loggedIn, accountsReceived, marketInfoReceived} from "./actions";
-import {LOG_IN, LOG_OUT, LOGGED_IN, LOGGED_OUT, MARKET_CHANGED} from "./constants";
+import {
+    take,
+    call,
+    put,
+    select,
+    cps
+} from "redux-saga/effects";
+import {
+    takeEvery,
+    takeLatest
+} from "redux-saga";
+import {
+    loggedOut,
+    loggedIn,
+    accountsReceived,
+    marketInfoReceived,
+    marketChanged
+} from "./actions";
+import {
+    LOG_IN,
+    LOG_OUT,
+    LOGGED_IN,
+    LOGGED_OUT,
+    MARKET_CHANGED
+} from "./constants";
+import { LOCATION_CHANGE } from "react-router-redux";
 import axios from "axios";
 import Auth0Lock from "auth0-lock";
 
@@ -16,7 +38,8 @@ export function* defaultSaga() {
     yield [
         AccountsService.setup(),
         AuthService.setup(),
-        MarketInfoService.setup()
+        MarketInfoService.setup(),
+        RouteService.setup()
     ]
 }
 
@@ -76,7 +99,8 @@ class AuthService {
     static *handlerLogIn() {
         var options = {
             authParams: {
-                scope: "openid email"
+                scope: "openid email",
+                icon: 'https://www.graphicsprings.com/filestorage/stencils/697fc3874552b02da120eed6119e4b98.svg'
             }
         };
         const [err, profile, token] = yield call(AuthService.show, options);
@@ -157,6 +181,32 @@ class AccountsService {
             takeEvery(MARKET_CHANGED, AccountsService.handlerMarketInitialized)
         ]
     }
+}
+
+class RouteService {
+
+    static extractCurrencies(s) {
+        let r = /\/exchange\/(btc|eth)-(eth|btc)/g;
+        let currencies = r.exec(s);
+
+        return [currencies[1], currencies[2]];
+    }
+
+    static * analyze(action) {
+        console.log(action.payload);
+
+        let s = action.payload.pathname;
+        let [from_currency, to_currency] = RouteService.extractCurrencies(s);
+
+        if (from_currency != null && to_currency != null) {
+            yield put(marketChanged(from_currency, to_currency));
+        }
+    };
+
+    static *setup() {
+        yield* takeEvery(LOCATION_CHANGE, RouteService.analyze)
+    }
+
 }
 
 class MarketInfoService {

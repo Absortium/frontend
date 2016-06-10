@@ -40,7 +40,7 @@ class FromAmount extends React.Component {
         return (
             <div style={styles.div}>
                 <TextField
-                    floatingLabelText={"Amount of " + this.props.currency.toUpperCase() + " for exchange"}
+                    floatingLabelText={"Amount of " + this.props.currency.toUpperCase() + " you will give"}
                     floatingLabelFixed={true}
                     style={styles.textField}
                     type="number"

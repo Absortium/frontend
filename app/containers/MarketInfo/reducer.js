@@ -4,11 +4,14 @@
  *
  */
 
-import {MARKET_INFO_RECEIVED} from "containers/App/constants";
+import {
+    MARKET_INFO_RECEIVED,
+    MARKET_CHANGED
+} from "containers/App/constants";
 
 const initialState = {
     marketInfo: null,
-    marketInfoLoaded: false,
+    marketInfoLoaded: false
 };
 
 function marketInfoReducer(state = initialState, action) {
