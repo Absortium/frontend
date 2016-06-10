@@ -189,7 +189,7 @@ class RouteService {
         let r = /\/exchange\/(btc|eth)-(eth|btc)/g;
         let currencies = r.exec(s);
 
-        return [currencies[1], currencies[2]];
+        return currencies;
     }
 
     static * analyze(action) {

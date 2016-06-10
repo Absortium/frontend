@@ -92,3 +92,15 @@ export function convertCurrencyName(short) {
     }
 
 }
+
+export function extractCurrencies(s) {
+    let r = /\/exchange\/(btc|eth)-(eth|btc)/g;
+    return r.exec(s);
+}
+
+export function genParam(value, error) {
+    return {
+        value: num2str(value),
+        error: error
+    }
+}

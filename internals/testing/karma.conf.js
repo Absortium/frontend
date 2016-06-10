@@ -49,7 +49,7 @@ module.exports = (config) => {
         webpackMiddleware: {
             noInfo: true,
             watchOptions: {
-                aggregateTimeout: 200,
+                aggregateTimeout: 100,
                 poll: true
             },
         },
