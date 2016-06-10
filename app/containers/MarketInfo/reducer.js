@@ -22,7 +22,13 @@ function marketInfoReducer(state = initialState, action) {
                     marketInfoLoaded: true,
                     marketInfo: action.marketInfo
                 });
-
+        case MARKET_CHANGED:
+            return Object.assign({}, state,
+                {
+                    marketInfo: null,
+                    marketInfoLoaded: false
+                });
+        
         default:
             return state;
     }

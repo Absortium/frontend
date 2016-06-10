@@ -317,7 +317,24 @@ function exchangeBoxReducer(state = initialState, action) {
             return Object.assign({}, state,
                 {
                     from_currency: action.from_currency,
-                    to_currency: action.to_currency
+                    to_currency: action.to_currency,
+                    isRateLoaded: false,
+                    isAccountExist: false,
+                    isAccountLoaded: false,
+                    account: null,
+
+                    rate: {
+                        value: null,
+                        error: ERROR_FIELD_IS_REQUIRED
+                    },
+                    from_amount: {
+                        value: null,
+                        error: ERROR_FIELD_IS_REQUIRED
+                    },
+                    to_amount: {
+                        value: null,
+                        error: ERROR_FIELD_IS_REQUIRED
+                    }
                 });
         }
 

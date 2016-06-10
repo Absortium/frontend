@@ -74,6 +74,9 @@ function headerReducer(state = initialState, action) {
         {
             return Object.assign({}, state,
                 {
+                    isAccountLoaded: false,
+                    isAccountExist: false,
+                    account: null,   
                     from_currency: action.from_currency,
                     to_currency: action.to_currency
                 });

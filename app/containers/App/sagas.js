@@ -26,6 +26,7 @@ import {
 import { LOCATION_CHANGE } from "react-router-redux";
 import axios from "axios";
 import Auth0Lock from "auth0-lock";
+import {extractCurrencies} from "utils/general"
 
 // All sagas to be loaded
 export default [
@@ -136,7 +137,7 @@ class AuthService {
 
         yield [
             takeEvery(LOG_OUT, AuthService.handlerLogOut),
-            takeEvery(LOG_IN, AuthService.handlerLogIn),
+            takeEvery(LOG_IN, AuthService.handlerLogIn)
         ]
     }
 }
@@ -185,21 +186,14 @@ class AccountsService {
 
 class RouteService {
 
-    static extractCurrencies(s) {
-        let r = /\/exchange\/(btc|eth)-(eth|btc)/g;
-        let currencies = r.exec(s);
-
-        return currencies;
-    }
-
     static * analyze(action) {
         console.log(action.payload);
 
         let s = action.payload.pathname;
-        let [from_currency, to_currency] = RouteService.extractCurrencies(s);
+        let currencies = extractCurrencies(s);
 
-        if (from_currency != null && to_currency != null) {
-            yield put(marketChanged(from_currency, to_currency));
+        if (currencies != null) {
+            yield put(marketChanged(currencies[1], currencies[2]));
         }
     };
 
