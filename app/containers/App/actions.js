@@ -23,7 +23,8 @@ import {
     LOGGED_OUT,
     ACCOUNTS_RECEIVED,
     MARKET_CHANGED,
-    MARKET_INFO_RECEIVED
+    MARKET_INFO_RECEIVED,
+    OFFERS_RECEIVED
 } from "./constants";
 
 export function logIn() {
@@ -42,8 +43,8 @@ export function logOut() {
 export function loggedIn(token, profile) {
     return {
         type: LOGGED_IN,
-        token: token,
-        profile: profile
+        token,
+        profile
     };
 }
 
@@ -56,21 +57,28 @@ export function loggedOut() {
 export function accountsReceived(accounts) {
     return {
         type: ACCOUNTS_RECEIVED,
-        accounts: accounts
+        accounts
     };
 }
 
 export function marketChanged(from_currency, to_currency) {
     return {
         type: MARKET_CHANGED,
-        from_currency: from_currency,
-        to_currency: to_currency
+        from_currency,
+        to_currency
     };
 }
 
 export function marketInfoReceived(marketInfo) {
     return {
         type: MARKET_INFO_RECEIVED,
-        marketInfo: marketInfo
+        marketInfo
+    };
+}
+
+export function offerReceived(offers) {
+    return {
+        type: OFFERS_RECEIVED,
+        offers
     };
 }

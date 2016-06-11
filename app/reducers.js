@@ -10,6 +10,7 @@ import globalReducer from "containers/App/reducer";
 import headerReducer from "containers/Header/reducer";
 import exchangeBoxReducer from "containers/ExchangeBox/reducer";
 import marketInfoReducer from "containers/MarketInfo/reducer";
+import exchangeOffersReducer from "containers/ExchangeOffers/reducer";
 
 /*
  * routeReducer
@@ -49,6 +50,7 @@ export default function createReducer(asyncReducers) {
         global: globalReducer,
         header: headerReducer,
         exchangeBox: exchangeBoxReducer,
+        exchangeOffers: exchangeOffersReducer,
         marketInfo: marketInfoReducer,
         ...asyncReducers,
     });

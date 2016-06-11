@@ -14,7 +14,8 @@ import {
     loggedIn,
     accountsReceived,
     marketInfoReceived,
-    marketChanged
+    marketChanged,
+    offerReceived
 } from "./actions";
 import {
     LOG_IN,
@@ -26,7 +27,8 @@ import {
 import { LOCATION_CHANGE } from "react-router-redux";
 import axios from "axios";
 import Auth0Lock from "auth0-lock";
-import {extractCurrencies} from "utils/general"
+import { extractCurrencies } from "utils/general";
+import autobahn from "autobahn"
 
 // All sagas to be loaded
 export default [
@@ -40,7 +42,8 @@ export function* defaultSaga() {
         AccountsService.setup(),
         AuthService.setup(),
         MarketInfoService.setup(),
-        RouteService.setup()
+        RouteService.setup(),
+        OfferService.setup()
     ]
 }
 
@@ -222,7 +225,7 @@ class MarketInfoService {
         }
 
         const response = yield call(axios.get, "/api/marketinfo/" + q);
-        var result = response["data"];
+        let result = response["data"];
 
         let marketInfo = {};
         for (let info of result) {
@@ -248,5 +251,60 @@ class MarketInfoService {
 
     static *setup() {
         yield* takeEvery(MARKET_CHANGED, MarketInfoService.get)
+    }
+}
+
+class OfferService {
+    static * get(action) {
+
+        let from_currency = action.from_currency;
+        let to_currency = action.to_currency;
+
+        let q = "?";
+        q += "from_currency=" + from_currency;
+        q += "&to_currency=" + to_currency;
+
+        const response = yield call(axios.get, '/api/offers/' + q);
+        let offers = response['data'];
+
+        yield put(offerReceived(offers));
+    };
+
+    static * connect() {
+        var wsuri = "ws://absortium.com:8080/ws";
+        var connection = new autobahn.Connection({
+            url: wsuri,
+            realm: "realm1"
+        });
+
+        connection.onopen = function (session, details) {
+            function on_update(args, offer) {
+                console.log(offer);
+            }
+
+
+            session.subscribe($scope.pair.toLowerCase(), on_update).then(
+                function (sub) {
+                    console.log('Subscribed to BTC_ETH updates');
+                },
+                function (err) {
+                    console.log('failed to subscribe to BTC_ETH updates', err);
+                }
+            );
+        };
+
+        connection.onclose = function (reason, details) {
+            console.log("Connection lost: " + reason);
+        };
+
+        connection.open();
+    }
+
+    static *setup() {
+        yield * takeEvery(MARKET_CHANGED, OfferService.get);
+        // yield [
+        //
+        //     // takeEvery(MARKET_CHANGED, OfferService.connect)
+        // ]
     }
 }
