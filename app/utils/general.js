@@ -15,6 +15,7 @@ import {
     RATE_MIN,
     RATE_MAX
 } from "../containers/ExchangeBox/constants";
+import Q from "q";
 
 const precision = 8;
 
@@ -91,6 +92,14 @@ export function convertCurrencyName(short) {
             return 'Ethereum';
     }
 
+}
+
+export function sleep(millis) {
+    var deferredResult = Q.defer();
+    setTimeout(function () {
+        deferredResult.resolve();
+    }, millis);
+    return deferredResult.promise;
 }
 
 export function extractCurrencies(s) {

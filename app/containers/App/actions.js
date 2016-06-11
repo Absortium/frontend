@@ -24,7 +24,11 @@ import {
     ACCOUNTS_RECEIVED,
     MARKET_CHANGED,
     MARKET_INFO_RECEIVED,
-    OFFERS_RECEIVED
+    OFFERS_RECEIVED,
+    TOPIC_SUBSCRIBE,
+    TOPIC_UPDATE,
+    TOPIC_SUBSCRIBE_SUCCESS,
+    TOPIC_SUBSCRIBE_FAILED
 } from "./constants";
 
 export function logIn() {
@@ -80,5 +84,35 @@ export function offerReceived(offers) {
     return {
         type: OFFERS_RECEIVED,
         offers
+    };
+}
+
+export function subscribeOnTopic(topic) {
+    return {
+        type: TOPIC_SUBSCRIBE,
+        topic
+    };
+}
+
+export function subscribeSuccess(topic) {
+    return {
+        type: TOPIC_SUBSCRIBE_SUCCESS,
+        topic
+    };
+}
+
+export function subscribeFailed(topic, error=null) {
+    return {
+        type: TOPIC_SUBSCRIBE_FAILED,
+        topic,
+        error
+    };
+}
+
+export function topicUpdate(topic, data) {
+    return {
+        type: TOPIC_UPDATE,
+        topic,
+        data
     };
 }

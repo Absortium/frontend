@@ -3,7 +3,8 @@ import {
     call,
     put,
     select,
-    cps
+    cps,
+    fork
 } from "redux-saga/effects";
 import {
     takeEvery,
@@ -15,20 +16,29 @@ import {
     accountsReceived,
     marketInfoReceived,
     marketChanged,
-    offerReceived
+    offerReceived,
+    subscribeOnTopic,
+    subscribeSuccess,
+    subscribeFailed,
+    topicUpdate
 } from "./actions";
 import {
     LOG_IN,
     LOG_OUT,
     LOGGED_IN,
     LOGGED_OUT,
-    MARKET_CHANGED
+    MARKET_CHANGED,
+    TOPIC_SUBSCRIBE,
+    TOPIC_SUBSCRIBE_FAILED
 } from "./constants";
 import { LOCATION_CHANGE } from "react-router-redux";
 import axios from "axios";
 import Auth0Lock from "auth0-lock";
-import { extractCurrencies } from "utils/general";
-import autobahn from "autobahn"
+import {
+    extractCurrencies,
+    sleep
+} from "utils/general";
+import autobahn from "autobahn";
 
 // All sagas to be loaded
 export default [
@@ -43,7 +53,8 @@ export function* defaultSaga() {
         AuthService.setup(),
         MarketInfoService.setup(),
         RouteService.setup(),
-        OfferService.setup()
+        OfferService.setup(),
+        AutobahnService.setup()
     ]
 }
 
@@ -63,7 +74,7 @@ class AuthService {
 
     /*
      This method was designed because we encounter the problem of yield in callback,
-     so I wrapped lock show method and use in with "call" method.
+     so I wrapped lock show method in promise and use it with "call" method.
      */
     static show(...args) {
         return new Promise((resolve, reject) => {
@@ -104,7 +115,7 @@ class AuthService {
         var options = {
             authParams: {
                 scope: "openid email",
-                icon: 'https://www.graphicsprings.com/filestorage/stencils/697fc3874552b02da120eed6119e4b98.svg'
+                icon: "https://www.graphicsprings.com/filestorage/stencils/697fc3874552b02da120eed6119e4b98.svg"
             }
         };
         const [err, profile, token] = yield call(AuthService.show, options);
@@ -132,7 +143,6 @@ class AuthService {
         var token = localStorage.getItem("token");
         var profile = JSON.parse(localStorage.getItem("profile"));
 
-        console.log(profile);
         if (token != null) {
             AuthService.setupIntercept(token);
             yield put(loggedIn(token, profile));
@@ -170,8 +180,8 @@ class AccountsService {
 
             let newAccounts = {};
             for (let account of accounts) {
-                let currency = account['currency'];
-                delete account['currency'];
+                let currency = account["currency"];
+                delete account["currency"];
                 newAccounts[currency] = account;
             }
             yield put(accountsReceived(newAccounts));
@@ -190,8 +200,6 @@ class AccountsService {
 class RouteService {
 
     static * analyze(action) {
-        console.log(action.payload);
-
         let s = action.payload.pathname;
         let currencies = extractCurrencies(s);
 
@@ -264,13 +272,77 @@ class OfferService {
         q += "from_currency=" + from_currency;
         q += "&to_currency=" + to_currency;
 
-        const response = yield call(axios.get, '/api/offers/' + q);
-        let offers = response['data'];
+        const response = yield call(axios.get, "/api/offers/" + q);
+        let offers = response["data"];
 
         yield put(offerReceived(offers));
     };
 
-    static * connect() {
+    static * connect(action) {
+        let from_currency = action.from_currency;
+        let to_currency = action.to_currency;
+        let topic = from_currency + "_" + to_currency;
+
+        yield put(subscribeOnTopic(topic));
+    }
+
+    static *setup() {
+
+        yield [
+            takeEvery(MARKET_CHANGED, OfferService.get),
+            takeEvery(MARKET_CHANGED, OfferService.connect)
+        ]
+    }
+}
+
+class AutobahnService {
+    // Additional info about this service https://github.com/yelouafi/redux-saga/issues/51
+
+    static session = null;
+
+    static * listner(topic) {
+        let deferred;
+
+        AutobahnService.session.subscribe(topic, (args, data) => {
+            if (deferred) {
+                deferred.resolve(data);
+                deferred = null
+            }
+        });
+
+        return {
+            callback() {
+                if (!deferred) {
+                    deferred = {};
+                    deferred.promise = new Promise(resolve => deferred.resolve = resolve)
+                }
+                return deferred.promise
+            }
+        }
+    }
+
+    static * listen(topic) {
+        const { callback } = yield call(AutobahnService.listner, topic);
+        yield put(subscribeSuccess(topic));
+
+        while (true) {
+            const data = yield call(callback);
+            yield put(topicUpdate(topic, data));
+        }
+    }
+
+    static * subscribe(action) {
+        let topic = action.topic;
+
+        if (AutobahnService.session != null) {
+            yield fork(AutobahnService.listen, topic)
+        } else {
+            yield sleep(1000);
+            yield put(subscribeFailed(topic, "Session is not initialized yet"));
+        }
+    }
+
+    static * setup() {
         var wsuri = "ws://absortium.com:8080/ws";
         var connection = new autobahn.Connection({
             url: wsuri,
@@ -278,33 +350,21 @@ class OfferService {
         });
 
         connection.onopen = function (session, details) {
-            function on_update(args, offer) {
-                console.log(offer);
-            }
-
-
-            session.subscribe($scope.pair.toLowerCase(), on_update).then(
-                function (sub) {
-                    console.log('Subscribed to BTC_ETH updates');
-                },
-                function (err) {
-                    console.log('failed to subscribe to BTC_ETH updates', err);
-                }
-            );
+            console.log("Connection opened");
+            AutobahnService.session = session;
         };
 
         connection.onclose = function (reason, details) {
             console.log("Connection lost: " + reason);
+            AutobahnService.session = null;
         };
 
         connection.open();
-    }
 
-    static *setup() {
-        yield * takeEvery(MARKET_CHANGED, OfferService.get);
-        // yield [
-        //
-        //     // takeEvery(MARKET_CHANGED, OfferService.connect)
-        // ]
+        yield [
+            takeEvery(TOPIC_SUBSCRIBE, AutobahnService.subscribe),
+            takeEvery(TOPIC_SUBSCRIBE_FAILED, AutobahnService.subscribe)
+        ]
+
     }
 }

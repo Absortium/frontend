@@ -147,6 +147,7 @@
   },
   "dependencies": {
     "auth0-lock": "^9.2.1",
+    "autobahn": "^0.10.1",
     "axios": "^0.11.1",
     "babel-polyfill": "^6.7.4",
     "bignumber.js": "^2.3.0",
@@ -164,6 +165,8 @@
     "immutable": "^3.8.1",
     "material-ui": "^0.15.0",
     "node-sass": "^3.7.0",
+    "q": "^1.4.1",
+    "raw-loader": "^0.5.1",
     "react": "^15.0.1",
     "react-dom": "^15.0.1",
     "react-flexbox-grid": "^0.9.6",

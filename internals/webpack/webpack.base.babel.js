@@ -16,6 +16,11 @@ module.exports = (options) => ({
     module: {
         loaders: [
             {
+                // Fix issue with autobahn https://github.com/crossbario/autobahn-js/issues/128
+                test: /autobahn\/package.json$/,
+                loader: 'raw-loader'
+            },
+            {
                 test: /\.js$/, // Transform all .js files required somewhere with Babel
                 loader: 'babel',
                 exclude: /node_modules/,
@@ -81,7 +86,11 @@ module.exports = (options) => ({
                 test: /\.json$/,
                 loader: 'json-loader',
             }],
+        noParse: ['ws', /node_modules\/when\/dist/],
     },
+
+    externals: ['ws'],
+
     plugins: options.plugins.concat([
         new ExtractTextPlugin("styles.css"),
         new webpack.optimize.CommonsChunkPlugin('common.js'),
