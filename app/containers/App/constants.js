@@ -13,10 +13,14 @@ export const LOG_IN = 'app/App/LOG_IN';
 export const LOG_OUT = 'app/App/LOG_OUT';
 export const LOGGED_IN = 'app/App/LOGGED_IN';
 export const LOGGED_OUT = 'app/App/LOGGED_OUT';
+
 export const ACCOUNTS_RECEIVED = 'app/App/ACCOUNTS_RECEIVED';
+
 export const MARKET_INFO_RECEIVED = 'app/App/MARKET_INFO_RECEIVED';
 export const MARKET_CHANGED = 'app/App/MARKET_CHANGED';
+
 export const OFFERS_RECEIVED = 'app/App/OFFERS_RECEIVED';
+export const OFFERS_CHANGED = 'app/App/OFFERS_CHANGED';
 
 export const TOPIC_UPDATE = 'app/App/TOPIC_UPDATE';
 export const TOPIC_SUBSCRIBE = 'app/App/TOPIC_SUBSCRIBE';

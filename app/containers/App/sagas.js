@@ -17,6 +17,7 @@ import {
     marketInfoReceived,
     marketChanged,
     offerReceived,
+    offersChanged,
     subscribeOnTopic,
     subscribeSuccess,
     subscribeFailed,
@@ -29,14 +30,16 @@ import {
     LOGGED_OUT,
     MARKET_CHANGED,
     TOPIC_SUBSCRIBE,
-    TOPIC_SUBSCRIBE_FAILED
+    TOPIC_SUBSCRIBE_FAILED,
+    TOPIC_UPDATE
 } from "./constants";
 import { LOCATION_CHANGE } from "react-router-redux";
 import axios from "axios";
 import Auth0Lock from "auth0-lock";
 import {
     extractCurrencies,
-    sleep
+    sleep,
+    include
 } from "utils/general";
 import autobahn from "autobahn";
 
@@ -263,6 +266,8 @@ class MarketInfoService {
 }
 
 class OfferService {
+    static topics = [];
+
     static * get(action) {
 
         let from_currency = action.from_currency;
@@ -278,11 +283,21 @@ class OfferService {
         yield put(offerReceived(offers));
     };
 
+    static * handlerUpdate(action) {
+        console.log(action);
+        console.log(OfferService.topics);
+        console.log(include(OfferService.topics, action.topic));
+        if(include(OfferService.topics, action.topic)) {
+            yield put(offersChanged(action.data))
+        }
+    }
+
     static * connect(action) {
         let from_currency = action.from_currency;
         let to_currency = action.to_currency;
         let topic = from_currency + "_" + to_currency;
 
+        OfferService.topics.push(topic);
         yield put(subscribeOnTopic(topic));
     }
 
@@ -290,7 +305,8 @@ class OfferService {
 
         yield [
             takeEvery(MARKET_CHANGED, OfferService.get),
-            takeEvery(MARKET_CHANGED, OfferService.connect)
+            takeEvery(MARKET_CHANGED, OfferService.connect),
+            takeEvery(TOPIC_UPDATE, OfferService.handlerUpdate)
         ]
     }
 }
@@ -331,7 +347,7 @@ class AutobahnService {
         }
     }
 
-    static * subscribe(action) {
+    static * handlerSubscribe(action) {
         let topic = action.topic;
 
         if (AutobahnService.session != null) {
@@ -362,8 +378,8 @@ class AutobahnService {
         connection.open();
 
         yield [
-            takeEvery(TOPIC_SUBSCRIBE, AutobahnService.subscribe),
-            takeEvery(TOPIC_SUBSCRIBE_FAILED, AutobahnService.subscribe)
+            takeEvery(TOPIC_SUBSCRIBE, AutobahnService.handlerSubscribe),
+            takeEvery(TOPIC_SUBSCRIBE_FAILED, AutobahnService.handlerSubscribe)
         ]
 
     }

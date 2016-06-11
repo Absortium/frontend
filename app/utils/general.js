@@ -102,6 +102,10 @@ export function sleep(millis) {
     return deferredResult.promise;
 }
 
+export function include(arr,obj) {
+    return (arr.indexOf(obj) != -1);
+}
+
 export function extractCurrencies(s) {
     let r = /\/exchange\/(btc|eth)-(eth|btc)/g;
     return r.exec(s);

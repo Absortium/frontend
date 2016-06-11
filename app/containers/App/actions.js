@@ -25,6 +25,7 @@ import {
     MARKET_CHANGED,
     MARKET_INFO_RECEIVED,
     OFFERS_RECEIVED,
+    OFFERS_CHANGED,
     TOPIC_SUBSCRIBE,
     TOPIC_UPDATE,
     TOPIC_SUBSCRIBE_SUCCESS,
@@ -87,6 +88,13 @@ export function offerReceived(offers) {
     };
 }
 
+export function offersChanged(update) {
+    return {
+        type: OFFERS_CHANGED,
+        update
+    };
+}
+
 export function subscribeOnTopic(topic) {
     return {
         type: TOPIC_SUBSCRIBE,
@@ -101,7 +109,7 @@ export function subscribeSuccess(topic) {
     };
 }
 
-export function subscribeFailed(topic, error=null) {
+export function subscribeFailed(topic, error = null) {
     return {
         type: TOPIC_SUBSCRIBE_FAILED,
         topic,

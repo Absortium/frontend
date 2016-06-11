@@ -85,12 +85,15 @@ class ExchangeOffers extends React.Component {
                                     deselectOnClickaway={this.state.deselectOnClickaway}
                                     showRowHover={this.state.showRowHover}
                                     stripedRows={this.state.stripedRows}>
-                                    {this.props.offers.map((row, index) => (
-                                        <TableRow key={index}>
-                                            <TableRowColumn>{row.price}</TableRowColumn>
-                                            <TableRowColumn>{row.amount}</TableRowColumn>
-                                        </TableRow>
-                                    ))}
+                                    { Object.keys(this.props.offers).map(function (price) {
+                                        let amount = this.props.offers[price];
+                                        return (
+                                            <TableRow key={price}>
+                                                <TableRowColumn>{price}</TableRowColumn>
+                                                <TableRowColumn>{amount}</TableRowColumn>
+                                            </TableRow>
+                                        )
+                                    }, this)}
                                 </TableBody>
                             </Table>
                             : null
