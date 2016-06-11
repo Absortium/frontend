@@ -72,8 +72,10 @@ class ExchangeBox extends React.Component {
             price: price
         };
 
-        axios.post("/api/exchanges/", data).then(function (response) {
-            console.log(response)
+        axios.post("/api/exchanges/", data).then(function (response, err) {
+
+            console.log(response);
+            console.log(err);
         })
     };
 

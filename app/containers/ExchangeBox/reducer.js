@@ -108,8 +108,14 @@ function exchangeBoxReducer(state = initialState, action) {
                     substate.from_amount = genParam(from_amount, null);
 
                     if (!isEmpty(rate) && !errExist(state.rate.error)) {
+                        let error;
                         let to_amount = rate * from_amount;
-                        substate.to_amount = genParam(to_amount, null);
+
+                        if (to_amount < TO_AMOUNT_MIN) {
+                            error = ERROR_TO_AMOUNT_LT_MIN;
+                        }
+
+                        substate.to_amount = genParam(to_amount, error);
                     }
                 } else {
                     let from_amount = state.from_amount.value;
@@ -138,10 +144,15 @@ function exchangeBoxReducer(state = initialState, action) {
             if (!isDirty(rate)) {
                 if (market_rate > RATE_MIN) {
                     if (!errExist(state.from_amount.error)) {
+                        let error;
                         let from_amount = new BigNumber(state.from_amount.value);
                         let to_amount = from_amount * market_rate;
 
-                        substate.to_amount = genParam(to_amount, null);
+                        if (to_amount < TO_AMOUNT_MIN) {
+                            error = ERROR_TO_AMOUNT_LT_MIN;
+                        }
+
+                        substate.to_amount = genParam(to_amount, error);
 
                     } else if (!errExist(state.to_amount.error)) {
                         let to_amount = new BigNumber(state.to_amount.value);
