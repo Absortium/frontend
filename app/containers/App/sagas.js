@@ -87,6 +87,7 @@ export function* defaultSaga() {
  */
 class AuthService {
     static lock = null;
+    static interceptor = null;
 
     static * checkToken() {
         let token = AuthService.getToken();
@@ -112,7 +113,7 @@ class AuthService {
      */
     static show(...args) {
         return new Promise((resolve, reject) => {
-            AuthService.lock.show(...args, (err, profile, token) => err ? reject([err, null, null]) : resolve([null, profile, token]));
+            AuthService.lock.show(...args, (err, profile, token) => err ? reject(err) : resolve([profile, token]));
         })
     }
 
@@ -126,13 +127,8 @@ class AuthService {
 
 
     static setupIntercept(token) {
-        axios.interceptors.request.use(function (config) {
-            if (token === undefined) {
-                config.headers.Authorization = undefined;
-            } else {
-                config.headers.Authorization = "JWT " + token;
-            }
-
+        AuthService.interceptor = axios.interceptors.request.use(function (config) {
+            config.headers.Authorization = "JWT " + token;
             return config;
         });
     }
@@ -144,20 +140,19 @@ class AuthService {
                 icon: "https://www.graphicsprings.com/filestorage/stencils/697fc3874552b02da120eed6119e4b98.svg"
             }
         };
-        const [err, profile, token] = yield call(AuthService.show, options);
-
-        if (err) {
-            console.log("Error signing in", err);
-        } else {
+        try {
+            const [profile, token] = yield call(AuthService.show, options);
             AuthService.setupIntercept(token);
             localStorage.setItem("token", token);
             localStorage.setItem("profile", JSON.stringify(profile));
             yield put(loggedIn(token, profile));
+        } catch(e) {
+            console.log("Error signing in", e);
         }
     }
 
     static *handlerLogOut() {
-        AuthService.setupIntercept();
+        axios.interceptors.request.eject(AuthService.interceptor);
         localStorage.removeItem("token");
         localStorage.removeItem("profile");
         yield put(loggedOut());
@@ -179,7 +174,7 @@ class AccountsService {
     static isAuthenticated = false;
     static isMarketInit = false;
     static currency = false;
-    static account;
+    static account = null;
 
     static *handlerLoggedIn() {
         AccountsService.isAuthenticated = true;
@@ -188,6 +183,7 @@ class AccountsService {
 
     static *handlerLoggedOut() {
         AccountsService.isAuthenticated = false;
+        AccountsService.account = null
     }
 
     static *handlerMarketChanged(action) {

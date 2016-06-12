@@ -14,7 +14,7 @@ const initialState = {
     marketInfoLoaded: false
 };
 
-function marketInfoReducer(state = initialState, action) {
+function marketInfoReducer(state = initialState, action) {  
     switch (action.type) {
         case MARKET_INFO_RECEIVED:
             return Object.assign({}, state,

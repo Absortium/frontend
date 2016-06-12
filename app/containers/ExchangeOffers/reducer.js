@@ -9,8 +9,8 @@ import {
     MARKET_CHANGED,
     OFFERS_CHANGED
 } from "containers/App/constants";
-
-import update from "react/lib/update"
+import { deconvert } from "utils/general";
+import update from "react/lib/update";
 
 const initialState = {
     offers: {},
@@ -23,7 +23,7 @@ function exchangeOffersReducer(state = initialState, action) {
         {
             let offers = {};
             for (let offer of action.offers) {
-                offers[offer.price] = offer.amount
+                offers[offer.price] = deconvert(parseInt(offer.amount))
             }
 
             return Object.assign({}, state,
@@ -45,7 +45,7 @@ function exchangeOffersReducer(state = initialState, action) {
             let { price, amount } = action.update;
             return update(state, {
                 offers: {
-                    [price]: {$set: amount}
+                    [price]: { $set: deconvert(parseInt(amount)) }
                 }
             })
         }

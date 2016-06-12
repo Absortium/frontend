@@ -16,7 +16,7 @@ import {
 } from "material-ui/Table";
 
 
-class MarketInfoBox extends React.Component {
+class MarketTabContent extends React.Component {
     handleRowSelect = (ids) => {
         if (ids.length == 1) {
             let id = ids[0];
@@ -66,4 +66,4 @@ class MarketInfoBox extends React.Component {
     }
 }
 
-export default MarketInfoBox;
+export default MarketTabContent;

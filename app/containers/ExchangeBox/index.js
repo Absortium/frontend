@@ -1,5 +1,4 @@
 import React from "react";
-import Paper from "material-ui/Paper";
 import {
     loggedIn,
     logIn,
@@ -7,6 +6,7 @@ import {
     marketChanged,
     sendExchange
 } from "containers/App/actions";
+import selectExchangeBox from "./selectors";
 import {
     changeFromAmount,
     changeRate,
@@ -16,14 +16,15 @@ import {
     convert,
     convertCurrencyName
 } from "utils/general";
+import Paper from "material-ui/Paper";
+import Subheader from "material-ui/Subheader";
 import RaisedButton from "material-ui/RaisedButton";
+import RefreshIndicator from "material-ui/RefreshIndicator";
 import Divider from "material-ui/Divider";
 import FromAmount from "components/FromAmount";
 import ToAmount from "components/ToAmount";
 import Rate from "components/Rate";
-import selectExchangeBox from "./selectors";
 import { connect } from "react-redux";
-import RefreshIndicator from "material-ui/RefreshIndicator";
 import { toastr } from "react-redux-toastr";
 
 const styles = {
@@ -44,7 +45,7 @@ const styles = {
 
     block: {
         width: "100%",
-        margin: "20px",
+        margin: "1.5em",
         textAlign: "center",
         display: "inline-block"
     },
@@ -52,7 +53,12 @@ const styles = {
     refresh: {
         display: "inline-block",
         position: "relative"
+    },
+
+    subheader: {
+        backgroundColor: "#E8E8E8"
     }
+
 };
 
 
@@ -75,19 +81,9 @@ class ExchangeBox extends React.Component {
         let down = null;
 
 
-        if (this.props.isAuthenticated &&
-            this.props.isAccountLoaded) {
-            top = <div style={styles.top}>
-                <span style={styles.top.text}>
-                    Exchange {this.props.from_currency.toUpperCase()} on {this.props.to_currency.toUpperCase()}
-                </span>
-            </div>;
-        } else {
-            top = <div>
-                <br/>
-            </div>;
-        }
-
+        top = <Subheader style={styles.subheader}>
+            Exchange {this.props.from_currency.toUpperCase()} on {this.props.to_currency.toUpperCase()}
+        </Subheader>
 
         if (this.props.isRateLoaded) {
             main = (

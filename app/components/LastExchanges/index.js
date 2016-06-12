@@ -21,7 +21,7 @@ import Divider from "material-ui/Divider";
 const styles = {
     block: {
         width: '100%',
-        margin: '20px',
+        margin: "1.5em",
         textAlign: 'center',
         display: 'inline-block',
     },
@@ -34,6 +34,10 @@ const styles = {
     propToggleHeader: {
         margin: '20px auto 10px',
     },
+
+    subheader: {
+        backgroundColor: "#E8E8E8"
+    }
 };
 
 class LastExchanges extends React.Component {
@@ -41,7 +45,7 @@ class LastExchanges extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            height: '312px',
+            height: '18.6em',
             fixedHeader: true,
             stripedRows: false,
             showRowHover: false,
@@ -58,9 +62,7 @@ class LastExchanges extends React.Component {
             <div className={styles.exchangeBox}>
                 <Paper style={styles.block} zDepth={2}>
                     <div>
-                        <br />
-                        <Subheader>Last Exchanges</Subheader>
-                        <br />
+                        <Subheader style={styles.subheader}>Last Exchange</Subheader>
                         <Divider />
                         <Table
                             height={this.state.height}

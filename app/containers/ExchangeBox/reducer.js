@@ -86,7 +86,8 @@ function exchangeBoxReducer(state = initialState, action) {
             return Object.assign({}, state,
                 {
                     isAuthenticated: false,
-                    account: null,
+                    balance: null,
+                    address: null,
                     isAccountExist: false,
                     isAccountLoaded: false
                 });

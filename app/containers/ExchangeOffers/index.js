@@ -17,13 +17,14 @@ import {
 } from "material-ui/Table";
 import { connect } from "react-redux";
 import Subheader from "material-ui/Subheader";
+import RefreshIndicator from "material-ui/RefreshIndicator";
 import Divider from "material-ui/Divider";
 import selectExchangeOffers from "./selectors";
 
 const styles = {
     block: {
         width: '100%',
-        margin: "20px",
+        margin: "1.5em",
         textAlign: 'center',
         display: 'inline-block',
     },
@@ -36,6 +37,16 @@ const styles = {
     propToggleHeader: {
         margin: '20px auto 10px',
     },
+
+    subheader: {
+        backgroundColor: "#E8E8E8"
+    },
+
+    refresh: {
+        display: "inline-block",
+        position: "relative"
+    }
+
 };
 
 class ExchangeOffers extends React.Component {
@@ -43,7 +54,7 @@ class ExchangeOffers extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            height: "320px",
+            height: "18.6em",
             fixedHeader: true,
             stripedRows: false,
             showRowHover: false,
@@ -60,9 +71,9 @@ class ExchangeOffers extends React.Component {
             <div className={styles.exchangeBox}>
                 <Paper style={styles.block} zDepth={2}>
                     <div>
-                        <br />
-                        <Subheader>Exchange Offers Table</Subheader>
-                        <br />
+                        <Subheader style={styles.subheader}>
+                            Offers table
+                        </Subheader>
                         <Divider />
 
                         {this.props.offersLoaded ?
@@ -96,7 +107,19 @@ class ExchangeOffers extends React.Component {
                                     }, this)}
                                 </TableBody>
                             </Table>
-                            : null
+                            :
+                            <div>
+                                <br />
+                                <RefreshIndicator
+                                    size={70}
+                                    top={0}
+                                    left={0}
+                                    status="loading"
+                                    style={styles.refresh}
+                                />
+                                <br />
+                                <br />
+                            </div>
                         }
                     </div>
                 </Paper>
