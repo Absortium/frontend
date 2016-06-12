@@ -14,7 +14,8 @@ import {
     loggedOut,
     loggedIn,
     logOut,
-    accountsReceived,
+    accountReceived,
+    accountUpdated,
     marketInfoReceived,
     marketChanged,
     offerReceived,
@@ -22,7 +23,8 @@ import {
     subscribeOnTopic,
     subscribeSuccess,
     subscribeFailed,
-    topicUpdate
+    topicUpdate,
+    exchangeCreated
 } from "./actions";
 import {
     LOG_IN,
@@ -32,7 +34,11 @@ import {
     MARKET_CHANGED,
     TOPIC_SUBSCRIBE,
     TOPIC_SUBSCRIBE_FAILED,
-    TOPIC_UPDATE
+    TOPIC_UPDATE,
+    EXCHANGE_CREATED,
+    EXCHANGE_STATUS_INIT,
+    EXCHANGE_STATUS_PENDING,
+    SEND_EXCHANGE
 } from "./constants";
 import { LOCATION_CHANGE } from "react-router-redux";
 import axios from "axios";
@@ -41,7 +47,9 @@ import {
     extractCurrencies,
     sleep,
     include,
-    setTimeoutGenerator
+    setTimeoutGenerator,
+    convert,
+    deconvert
 } from "utils/general";
 import { isTokenExpired } from "utils/jwt";
 import autobahn from "autobahn";
@@ -61,7 +69,8 @@ export function* defaultSaga() {
         MarketInfoService.setup(),
         RouteService.setup(),
         OfferService.setup(),
-        AutobahnService.setup()
+        AutobahnService.setup(),
+        ExchangeService.setup()
     ]
 }
 
@@ -169,6 +178,8 @@ class AuthService {
 class AccountsService {
     static isAuthenticated = false;
     static isMarketInit = false;
+    static currency = false;
+    static account;
 
     static *handlerLoggedIn() {
         AccountsService.isAuthenticated = true;
@@ -179,24 +190,40 @@ class AccountsService {
         AccountsService.isAuthenticated = false;
     }
 
-    static *handlerMarketInitialized() {
+    static *handlerMarketChanged(action) {
         AccountsService.isMarketInit = true;
+        AccountsService.currency = action.from_currency;
         yield* AccountsService.get();
+    }
+
+    static * handleExchangeCreated(action) {
+        let spent = 0;
+        let shouldCheck = false;
+
+        for (let exchange of action.exchanges) {
+            spent += exchange.amount;
+
+            if (exchange.status == EXCHANGE_STATUS_INIT || exchange.status == EXCHANGE_STATUS_PENDING) {
+                shouldCheck = true;
+            }
+        }
+
+        let account = AccountsService.account;
+        account.amount -= spent;
+        AccountsService.account = account;
+
+        yield put(accountUpdated(AccountsService.account))
     }
 
     static *get() {
         if (AccountsService.isAuthenticated && AccountsService.isMarketInit) {
             try {
-                const response = yield call(axios.get, "/api/accounts/");
-                var accounts = response["data"];
+                const response = yield call(axios.get, "/api/accounts/?currency=" + AccountsService.currency);
+                let account = response["data"][0];
 
-                let newAccounts = {};
-                for (let account of accounts) {
-                    let currency = account["currency"];
-                    delete account["currency"];
-                    newAccounts[currency] = account;
-                }
-                yield put(accountsReceived(newAccounts));
+                AccountsService.account = account;
+
+                yield put(accountReceived(account));
             } catch (e) {
                 yield call(toastr.error, "Account", "You credentials aren't valid");
             }
@@ -207,7 +234,8 @@ class AccountsService {
         yield [
             takeEvery(LOGGED_IN, AccountsService.handlerLoggedIn),
             takeEvery(LOGGED_OUT, AccountsService.handlerLoggedOut),
-            takeEvery(MARKET_CHANGED, AccountsService.handlerMarketInitialized)
+            takeEvery(MARKET_CHANGED, AccountsService.handlerMarketChanged),
+            takeEvery(EXCHANGE_CREATED, AccountsService.handleExchangeCreated)
         ]
     }
 }
@@ -391,5 +419,38 @@ class AutobahnService {
             takeEvery(TOPIC_SUBSCRIBE_FAILED, AutobahnService.handlerSubscribe)
         ]
 
+    }
+}
+
+class ExchangeService {
+    static * handlerSendExchange(action) {
+        let data = {
+            from_currency: action.from_currency,
+            to_currency: action.to_currency,
+            amount: convert(action.amount),
+            price: action.price
+        };
+
+        try {
+            const response = yield call(axios.post, "/api/exchanges/", data);
+            let exchanges = response.data;
+
+            yield put(exchangeCreated(exchanges));
+            toastr.success("Exchange", "Created successfully");
+
+        } catch (response) {
+            if (response instanceof Error) {
+                let err = response;
+                throw err
+            }
+
+            toastr.error("Exchange", JSON.parse(response.request.response)[0]);
+        }
+    }
+
+    static * setup() {
+        yield [
+            takeEvery(SEND_EXCHANGE, ExchangeService.handlerSendExchange)
+        ]
     }
 }

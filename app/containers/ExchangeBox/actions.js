@@ -44,10 +44,3 @@ export function changeRate(rate) {
         rate
     };
 }
-
-export function exchangeCreated(exchange) {
-    return {
-        type: EXCHANGE_CREATED,
-        exchange
-    };
-}

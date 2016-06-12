@@ -7,9 +7,9 @@
 import {
     LOGGED_IN,
     LOGGED_OUT,
-    ACCOUNTS_RECEIVED,
-    MARKET_CHANGED,
-    EXCHANGE_CREATED
+    ACCOUNT_RECEIVED,
+    ACCOUNT_UPDATED,
+    MARKET_CHANGED
 } from "containers/App/constants";
 import { deconvert } from "utils/general";
 
@@ -52,10 +52,11 @@ function headerReducer(state = initialState, action) {
 
                 });
 
-        case ACCOUNTS_RECEIVED:
+        case ACCOUNT_UPDATED:
+        case ACCOUNT_RECEIVED:
         {
-            let isAccountLoaded = action.accounts[state.from_currency] != null;
-            let isAccountNotEmpty = action.accounts[state.from_currency] != {};
+            let isAccountLoaded = action.account != null;
+            let isAccountNotEmpty = action.account != {};
             let isAccountExist = isAccountLoaded && isAccountNotEmpty;
 
             let substate = {
@@ -64,7 +65,7 @@ function headerReducer(state = initialState, action) {
             };
 
             if (isAccountExist) {
-                let account = action.accounts[state.from_currency];
+                let account = action.account;
                 substate.balance = deconvert(parseInt(account.amount));
                 substate.address = account.address;
             }
@@ -78,7 +79,7 @@ function headerReducer(state = initialState, action) {
                 {
                     isAccountLoaded: false,
                     isAccountExist: false,
-                    account: null,   
+                    account: null,
                     from_currency: action.from_currency,
                     to_currency: action.to_currency
                 });

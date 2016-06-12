@@ -4,13 +4,13 @@ import {
     loggedIn,
     logIn,
     accountsReceived,
-    marketChanged
+    marketChanged,
+    sendExchange
 } from "containers/App/actions";
 import {
     changeFromAmount,
     changeRate,
-    changeToAmount,
-    exchangeCreated
+    changeToAmount
 } from "./actions";
 import {
     convert,
@@ -23,7 +23,6 @@ import ToAmount from "components/ToAmount";
 import Rate from "components/Rate";
 import selectExchangeBox from "./selectors";
 import { connect } from "react-redux";
-import axios from "axios";
 import RefreshIndicator from "material-ui/RefreshIndicator";
 import { toastr } from "react-redux-toastr";
 
@@ -63,27 +62,10 @@ class ExchangeBox extends React.Component {
         let from_currency = this.props.from_currency;
         let to_currency = this.props.to_currency;
 
-        let amount = convert(this.props.from_amount.value);
+        let amount = this.props.from_amount.value;
         let price = this.props.rate.value;
 
-        let data = {
-            from_currency: from_currency,
-            to_currency: to_currency,
-            amount: amount,
-            price: price
-        };
-        
-        let component = this;
-        axios.post("/api/exchanges/", data)
-            .then(function (response) {
-                toastr.success("Exchange", "Created successfully");
-                component.props.exchangeCreated()
-            })
-            .catch(function (response) {
-                let request = response.request;
-                let msg = JSON.parse(request.response)[0];
-                toastr.error("Exchange", msg);
-            });
+        this.props.sendExchange(from_currency, to_currency, amount, price);
     };
 
 
@@ -212,7 +194,7 @@ mapDispatchToProps(dispatch) {
         handlerFromAmount: (event) => dispatch(changeFromAmount(event.target.value)),
         handlerToAmount: (event) => dispatch(changeToAmount(event.target.value)),
         handlerRate: (event) => dispatch(changeRate(event.target.value)),
-        exchangeCreated: (exchange) => dispatch(exchangeCreated(exchange)),
+        sendExchange: (from_currency, to_currency, amount, price) => dispatch(sendExchange(from_currency, to_currency, amount, price)),
         logIn: () => dispatch(logIn()),
         dispatch,
     };

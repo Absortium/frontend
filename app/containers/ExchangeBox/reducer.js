@@ -7,9 +7,11 @@
 import {
     LOGGED_IN,
     LOGGED_OUT,
-    ACCOUNTS_RECEIVED,
+    ACCOUNT_RECEIVED,
+    ACCOUNT_UPDATED,
     MARKET_CHANGED,
-    MARKET_INFO_RECEIVED
+    MARKET_INFO_RECEIVED,
+    EXCHANGE_CREATED
 } from "containers/App/constants";
 import {
     CHANGE_FROM_AMOUNT,
@@ -24,8 +26,7 @@ import {
     ERROR_FIELD_LT_ZERO,
     RATE_MAX,
     RATE_MIN,
-    TO_AMOUNT_MIN,
-EXCHANGE_CREATED
+    TO_AMOUNT_MIN
 } from "./constants";
 import {
     isValid,
@@ -34,7 +35,7 @@ import {
     errExist,
     deconvert,
     cut,
-    genParam,
+    genParam
 } from "../../utils/general";
 import BigNumber from "bignumber.js";
 BigNumber.config({ DECIMAL_PLACES: 20 });
@@ -91,10 +92,11 @@ function exchangeBoxReducer(state = initialState, action) {
                 });
         }
 
-        case ACCOUNTS_RECEIVED:
+        case ACCOUNT_UPDATED:
+        case ACCOUNT_RECEIVED:
         {
-            let isAccountLoaded = action.accounts[state.from_currency] != null;
-            let isAccountNotEmpty = action.accounts[state.from_currency] != {};
+            let isAccountLoaded = action.account != null;
+            let isAccountNotEmpty = action.account != {};
             let isAccountExist = isAccountLoaded && isAccountNotEmpty;
 
             let substate = {
@@ -103,8 +105,9 @@ function exchangeBoxReducer(state = initialState, action) {
             };
 
             if (isAccountExist) {
-                let balance = deconvert(parseInt(action.accounts[state.from_currency].amount));
+                let balance = deconvert(parseInt(action.account.amount));
                 substate.balance = balance;
+
 
                 if (!isDirty(state.from_amount.value)) {
                     let rate = state.rate.value;
@@ -189,7 +192,7 @@ function exchangeBoxReducer(state = initialState, action) {
                     from_amount = new BigNumber(from_amount);
 
                     if (from_amount >= 0) {
-                        let enoughMoney = !(state.isAccountExist && from_amount > state.state.balance);
+                        let enoughMoney = !(state.isAccountExist && from_amount > state.balance);
 
                         if (enoughMoney) {
                             if (!errExist(state.rate.error)) {
@@ -242,7 +245,7 @@ function exchangeBoxReducer(state = initialState, action) {
 
                             rate = new BigNumber(rate);
                             let from_amount = cut(to_amount / rate);
-                            let enoughMoney = !(isAccountExist && from_amount > state.state.balance);
+                            let enoughMoney = !(isAccountExist && from_amount > state.balance);
 
                             if (!enoughMoney) {
                                 error = ERROR_FROM_AMOUNT_GT_BALANCE;
@@ -301,7 +304,7 @@ function exchangeBoxReducer(state = initialState, action) {
                                 to_amount = new BigNumber(to_amount);
                                 from_amount = cut(to_amount / rate);
 
-                                let enoughMoney = !(isAccountExist && from_amount > state.state.balance);
+                                let enoughMoney = !(isAccountExist && from_amount > state.balance);
 
                                 if (!enoughMoney) {
                                     error = ERROR_FROM_AMOUNT_GT_BALANCE;
@@ -314,7 +317,7 @@ function exchangeBoxReducer(state = initialState, action) {
                             error = ERROR_RATE_LT_MIN
                         }
                     } else {
-                            error = ERROR_RATE_GT_MAX
+                        error = ERROR_RATE_GT_MAX
                     }
                 } else {
                     error = ERROR_FIELD_NOT_VALID;
@@ -356,17 +359,12 @@ function exchangeBoxReducer(state = initialState, action) {
                 });
         }
 
-        case EXCHANGE_CREATED: {
-            let rate = state.market_rate;
-            let balance = state.balance;
-            let spent = action.exchange;
-            
-            console.log(action.exchange);
-            
+        case EXCHANGE_CREATED:
+        {
             return Object.assign({}, state,
-                {   
+                {
                     rate: {
-                        value: rate,
+                        value: state.market_rate,
                         error: null
                     },
                     from_amount: {

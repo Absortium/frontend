@@ -21,7 +21,8 @@ import {
     LOGGED_IN,
     LOG_OUT,
     LOGGED_OUT,
-    ACCOUNTS_RECEIVED,
+    ACCOUNT_RECEIVED,
+    ACCOUNT_UPDATED,
     MARKET_CHANGED,
     MARKET_INFO_RECEIVED,
     OFFERS_RECEIVED,
@@ -29,7 +30,9 @@ import {
     TOPIC_SUBSCRIBE,
     TOPIC_UPDATE,
     TOPIC_SUBSCRIBE_SUCCESS,
-    TOPIC_SUBSCRIBE_FAILED
+    TOPIC_SUBSCRIBE_FAILED,
+    EXCHANGE_CREATED,
+    SEND_EXCHANGE
 } from "./constants";
 
 export function logIn() {
@@ -59,10 +62,17 @@ export function loggedOut() {
     };
 }
 
-export function accountsReceived(accounts) {
+export function accountReceived(account) {
     return {
-        type: ACCOUNTS_RECEIVED,
-        accounts
+        type: ACCOUNT_RECEIVED,
+        account
+    };
+}
+
+export function accountUpdated(account) {
+    return {
+        type: ACCOUNT_UPDATED,
+        account
     };
 }
 
@@ -122,5 +132,22 @@ export function topicUpdate(topic, data) {
         type: TOPIC_UPDATE,
         topic,
         data
+    };
+}
+
+export function sendExchange(from_currency, to_currency, amount, price) {
+    return {
+        type: SEND_EXCHANGE,
+        from_currency,
+        to_currency,
+        amount,
+        price
+    };
+}
+
+export function exchangeCreated(exchanges) {
+    return {
+        type: EXCHANGE_CREATED,
+        exchanges
     };
 }
