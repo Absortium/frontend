@@ -76,13 +76,13 @@ class ExchangeBox extends React.Component {
         let component = this;
         axios.post("/api/exchanges/", data)
             .then(function (response) {
-                toastr.success("Exchange status", "Created successfully");
+                toastr.success("Exchange", "Created successfully");
                 component.props.exchangeCreated()
             })
             .catch(function (response) {
                 let request = response.request;
                 let msg = JSON.parse(request.response)[0];
-                toastr.error("Exchange status", msg);
+                toastr.error("Exchange", msg);
             });
     };
 

@@ -44,7 +44,8 @@ const initialState = {
     isRateLoaded: false,
     isAccountExist: false,
     isAccountLoaded: false,
-    account: null,
+    balance: null,
+    address: null,
     market_rate: null,
 
     rate: {
@@ -102,14 +103,13 @@ function exchangeBoxReducer(state = initialState, action) {
             };
 
             if (isAccountExist) {
-                let account = action.accounts[state.from_currency];
-                account.amount = deconvert(parseInt(account.amount));
-                substate.account = account;
+                let balance = deconvert(parseInt(action.accounts[state.from_currency].amount));
+                substate.balance = balance;
 
                 if (!isDirty(state.from_amount.value)) {
                     let rate = state.rate.value;
 
-                    let from_amount = account.amount;
+                    let from_amount = balance;
                     substate.from_amount = genParam(from_amount, null);
 
                     if (!isEmpty(rate) && !errExist(state.rate.error)) {
@@ -124,7 +124,7 @@ function exchangeBoxReducer(state = initialState, action) {
                     }
                 } else {
                     let from_amount = state.from_amount.value;
-                    let enoughMoney = !(isAccountExist && from_amount > account.amount);
+                    let enoughMoney = !(isAccountExist && from_amount > balance);
 
                     if (!enoughMoney) {
                         substate.from_amount = genParam(from_amount, ERROR_FROM_AMOUNT_GT_BALANCE);
@@ -189,7 +189,7 @@ function exchangeBoxReducer(state = initialState, action) {
                     from_amount = new BigNumber(from_amount);
 
                     if (from_amount >= 0) {
-                        let enoughMoney = !(state.isAccountExist && from_amount > state.account.amount);
+                        let enoughMoney = !(state.isAccountExist && from_amount > state.state.balance);
 
                         if (enoughMoney) {
                             if (!errExist(state.rate.error)) {
@@ -242,7 +242,7 @@ function exchangeBoxReducer(state = initialState, action) {
 
                             rate = new BigNumber(rate);
                             let from_amount = cut(to_amount / rate);
-                            let enoughMoney = !(isAccountExist && from_amount > state.account.amount);
+                            let enoughMoney = !(isAccountExist && from_amount > state.state.balance);
 
                             if (!enoughMoney) {
                                 error = ERROR_FROM_AMOUNT_GT_BALANCE;
@@ -301,7 +301,7 @@ function exchangeBoxReducer(state = initialState, action) {
                                 to_amount = new BigNumber(to_amount);
                                 from_amount = cut(to_amount / rate);
 
-                                let enoughMoney = !(isAccountExist && from_amount > state.account.amount);
+                                let enoughMoney = !(isAccountExist && from_amount > state.state.balance);
 
                                 if (!enoughMoney) {
                                     error = ERROR_FROM_AMOUNT_GT_BALANCE;
@@ -357,10 +357,14 @@ function exchangeBoxReducer(state = initialState, action) {
         }
 
         case EXCHANGE_CREATED: {
-            let rate = state. market_rate;
-
+            let rate = state.market_rate;
+            let balance = state.balance;
+            let spent = action.exchange;
+            
+            console.log(action.exchange);
+            
             return Object.assign({}, state,
-                {
+                {   
                     rate: {
                         value: rate,
                         error: null

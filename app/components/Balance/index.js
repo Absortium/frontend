@@ -62,7 +62,7 @@ class Balance extends React.Component {
 
         return (
             <div style={styles.main}>
-                <DepositDialog address={this.props.account.address}
+                <DepositDialog address={this.props.address}
                                open={this.state.depositDialogOpen}
                                closeHandler={this.handleDepositClose}/>
 
@@ -76,7 +76,7 @@ class Balance extends React.Component {
                 </FloatingActionButton>
 
                     <span style={styles.balance}>
-                        {this.props.account.balance.toPrecision(8) + " " + this.props.currency.toUpperCase()}
+                        {this.props.balance.toPrecision(8) + " " + this.props.currency.toUpperCase()}
                         <CryptoIcon style={styles.icon} icon={this.props.currency}/>
                     </span>
 

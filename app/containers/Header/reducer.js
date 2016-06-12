@@ -18,7 +18,8 @@ const initialState = {
     isAvatarLoaded: false,
     isAccountLoaded: false,
     isAccountExist: false,
-    account: null,
+    balance: null,
+    address: null,
     from_currency: null,
     to_currency: null,
     avatar: null
@@ -64,8 +65,8 @@ function headerReducer(state = initialState, action) {
 
             if (isAccountExist) {
                 let account = action.accounts[state.from_currency];
-                account.balance = deconvert(parseInt(account.amount));
-                substate.account = account;
+                substate.balance = deconvert(parseInt(account.amount));
+                substate.address = account.address;
             }
 
             return Object.assign({}, state, substate);

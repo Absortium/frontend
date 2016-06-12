@@ -59,7 +59,9 @@ export default class Header extends React.Component {
                         : null
                     }
                     {this.props.isAccountLoaded ?
-                        <Balance currency={this.props.from_currency} account={this.props.account}/>
+                        <Balance currency={this.props.from_currency} 
+                                 balance={this.props.balance}
+                                 address={this.props.address}/>
                         : null
                     }
 
