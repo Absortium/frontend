@@ -94,6 +94,33 @@ export function convertCurrencyName(short) {
 
 }
 
+export function setIntervalGenerator(g, ...args) {
+    let fn = function() {
+        let c = g();
+
+        let r = c.next();
+        while (!r.done) {
+            console.log(r);
+            r = c.next();
+        }
+    };
+    
+    setInterval(fn, ...args);
+}
+
+export function setTimeoutGenerator(g, ...args) {
+    let fn = function() {
+        let c = g();
+
+        let r = c.next();
+        while (!r.done) {
+            r = c.next();
+        }
+    };
+
+    setTimeout(fn, ...args);
+}
+
 export function sleep(millis) {
     var deferredResult = Q.defer();
     setTimeout(function () {

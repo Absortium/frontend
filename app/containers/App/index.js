@@ -10,6 +10,7 @@ import React from "react";
 import "sanitize.css/sanitize.css";
 import Footer from "components/Footer";
 import Header from "containers/Header";
+import 'react-redux-toastr/src/less/index.less'
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import getMuiTheme from "material-ui/styles/getMuiTheme";
 import {
@@ -24,8 +25,9 @@ import {
     darkBlack,
     fullBlack
 } from "material-ui/styles/colors";
-import {fade} from 'material-ui/utils/colorManipulator';
+import { fade } from "material-ui/utils/colorManipulator";
 import injectTapEventPlugin from "react-tap-event-plugin";
+
 
 // Import the CSS reset, which HtmlWebpackPlugin transfers to the build folder
 
@@ -37,7 +39,7 @@ injectTapEventPlugin();
 
 const muiTheme = getMuiTheme({
     palette: {
-        primary1Color: cyan500, 
+        primary1Color: cyan500,
         primary2Color: cyan700,
         primary3Color: grey400,
         accent1Color: pinkA200,
@@ -60,13 +62,15 @@ const muiTheme = getMuiTheme({
 class App extends React.Component {
     render() {
         return (
-            <MuiThemeProvider muiTheme={muiTheme}>
-                <div>
-                    <Header />
-                    {this.props.children}
-                    <Footer />
-                </div>
-            </MuiThemeProvider>
+            <div>
+                <MuiThemeProvider muiTheme={muiTheme}>
+                    <div>
+                        <Header />
+                        {this.props.children}
+                        <Footer />
+                    </div>
+                </MuiThemeProvider>
+            </div>
         );
     }
 }

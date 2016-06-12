@@ -24,7 +24,8 @@ import {
     ERROR_FIELD_LT_ZERO,
     RATE_MAX,
     RATE_MIN,
-    TO_AMOUNT_MIN
+    TO_AMOUNT_MIN,
+EXCHANGE_CREATED
 } from "./constants";
 import {
     isValid,
@@ -44,6 +45,7 @@ const initialState = {
     isAccountExist: false,
     isAccountLoaded: false,
     account: null,
+    market_rate: null,
 
     rate: {
         value: null,
@@ -63,6 +65,9 @@ const initialState = {
 };
 
 
+// TODO:
+// HOLY SHIT YOU MUTATE STATE AND ACTION OBJ IN THE REDUCER!!
+// IF YOU NOT FIX THIS SHIT THIS MAY LEAD TO CANCER OF YOUR PENIS MAN!
 
 function exchangeBoxReducer(state = initialState, action) {
     switch (action.type) {
@@ -140,6 +145,8 @@ function exchangeBoxReducer(state = initialState, action) {
             let error = null;
             let market_rate = new BigNumber(action.marketInfo[state.from_currency][state.to_currency].rate);
             let rate = state.rate.value;
+
+            substate.market_rate = market_rate;
 
             if (!isDirty(rate)) {
                 if (market_rate > RATE_MIN) {
@@ -349,6 +356,25 @@ function exchangeBoxReducer(state = initialState, action) {
                 });
         }
 
+        case EXCHANGE_CREATED: {
+            let rate = state. market_rate;
+
+            return Object.assign({}, state,
+                {
+                    rate: {
+                        value: rate,
+                        error: null
+                    },
+                    from_amount: {
+                        value: null,
+                        error: ERROR_FIELD_IS_REQUIRED
+                    },
+                    to_amount: {
+                        value: null,
+                        error: ERROR_FIELD_IS_REQUIRED
+                    }
+                })
+        }
 
         default:
             return state;

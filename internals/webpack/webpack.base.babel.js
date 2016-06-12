@@ -85,6 +85,10 @@ module.exports = (options) => ({
             {
                 test: /\.json$/,
                 loader: 'json-loader',
+            },
+            {
+                test: /\.less$/,
+                loader: "style!css!less"
             }],
         noParse: ['ws', /node_modules\/when\/dist/],
     },

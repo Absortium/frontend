@@ -19,7 +19,8 @@
 import {
     CHANGE_FROM_AMOUNT,
     CHANGE_RATE,
-    CHANGE_TO_AMOUNT
+    CHANGE_TO_AMOUNT,
+    EXCHANGE_CREATED
 } from "./constants";
 
 export function changeFromAmount(from_amount) {
@@ -44,3 +45,9 @@ export function changeRate(rate) {
     };
 }
 
+export function exchangeCreated(exchange) {
+    return {
+        type: EXCHANGE_CREATED,
+        exchange
+    };
+}

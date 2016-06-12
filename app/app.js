@@ -70,28 +70,34 @@ const rootRoute = {
 
 ReactDOM.render(
   <Provider store={store}>
-    <Router
-      history={history}
-      routes={rootRoute}
-      render={
-        // Scroll to top when going to a new page, imitating default browser
-        // behaviour
-        applyRouterMiddleware(
-          useScroll(
-            (prevProps, props) => {
-              if (!prevProps || !props) {
-                return true;
-              }
-
-              if (prevProps.location.pathname !== props.location.pathname) {
-                return [0, 0];
-              }
-
-              return true;
-            }
-          )
-        )
-      }/>
+      <div>
+          <ReduxToastr
+              timeOut={4000}
+              newestOnTop={false}
+              position="top-right"/>
+          <Router
+              history={history}
+              routes={rootRoute}
+              render={
+                // Scroll to top when going to a new page, imitating default browser
+                // behaviour
+                applyRouterMiddleware(
+                  useScroll(
+                    (prevProps, props) => {
+                      if (!prevProps || !props) {
+                        return true;
+                      }
+            
+                      if (prevProps.location.pathname !== props.location.pathname) {
+                        return [0, 0];
+                      }
+            
+                      return true;
+                    }
+                  )
+                )
+              }/>
+      </div>
   </Provider>,
   document.getElementById('app')
 );

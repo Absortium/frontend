@@ -40,9 +40,9 @@ class MarketInfoBox extends React.Component {
                     adjustForCheckbox={false}
                     enableSelectAll={false}>
                     <TableRow>
-                        <TableHeaderColumn tooltip="Crypto currency">Coin</TableHeaderColumn>
-                        <TableHeaderColumn tooltip="Market volume">Volume</TableHeaderColumn>
-                        <TableHeaderColumn tooltip="Coin price">Price</TableHeaderColumn>
+                        <TableHeaderColumn>Coin</TableHeaderColumn>
+                        <TableHeaderColumn>Volume</TableHeaderColumn>
+                        <TableHeaderColumn>Price</TableHeaderColumn>
                     </TableRow>
                 </TableHeader>
                 <TableBody

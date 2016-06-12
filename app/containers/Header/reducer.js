@@ -8,7 +8,8 @@ import {
     LOGGED_IN,
     LOGGED_OUT,
     ACCOUNTS_RECEIVED,
-    MARKET_CHANGED
+    MARKET_CHANGED,
+    EXCHANGE_CREATED
 } from "containers/App/constants";
 import { deconvert } from "utils/general";
 

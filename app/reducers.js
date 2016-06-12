@@ -11,6 +11,7 @@ import headerReducer from "containers/Header/reducer";
 import exchangeBoxReducer from "containers/ExchangeBox/reducer";
 import marketInfoReducer from "containers/MarketInfo/reducer";
 import exchangeOffersReducer from "containers/ExchangeOffers/reducer";
+import {reducer as toastrReducer} from 'react-redux-toastr'
 
 /*
  * routeReducer
@@ -52,6 +53,7 @@ export default function createReducer(asyncReducers) {
         exchangeBox: exchangeBoxReducer,
         exchangeOffers: exchangeOffersReducer,
         marketInfo: marketInfoReducer,
+        toastr: toastrReducer,
         ...asyncReducers,
     });
 }

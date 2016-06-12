@@ -9,7 +9,8 @@ import {
 import {
     changeFromAmount,
     changeRate,
-    changeToAmount
+    changeToAmount,
+    exchangeCreated
 } from "./actions";
 import {
     convert,
@@ -24,6 +25,7 @@ import selectExchangeBox from "./selectors";
 import { connect } from "react-redux";
 import axios from "axios";
 import RefreshIndicator from "material-ui/RefreshIndicator";
+import { toastr } from "react-redux-toastr";
 
 const styles = {
 
@@ -58,25 +60,30 @@ const styles = {
 class ExchangeBox extends React.Component {
 
     createExchange = () => {
-        var from_currency = this.props.from_currency;
-        var to_currency = this.props.to_currency;
+        let from_currency = this.props.from_currency;
+        let to_currency = this.props.to_currency;
 
-        console.log(this.props.from_amount.value);
-        var amount = convert(this.props.from_amount.value);
-        var price = this.props.rate.value;
+        let amount = convert(this.props.from_amount.value);
+        let price = this.props.rate.value;
 
-        var data = {
+        let data = {
             from_currency: from_currency,
             to_currency: to_currency,
             amount: amount,
             price: price
         };
-
-        axios.post("/api/exchanges/", data).then(function (response, err) {
-
-            console.log(response);
-            console.log(err);
-        })
+        
+        let component = this;
+        axios.post("/api/exchanges/", data)
+            .then(function (response) {
+                toastr.success("Exchange status", "Created successfully");
+                component.props.exchangeCreated()
+            })
+            .catch(function (response) {
+                let request = response.request;
+                let msg = JSON.parse(request.response)[0];
+                toastr.error("Exchange status", msg);
+            });
     };
 
 
@@ -205,6 +212,7 @@ mapDispatchToProps(dispatch) {
         handlerFromAmount: (event) => dispatch(changeFromAmount(event.target.value)),
         handlerToAmount: (event) => dispatch(changeToAmount(event.target.value)),
         handlerRate: (event) => dispatch(changeRate(event.target.value)),
+        exchangeCreated: (exchange) => dispatch(exchangeCreated(exchange)),
         logIn: () => dispatch(logIn()),
         dispatch,
     };

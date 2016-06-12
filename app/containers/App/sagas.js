@@ -13,6 +13,7 @@ import {
 import {
     loggedOut,
     loggedIn,
+    logOut,
     accountsReceived,
     marketInfoReceived,
     marketChanged,
@@ -39,9 +40,12 @@ import Auth0Lock from "auth0-lock";
 import {
     extractCurrencies,
     sleep,
-    include
+    include,
+    setTimeoutGenerator
 } from "utils/general";
+import { isTokenExpired } from "utils/jwt";
 import autobahn from "autobahn";
+import { toastr } from "react-redux-toastr";
 
 // All sagas to be loaded
 export default [
@@ -75,6 +79,24 @@ export function* defaultSaga() {
 class AuthService {
     static lock = null;
 
+    static * checkToken() {
+        let token = AuthService.getToken();
+
+        if (token != null) {
+            if (isTokenExpired(token)) {
+                yield put(logOut());
+            } else {
+                AuthService.setupIntercept(token);
+                let profile = AuthService.getProfile();
+                yield put(loggedIn(token, profile));
+
+                setTimeoutGenerator(AuthService.checkToken, 1000 * 60);
+            }
+        }
+
+        return true
+    }
+
     /*
      This method was designed because we encounter the problem of yield in callback,
      so I wrapped lock show method in promise and use it with "call" method.
@@ -86,21 +108,13 @@ class AuthService {
     }
 
     static getToken() {
-        var token = localStorage.getItem("token");
-
-        var authHash = AuthService.lock.parseHash(window.location.hash);
-        if (!token && authHash) {
-            if (authHash.id_token) {
-                token = authHash.id_token;
-                localStorage.setItem("token", authHash.id_token);
-            }
-            if (authHash.error) {
-                return null;
-            }
-        }
-
-        return token
+        return localStorage.getItem("token");
     }
+
+    static getProfile() {
+        return JSON.parse(localStorage.getItem("profile"));
+    }
+
 
     static setupIntercept(token) {
         axios.interceptors.request.use(function (config) {
@@ -143,13 +157,7 @@ class AuthService {
     static *setup() {
         AuthService.lock = new Auth0Lock("JmIrPzSo0nixk13ohk8KeQC2OZ7LByRI", "absortium.auth0.com");
 
-        var token = localStorage.getItem("token");
-        var profile = JSON.parse(localStorage.getItem("profile"));
-
-        if (token != null) {
-            AuthService.setupIntercept(token);
-            yield put(loggedIn(token, profile));
-        }
+        yield AuthService.checkToken();
 
         yield [
             takeEvery(LOG_OUT, AuthService.handlerLogOut),
@@ -178,16 +186,20 @@ class AccountsService {
 
     static *get() {
         if (AccountsService.isAuthenticated && AccountsService.isMarketInit) {
-            const response = yield call(axios.get, "/api/accounts/");
-            var accounts = response["data"];
+            try {
+                const response = yield call(axios.get, "/api/accounts/");
+                var accounts = response["data"];
 
-            let newAccounts = {};
-            for (let account of accounts) {
-                let currency = account["currency"];
-                delete account["currency"];
-                newAccounts[currency] = account;
+                let newAccounts = {};
+                for (let account of accounts) {
+                    let currency = account["currency"];
+                    delete account["currency"];
+                    newAccounts[currency] = account;
+                }
+                yield put(accountsReceived(newAccounts));
+            } catch (e) {
+                yield call(toastr.error, "Account", "You credentials aren't valid");
             }
-            yield put(accountsReceived(newAccounts));
         }
     }
 
@@ -284,10 +296,7 @@ class OfferService {
     };
 
     static * handlerUpdate(action) {
-        console.log(action);
-        console.log(OfferService.topics);
-        console.log(include(OfferService.topics, action.topic));
-        if(include(OfferService.topics, action.topic)) {
+        if (include(OfferService.topics, action.topic)) {
             yield put(offersChanged(action.data))
         }
     }
