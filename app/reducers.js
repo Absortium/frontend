@@ -45,6 +45,7 @@ function routeReducer(state = routeInitialState, action) {
  * Creates the main reducer with the asynchronously loaded ones
  */
 
+import accountBoxReducer from 'containers/AccountBox/reducer';
 export default function createReducer(asyncReducers) {
     return combineReducers({
         route: routeReducer,
@@ -53,6 +54,7 @@ export default function createReducer(asyncReducers) {
         exchangeBox: exchangeBoxReducer,
         exchangeOffers: exchangeOffersReducer,
         marketInfo: marketInfoReducer,
+        accountBox: accountBoxReducer,
         toastr: toastrReducer,
         ...asyncReducers,
     });

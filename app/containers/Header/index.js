@@ -54,17 +54,6 @@ export default class Header extends React.Component {
                         <RaisedButton onMouseDown={() => this.props.logIn()} label="LOG IN" primary={true}/>
                     }
 
-                    {this.props.isAccountLoaded ?
-                        <ToolbarSeparator />
-                        : null
-                    }
-                    {this.props.isAccountLoaded ?
-                        <Balance currency={this.props.from_currency} 
-                                 balance={this.props.balance}
-                                 address={this.props.address}/>
-                        : null
-                    }
-
                 </ToolbarGroup>
             </Toolbar>
         );

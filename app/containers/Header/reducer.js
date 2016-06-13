@@ -52,39 +52,6 @@ function headerReducer(state = initialState, action) {
 
                 });
 
-        case ACCOUNT_UPDATED:
-        case ACCOUNT_RECEIVED:
-        {
-            let isAccountLoaded = action.account != null;
-            let isAccountNotEmpty = action.account != {};
-            let isAccountExist = isAccountLoaded && isAccountNotEmpty;
-
-            let substate = {
-                isAccountLoaded: isAccountLoaded,
-                isAccountExist: isAccountExist
-            };
-
-            if (isAccountExist) {
-                let account = action.account;
-                substate.balance = deconvert(parseInt(account.amount));
-                substate.address = account.address;
-            }
-
-            return Object.assign({}, state, substate);
-        }
-
-        case MARKET_CHANGED:
-        {
-            return Object.assign({}, state,
-                {
-                    isAccountLoaded: false,
-                    isAccountExist: false,
-                    account: null,
-                    from_currency: action.from_currency,
-                    to_currency: action.to_currency
-                });
-        }
-
 
         default:
             return state;

@@ -5,19 +5,20 @@
  */
 
 import React from "react";
-import WithdrawalIcon from "../../../node_modules/material-ui/svg-icons/navigation/arrow-downward";
-import DepositIcon from "../../../node_modules/material-ui/svg-icons/navigation/arrow-upward";
 import FloatingActionButton from "material-ui/FloatingActionButton";
 import DepositDialog from "components/DepositDialog";
 import { convertCurrencyName } from "utils/general";
-import CryptoIcon from "components/CryptoIcon";
+import {
+    TableRow,
+    TableRowColumn
+} from "material-ui/Table";
 
 var styles = {
     main: {
         marginLeft: "2em",
         marginTop: "0.4em"
     },
-    
+
     icon: {
         backgroundColor: "block",
         marginLeft: "0.5em",
@@ -34,14 +35,14 @@ var styles = {
 
     deposit: {
         backgroundColor: "#9CD689",
-        marginRight: "0.6em",
+        marginRight: "0.4em",
     },
     withdrawal: {
         backgroundColor: "#E87272",
         marginLeft: "0.4em"
-
     }
 };
+
 
 
 class Balance extends React.Component {
@@ -60,37 +61,30 @@ class Balance extends React.Component {
 
     render() {
 
-        return (
-            <div style={styles.main}>
+        return <TableRow key={this.props.currency}>
+            <TableRowColumn>{this.props.currency.toUpperCase()}</TableRowColumn>
+            <TableRowColumn>{this.props.balance}</TableRowColumn>
+            <TableRowColumn>
                 <DepositDialog address={this.props.address}
                                open={this.state.depositDialogOpen}
                                closeHandler={this.handleDepositClose}/>
-
                 <FloatingActionButton
-                    mini={true}
                     style={styles.deposit}
+                    mini={true}
                     backgroundColor={styles.deposit.backgroundColor}
-                    onClick={this.handleDepositButton}>
-
-                    <DepositIcon style={styles.icon}/>
+                    onClick={this.handleDepositButton}> D
                 </FloatingActionButton>
-
-                    <span style={styles.balance}>
-                        {this.props.balance.toPrecision(8) + " " + this.props.currency.toUpperCase()}
-                        <CryptoIcon style={styles.icon} icon={this.props.currency}/>
-                    </span>
-
 
                 <FloatingActionButton
-                    mini={true}
                     style={styles.withdrawal}
-                    backgroundColor={styles.withdrawal.backgroundColor}>
-                    <WithdrawalIcon style={styles.icon}/>
+                    mini={true}
+                    backgroundColor={styles.withdrawal.backgroundColor}> W
                 </FloatingActionButton>
+            </TableRowColumn>
+        </TableRow>
 
-            </div>
-        );
     }
 }
+
 
 export default Balance;

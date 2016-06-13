@@ -13,6 +13,7 @@ import {
 import ExchangeBox from "containers/ExchangeBox";
 import MarketInfo from "containers/MarketInfo";
 import ExchangeOffers from "containers/ExchangeOffers";
+import AccountBox from "containers/AccountBox";
 import LastExchanges from "components/LastExchanges";
 import styles from "./styles.css";
 import CircularProgress from "material-ui/CircularProgress";
@@ -101,6 +102,11 @@ export class ExchangePage extends React.Component {
                 </div>
                 <div className={styles.market}>
                     <Col xs={12}>
+                        <Row center="xs">
+                            <Col xs={8}>
+                                <AccountBox />
+                            </Col>
+                        </Row>
                         <Row center="xs">
                             <Col xs={8}>
                                 <MarketInfo />
