@@ -16,6 +16,7 @@ import {
     RATE_MAX
 } from "../containers/ExchangeBox/constants";
 import Q from "q";
+BigNumber.config({ DECIMAL_PLACES: 20 });
 
 const precision = 8;
 
@@ -27,9 +28,16 @@ export function isDirty(value) {
     return value != null
 }
 
-export function deconvert(value) {
-    return value / new BigNumber(Math.pow(10, precision))
+export function deconvert(value, withPrecision = false) {
+    if (withPrecision) {
+        return (value / new BigNumber(Math.pow(10, precision))).toPrecision(precision);
+    } else {
+        return value / new BigNumber(Math.pow(10, precision));
+    }
+}
 
+export function normalize(value) {
+    return new BigNumber(value).toPrecision(precision);
 }
 export function convert(value) {
     return Math.round(new BigNumber(value) * Math.pow(10, precision));
@@ -53,7 +61,17 @@ export function num2str(value) {
 }
 
 export function cut(value) {
-    return new BigNumber((value.toPrecision(precision)).toString());
+    value = value.toFixed(8);
+
+    value = new BigNumber(value);
+
+    // cut all numbers after 8th.
+    value = value.toPrecision(precision);
+
+    // make from this string and cut the zeros
+    value = parseFloat(value.toString());
+
+    return value.toString();
 }
 
 export function getErrorText(error) {
@@ -95,7 +113,7 @@ export function convertCurrencyName(short) {
 }
 
 export function setIntervalGenerator(g, ...args) {
-    let fn = function() {
+    let fn = function () {
         let c = g();
 
         let r = c.next();
@@ -104,12 +122,12 @@ export function setIntervalGenerator(g, ...args) {
             r = c.next();
         }
     };
-    
+
     setInterval(fn, ...args);
 }
 
 export function setTimeoutGenerator(g, ...args) {
-    let fn = function() {
+    let fn = function () {
         let c = g();
 
         let r = c.next();
@@ -129,7 +147,7 @@ export function sleep(millis) {
     return deferredResult.promise;
 }
 
-export function include(arr,obj) {
+export function include(arr, obj) {
     return (arr.indexOf(obj) != -1);
 }
 
@@ -139,8 +157,18 @@ export function extractCurrencies(s) {
 }
 
 export function genParam(value, error) {
+    let shouldCut = typeof value == "number";
+
     return {
-        value: num2str(value),
+        value: shouldCut ? cut(value) : value,
         error: error
     }
+}
+
+export function copy(obj) {
+    return JSON.parse(JSON.stringify(obj))
+}
+
+export function pprint(obj) {
+    console.log(JSON.stringify(obj, null, 2));
 }

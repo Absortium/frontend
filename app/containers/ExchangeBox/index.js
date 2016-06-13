@@ -23,6 +23,7 @@ import RefreshIndicator from "material-ui/RefreshIndicator";
 import Divider from "material-ui/Divider";
 import FromAmount from "components/FromAmount";
 import ToAmount from "components/ToAmount";
+import CryptoIcon from "components/CryptoIcon";
 import Rate from "components/Rate";
 import { connect } from "react-redux";
 import { toastr } from "react-redux-toastr";
@@ -37,10 +38,13 @@ const styles = {
             fontSize: "1em"
         },
 
-        icon: {
-            marginLeft: "0.5em",
-            marginBottom: "0.2em"
-        }
+
+    },
+
+    icon: {
+        marginLeft: "0.1em",
+        marginRight: "0.3em",
+        marginBottom: "0.2em",
     },
 
     block: {
@@ -90,7 +94,9 @@ class ExchangeBox extends React.Component {
                 <div>
                     <Rate handler={this.props.handlerRate}
                           rate={this.props.rate.value}
-                          error={this.props.rate.error}/>
+                          error={this.props.rate.error}
+                          from_currency={this.props.from_currency}
+                          to_currency={this.props.to_currency}/>
 
                     <FromAmount currency={this.props.from_currency}
                                 handler={this.props.handlerFromAmount}

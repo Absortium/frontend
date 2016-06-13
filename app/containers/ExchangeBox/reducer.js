@@ -34,7 +34,6 @@ import {
     isEmpty,
     errExist,
     deconvert,
-    cut,
     genParam
 } from "../../utils/general";
 import BigNumber from "bignumber.js";
@@ -117,6 +116,8 @@ function exchangeBoxReducer(state = initialState, action) {
                     substate.from_amount = genParam(from_amount, null);
 
                     if (!isEmpty(rate) && !errExist(state.rate.error)) {
+                        rate = new BigNumber(rate);
+
                         let error;
                         let to_amount = rate * from_amount;
 
@@ -198,7 +199,7 @@ function exchangeBoxReducer(state = initialState, action) {
                         if (enoughMoney) {
                             if (!errExist(state.rate.error)) {
                                 rate = new BigNumber(rate);
-                                let to_amount = cut(from_amount * rate);
+                                let to_amount = from_amount * rate;
 
                                 if (to_amount < TO_AMOUNT_MIN) {
                                     substate.to_amount = genParam(to_amount, ERROR_TO_AMOUNT_LT_MIN);
@@ -245,7 +246,7 @@ function exchangeBoxReducer(state = initialState, action) {
                             let error = null;
 
                             rate = new BigNumber(rate);
-                            let from_amount = cut(to_amount / rate);
+                            let from_amount = to_amount / rate;
                             let enoughMoney = !(isAccountExist && from_amount > state.balance);
 
                             if (!enoughMoney) {
@@ -292,7 +293,7 @@ function exchangeBoxReducer(state = initialState, action) {
                                 let error = null;
 
                                 from_amount = new BigNumber(from_amount);
-                                to_amount = cut(rate * from_amount);
+                                to_amount = rate * from_amount;
 
                                 if (to_amount < TO_AMOUNT_MIN) {
                                     error = ERROR_TO_AMOUNT_LT_MIN;
@@ -303,7 +304,7 @@ function exchangeBoxReducer(state = initialState, action) {
                                 let error = null;
 
                                 to_amount = new BigNumber(to_amount);
-                                from_amount = cut(to_amount / rate);
+                                from_amount = to_amount / rate;
 
                                 let enoughMoney = !(isAccountExist && from_amount > state.balance);
 

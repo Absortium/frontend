@@ -221,7 +221,11 @@ class AccountsService {
 
                 yield put(accountReceived(account));
             } catch (e) {
-                yield call(toastr.error, "Account", "You credentials aren't valid");
+                if (e instanceof Error) {
+                    throw e
+                } else {
+                    yield call(toastr.error, "Account", "You credentials aren't valid");
+                }
             }
         }
     }
@@ -310,8 +314,8 @@ class OfferService {
         let to_currency = action.to_currency;
 
         let q = "?";
-        q += "from_currency=" + from_currency;
-        q += "&to_currency=" + to_currency;
+        q += "from_currency=" + to_currency;
+        q += "&to_currency=" + from_currency;
 
         const response = yield call(axios.get, "/api/offers/" + q);
         let offers = response["data"];
@@ -328,7 +332,7 @@ class OfferService {
     static * connect(action) {
         let from_currency = action.from_currency;
         let to_currency = action.to_currency;
-        let topic = from_currency + "_" + to_currency;
+        let topic = to_currency + "_" + from_currency;
 
         OfferService.topics.push(topic);
         yield put(subscribeOnTopic(topic));

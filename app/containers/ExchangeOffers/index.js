@@ -20,6 +20,7 @@ import Subheader from "material-ui/Subheader";
 import RefreshIndicator from "material-ui/RefreshIndicator";
 import Divider from "material-ui/Divider";
 import selectExchangeOffers from "./selectors";
+import { substituteExchange } from "./actions";
 
 const styles = {
     block: {
@@ -51,20 +52,11 @@ const styles = {
 
 class ExchangeOffers extends React.Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            height: "18.6em",
-            fixedHeader: true,
-            stripedRows: false,
-            showRowHover: false,
-            selectable: true,
-            multiSelectable: false,
-            enableSelectAll: false,
-            deselectOnClickaway: true,
-            showCheckboxes: false
-        };
-    }
+    handleRowSelect = () => {
+        // TODO: 
+        this.props.substituteExchange()
+
+    };
 
     render() {
         return (
@@ -78,24 +70,24 @@ class ExchangeOffers extends React.Component {
 
                         {this.props.offersLoaded ?
                             <Table
-                                height={this.state.height}
-                                fixedHeader={this.state.fixedHeader}
-                                selectable={this.state.selectable}
-                                multiSelectable={this.state.multiSelectable}>
+                                height="18.6em"
+                                fixedHeader={true}
+                                selectable={true}
+                                multiSelectable={false}>
                                 <TableHeader
-                                    displaySelectAll={this.state.showCheckboxes}
-                                    adjustForCheckbox={this.state.showCheckboxes}
-                                    enableSelectAll={this.state.enableSelectAll}>
+                                    displaySelectAll={false}
+                                    adjustForCheckbox={false}
+                                    enableSelectAll={false}>
                                     <TableRow>
                                         <TableHeaderColumn tooltip="The Price">Price</TableHeaderColumn>
                                         <TableHeaderColumn tooltip="The Amount">Amount</TableHeaderColumn>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody
-                                    displayRowCheckbox={this.state.showCheckboxes}
-                                    deselectOnClickaway={this.state.deselectOnClickaway}
-                                    showRowHover={this.state.showRowHover}
-                                    stripedRows={this.state.stripedRows}>
+                                    displayRowCheckbox={false}
+                                    deselectOnClickaway={true}
+                                    showRowHover={false}
+                                    stripedRows={false}>
                                     { Object.keys(this.props.offers).map(function (price) {
                                         let amount = this.props.offers[price];
                                         return (
@@ -134,6 +126,9 @@ const mapStateToProps = selectExchangeOffers();
 
 function mapDispatchToProps(dispatch) {
     return {
+        substituteExchange: (price, amount) => {
+            dispatch(substituteExchange(price, amount))
+        },
         dispatch,
     };
 }

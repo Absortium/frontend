@@ -29,7 +29,7 @@ import {
     changeRate
 } from "../actions"
 
-import { genParam } from "../../../utils/general";
+import { genParam, copy, pprint} from "../../../utils/general";
 import _ from "lodash";
 
 const initialState = {
@@ -80,8 +80,8 @@ describe("ExchangeBoxReducer", () => {
     let expected;
 
     beforeEach(() => {
-        state = clone(getInitState());
-        expected = clone(getInitState());
+        state = copy(getInitState());
+        expected = copy(getInitState());
     });
 
     it("change market", () => {
@@ -365,8 +365,8 @@ function testAuthentication(state, expected) {
 }
 
 function testAccountLoaded(state, expected, isFirst=true) {
-    state = exchageBoxReducer(state, accountsReceived(clone(accounts)));
-    expected["account"] = clone(accounts["btc"]);
+    state = exchageBoxReducer(state, accountsReceived(copy(accounts)));
+    expected["account"] = copy(accounts["btc"]);
     expected["account"]["amount"] = 4;
     expected["isAccountLoaded"] = true;
     expected["isAccountExist"] = true;
@@ -381,7 +381,7 @@ function testAccountLoaded(state, expected, isFirst=true) {
 }
 
 function testMarketInfoReceived(state, expected, isFirst=true, isAccountLoaded=true) {
-    state = exchageBoxReducer(state, marketInfoReceived(clone(marketInfo)));
+    state = exchageBoxReducer(state, marketInfoReceived(copy(marketInfo)));
     expected["isRateLoaded"] = true;
 
     if (isFirst) {
@@ -410,15 +410,10 @@ function preinit(state, expected) {
     return [state, expected]
 }
 
-function clone(obj) {
-    return JSON.parse(JSON.stringify(obj))
-}
-function pprint(obj) {
-    console.log(JSON.stringify(obj, null, 2));
-}
+
 
 function diff(d1, d2) {
-    _.merge(clone(d1), clone(d2), function (objectValue, sourceValue, key, object, source) {
+    _.merge(copy(d1), copy(d2), function (objectValue, sourceValue, key, object, source) {
         console.log(objectValue);
 
         if (!(_.isEqual(objectValue, sourceValue)) && (Object(objectValue) !== objectValue)) {

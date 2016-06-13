@@ -7,18 +7,17 @@
 import React from "react";
 import TextField from "material-ui/TextField";
 import { getErrorText } from "utils/general";
-
+import CryptoIcon from "components/CryptoIcon";
 
 const styles = {
     div: {
-        height: "5em",
-        marginLeft: "3em",
+        height: "6em",
+        marginLeft: "4em",
         marginRight: "3em"
     },
     textField: {
         width: "15em"
     },
-
     icon: {
         verticalAlign: "top",
         marginTop: "2em"
@@ -27,7 +26,6 @@ const styles = {
         color: "#E87272"
     }
 };
-
 class Rate extends React.Component {
     render() {
         let errorText = getErrorText(this.props.error);
@@ -35,7 +33,7 @@ class Rate extends React.Component {
         return (
             <div style={styles.div}>
                 <TextField
-                    floatingLabelText="Price (Rate) of the exchange"
+                    floatingLabelText={"Price for 1 " + this.props.from_currency.toUpperCase() + " in " + this.props.to_currency.toUpperCase()}
                     floatingLabelFixed={true}
                     errorText={errorText}
                     style={styles.textField}
@@ -46,6 +44,7 @@ class Rate extends React.Component {
                     value={this.props.rate}
                     onChange={this.props.handler}
                 />
+                <CryptoIcon style={styles.icon} icon={this.props.to_currency}/>
                 <br />
             </div>
         );
