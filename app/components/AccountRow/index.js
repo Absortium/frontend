@@ -9,6 +9,7 @@ import FloatingActionButton from "material-ui/FloatingActionButton";
 import DepositIcon from "../../../node_modules/material-ui/svg-icons/content/add";
 import WithdrawIcon from "../../../node_modules/material-ui/svg-icons/content/remove";
 import DepositDialog from "components/DepositDialog";
+import WithdrawDialog from "components/WithdrawDialog";
 import { convertCurrencyName } from "utils/general";
 import {
     TableRow,
@@ -45,6 +46,14 @@ class AccountRow extends React.Component {
         this.setState({ depositDialogOpen: false });
     };
 
+    handleWithdrawButton = () => {
+        this.setState({ withdrawalDialogOpen: true });
+    };
+
+    handleWithdrawClose = () => {
+        this.setState({ withdrawalDialogOpen: false });
+    };
+
     render() {
 
         return <TableRow key={this.props.currency}>
@@ -54,6 +63,11 @@ class AccountRow extends React.Component {
                 <DepositDialog address={this.props.address}
                                open={this.state.depositDialogOpen}
                                closeHandler={this.handleDepositClose}/>
+
+                <WithdrawDialog address={this.props.address}
+                               open={this.state.withdrawalDialogOpen}
+                               closeHandler={this.handleWithdrawClose}/>
+
                 <FloatingActionButton
                     style={styles.deposit}
                     mini={true}
@@ -65,7 +79,8 @@ class AccountRow extends React.Component {
                 <FloatingActionButton
                     style={styles.withdrawal}
                     mini={true}
-                    backgroundColor={styles.withdrawal.backgroundColor}>
+                    backgroundColor={styles.withdrawal.backgroundColor}
+                    onClick={this.handleWithdrawButton}>
                     <WithdrawIcon/>
                 </FloatingActionButton>
             </TableRowColumn>
