@@ -23,26 +23,26 @@ import {
 } from "containers/App/actions";
 
 const history = [
-    { 'amount': 0.34269322, 'price': 0.25454716},
-    { 'amount': 0.92768501, 'price': 0.36552912},
-    { 'amount': 0.97495911, 'price': 0.41704308},
-    { 'amount': 0.41348703, 'price': 0.31727511},
-    { 'amount': 0.63994097, 'price': 0.53285475},
-    { 'amount': 0.77036006, 'price': 0.61985821},
-    { 'amount': 0.15355616, 'price': 0.77162296},
-    { 'amount': 0.44676139, 'price': 0.76318684},
-    { 'amount': 0.94544444, 'price': 0.41629236},
-    { 'amount': 0.94468284, 'price': 0.54931952},
-    { 'amount': 0.18548095, 'price': 0.76290054},
-    { 'amount': 0.25112337, 'price': 0.73801414},
-    { 'amount': 0.88087109, 'price': 0.51386763},
-    { 'amount': 0.55772024, 'price': 0.99729461},
-    { 'amount': 0.05663941, 'price': 0.99123404},
-    { 'amount': 0.89483531, 'price': 0.87582768},
-    { 'amount': 0.69610386, 'price': 0.56927646},
-    { 'amount': 0.32955509, 'price': 0.47424472},
-    { 'amount': 0.93375975, 'price': 0.23976491},
-    { 'amount': 0.40490166, 'price': 0.98660044}];
+    { 'amount': 0.34269322, 'price': 0.25454716 },
+    { 'amount': 0.92768501, 'price': 0.36552912 },
+    { 'amount': 0.97495911, 'price': 0.41704308 },
+    { 'amount': 0.41348703, 'price': 0.31727511 },
+    { 'amount': 0.63994097, 'price': 0.53285475 },
+    { 'amount': 0.77036006, 'price': 0.61985821 },
+    { 'amount': 0.15355616, 'price': 0.77162296 },
+    { 'amount': 0.44676139, 'price': 0.76318684 },
+    { 'amount': 0.94544444, 'price': 0.41629236 },
+    { 'amount': 0.94468284, 'price': 0.54931952 },
+    { 'amount': 0.18548095, 'price': 0.76290054 },
+    { 'amount': 0.25112337, 'price': 0.73801414 },
+    { 'amount': 0.88087109, 'price': 0.51386763 },
+    { 'amount': 0.55772024, 'price': 0.99729461 },
+    { 'amount': 0.05663941, 'price': 0.99123404 },
+    { 'amount': 0.89483531, 'price': 0.87582768 },
+    { 'amount': 0.69610386, 'price': 0.56927646 },
+    { 'amount': 0.32955509, 'price': 0.47424472 },
+    { 'amount': 0.93375975, 'price': 0.23976491 },
+    { 'amount': 0.40490166, 'price': 0.98660044 }];
 
 export class ExchangePage extends React.Component {
 
@@ -84,33 +84,35 @@ export class ExchangePage extends React.Component {
         return (
             <div className={styles.main}>
                 <div className={styles.content}>
-                    <div>
-                        <Col xs={12}>
-                            <Row center="xs">
-                                <Col xs={4}>
-                                    {lastExchanges}
-                                </Col>
-                                <Col xs={4}>
-                                    <ExchangeBox />
-                                </Col>
-                                <Col xs={4}>
-                                    <ExchangeOffers />
-                                </Col>
-                            </Row>
-                        </Col>
-                    </div>
-                </div>
-                <div className={styles.market}>
                     <Col xs={12}>
                         <Row center="xs">
-                            <Col xs={8}>
-                                <AccountBox />
+                            <Col xs={4}></Col>
+                            <Col xs={3}>
+                                <ExchangeBox />
                             </Col>
+                            <Col xs={3}>
+                                <Row left="xs">
+                                    <Col xs={12}>
+                                        <AccountBox />
+                                    </Col>
+                                </Row>
+                                <Row left="xs">
+                                    <Col xs={12}>
+                                        <MarketInfo />
+                                    </Col>
+                                </Row>
+                            </Col>
+                            <Col xs={2}></Col>
                         </Row>
                         <Row center="xs">
-                            <Col xs={8}>
-                                <MarketInfo />
+                            <Col xs={4}></Col>
+                            <Col xs={3}>
+                                {lastExchanges}
                             </Col>
+                            <Col xs={3}>
+                                <ExchangeOffers />
+                            </Col>
+                            <Col xs={2}></Col>
                         </Row>
                     </Col>
                 </div>

@@ -10,11 +10,11 @@
     }
 
     .content {
-        flex: 0 0 75em;
+        flex: 0 0 100em;
     }
 
     .market {
         /* 50em is the width of the market column */
-        flex: 0 0 40em;
+        flex: 0 0 0em;
     }
 }

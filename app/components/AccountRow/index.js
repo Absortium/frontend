@@ -6,6 +6,8 @@
 
 import React from "react";
 import FloatingActionButton from "material-ui/FloatingActionButton";
+import DepositIcon from "../../../node_modules/material-ui/svg-icons/content/add";
+import WithdrawIcon from "../../../node_modules/material-ui/svg-icons/content/remove";
 import DepositDialog from "components/DepositDialog";
 import { convertCurrencyName } from "utils/general";
 import {
@@ -56,13 +58,15 @@ class AccountRow extends React.Component {
                     style={styles.deposit}
                     mini={true}
                     backgroundColor={styles.deposit.backgroundColor}
-                    onClick={this.handleDepositButton}> D
+                    onClick={this.handleDepositButton}>
+                    <DepositIcon/>
                 </FloatingActionButton>
 
                 <FloatingActionButton
                     style={styles.withdrawal}
                     mini={true}
-                    backgroundColor={styles.withdrawal.backgroundColor}> W
+                    backgroundColor={styles.withdrawal.backgroundColor}>
+                    <WithdrawIcon/>
                 </FloatingActionButton>
             </TableRowColumn>
         </TableRow>
