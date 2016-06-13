@@ -146,7 +146,7 @@ class AuthService {
             localStorage.setItem("token", token);
             localStorage.setItem("profile", JSON.stringify(profile));
             yield put(loggedIn(token, profile));
-        } catch(e) {
+        } catch (e) {
             console.log("Error signing in", e);
         }
     }
@@ -183,7 +183,7 @@ class AccountsService {
 
     static *handlerLoggedOut() {
         AccountsService.isAuthenticated = false;
-        AccountsService.account = null
+        AccountsService.account = null;
     }
 
     static *handlerMarketChanged(action) {
@@ -204,22 +204,22 @@ class AccountsService {
             }
         }
 
-        let account = AccountsService.account;
-        account.amount -= spent;
-        AccountsService.account = account;
-
-        yield put(accountUpdated(AccountsService.account))
+        AccountsService.account.amount -= spent;
+        yield put(accountUpdated(AccountsService.account));
     }
 
     static *get() {
         if (AccountsService.isAuthenticated && AccountsService.isMarketInit) {
             try {
-                const response = yield call(axios.get, "/api/accounts/?currency=" + AccountsService.currency);
-                let account = response["data"][0];
+                const response = yield call(axios.get, "/api/accounts/");
+                let accounts = response["data"];
 
-                AccountsService.account = account;
-
-                yield put(accountReceived(account));
+                for (let account of accounts) {
+                    if (account.currency == AccountsService.currency) {
+                        AccountsService.account = account;
+                    }
+                    yield put(accountReceived(account));
+                }
             } catch (e) {
                 if (e instanceof Error) {
                     throw e

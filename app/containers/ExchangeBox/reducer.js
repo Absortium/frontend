@@ -95,50 +95,54 @@ function exchangeBoxReducer(state = initialState, action) {
         case ACCOUNT_UPDATED:
         case ACCOUNT_RECEIVED:
         {
-            let isAccountLoaded = action.account != null;
-            let isAccountNotEmpty = action.account != {};
-            let isAccountExist = isAccountLoaded && isAccountNotEmpty;
+            if (action.account.currency == state.from_currency) {
+                let isAccountLoaded = action.account != null;
+                let isAccountNotEmpty = action.account != {};
+                let isAccountExist = isAccountLoaded && isAccountNotEmpty;
 
-            let substate = {
-                isAccountLoaded: isAccountLoaded,
-                isAccountExist: isAccountExist
-            };
+                let substate = {
+                    isAccountLoaded: isAccountLoaded,
+                    isAccountExist: isAccountExist
+                };
 
-            if (isAccountExist) {
-                let balance = deconvert(parseInt(action.account.amount));
-                substate.balance = balance;
+                if (isAccountExist) {
+                    let balance = deconvert(parseInt(action.account.amount));
+                    substate.balance = balance;
 
 
-                if (!isDirty(state.from_amount.value)) {
-                    let rate = state.rate.value;
+                    if (!isDirty(state.from_amount.value)) {
+                        let rate = state.rate.value;
 
-                    let from_amount = balance;
-                    substate.from_amount = genParam(from_amount, null);
+                        let from_amount = balance;
+                        substate.from_amount = genParam(from_amount, null);
 
-                    if (!isEmpty(rate) && !errExist(state.rate.error)) {
-                        rate = new BigNumber(rate);
+                        if (!isEmpty(rate) && !errExist(state.rate.error)) {
+                            rate = new BigNumber(rate);
 
-                        let error;
-                        let to_amount = rate * from_amount;
+                            let error;
+                            let to_amount = rate * from_amount;
 
-                        if (to_amount < TO_AMOUNT_MIN) {
-                            error = ERROR_TO_AMOUNT_LT_MIN;
+                            if (to_amount < TO_AMOUNT_MIN) {
+                                error = ERROR_TO_AMOUNT_LT_MIN;
+                            }
+
+                            substate.to_amount = genParam(to_amount, error);
+                        }
+                    } else {
+                        let from_amount = state.from_amount.value;
+                        let enoughMoney = !(isAccountExist && from_amount > balance);
+
+                        if (!enoughMoney) {
+                            substate.from_amount = genParam(from_amount, ERROR_FROM_AMOUNT_GT_BALANCE);
                         }
 
-                        substate.to_amount = genParam(to_amount, error);
                     }
-                } else {
-                    let from_amount = state.from_amount.value;
-                    let enoughMoney = !(isAccountExist && from_amount > balance);
-
-                    if (!enoughMoney) {
-                        substate.from_amount = genParam(from_amount, ERROR_FROM_AMOUNT_GT_BALANCE);
-                    }
-
                 }
-            }
 
-            return Object.assign({}, state, substate);
+                return Object.assign({}, state, substate);
+            } else {
+                return state
+            }
         }
 
         case MARKET_INFO_RECEIVED:

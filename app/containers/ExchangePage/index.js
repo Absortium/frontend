@@ -86,8 +86,7 @@ export class ExchangePage extends React.Component {
                 <div className={styles.content}>
                     <Col xs={12}>
                         <Row center="xs">
-                            <Col xs={4}></Col>
-                            <Col xs={3}>
+                            <Col xsOffset={2} xs={3}>
                                 <ExchangeBox />
                             </Col>
                             <Col xs={3}>
@@ -102,17 +101,14 @@ export class ExchangePage extends React.Component {
                                     </Col>
                                 </Row>
                             </Col>
-                            <Col xs={2}></Col>
                         </Row>
                         <Row center="xs">
-                            <Col xs={4}></Col>
-                            <Col xs={3}>
+                            <Col xsOffset={2} xs={3}>
                                 {lastExchanges}
                             </Col>
                             <Col xs={3}>
                                 <ExchangeOffers />
                             </Col>
-                            <Col xs={2}></Col>
                         </Row>
                     </Col>
                 </div>

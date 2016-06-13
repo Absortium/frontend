@@ -15,6 +15,7 @@ import {
     deconvert,
     normalize
 } from "utils/general";
+import update from "react/lib/update";
 
 const initialState = {
     isAuthenticated: false,
@@ -41,13 +42,14 @@ function accountBoxReducer(state = initialState, action) {
             };
 
             if (isAccountExist) {
-                let account = action.account;
-                substate.accounts = {
-                    [state.from_currency]: {
-                        amount: normalize(deconvert(parseInt(account.amount))),
-                        address: account.address
+                substate.accounts = update(state.accounts || {}, {
+                    [action.account.currency]: {
+                        $set: {
+                            amount: normalize(deconvert(parseInt(action.account.amount))),
+                            address: action.account.address
+                        }
                     }
-                }
+                })
             }
 
             return Object.assign({}, state, substate);
