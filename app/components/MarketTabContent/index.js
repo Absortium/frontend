@@ -40,7 +40,7 @@ class MarketTabContent extends React.Component {
                     adjustForCheckbox={false}
                     enableSelectAll={false}>
                     <TableRow>
-                        <TableHeaderColumn>Coin</TableHeaderColumn>
+                        <TableHeaderColumn>Currency</TableHeaderColumn>
                         <TableHeaderColumn>Volume</TableHeaderColumn>
                         <TableHeaderColumn>Price</TableHeaderColumn>
                     </TableRow>

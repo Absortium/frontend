@@ -14,35 +14,15 @@ import {
 } from "material-ui/Table";
 
 var styles = {
-    main: {
-        marginLeft: "2em",
-        marginTop: "0.4em"
-    },
-
-    icon: {
-        backgroundColor: "block",
-        marginLeft: "0.5em",
-        marginBottom: "0.2em"
-    },
-
-    balance: {
-        fontSize: "0.95em",
-        display: "inline-block",
-        verticalAlign: "middle",
-        lineHeight: "normal",
-        marginBottom: "0.75em"
-    },
-
     deposit: {
         backgroundColor: "#9CD689",
-        marginRight: "0.4em",
+        marginRight: "0.4em"
     },
     withdrawal: {
         backgroundColor: "#E87272",
         marginLeft: "0.4em"
     }
 };
-
 
 
 class Balance extends React.Component {
