@@ -8,13 +8,11 @@ Docker | 1.10.2
   ```bash
   $ git clone --recursive https://github.com/absortium/deluge.git
   ```
- 
-* Set environment variables.
-  * `export DELUGE_PATH="YOUR_WORK_DIRECTORY_PATH"`
-  * `export DEFAULT_MODE="frontend"`
 
-* Add aliases from `useful` directory, for that copy this in the `.bashrc` or `.zshrc`
+* Add env variables and aliases from `useful` directory, for that copy this in the `.bashrc` or `.zshrc`
   ```bash
+    export DELUGE_PATH="YOUR_WORK_DIRECTORY_PATH"`
+    export DEFAULT_MODE="frontend"
     for f in $DELUGE_PATH/useful/aliases/*; do
       . "$f"
     done  
