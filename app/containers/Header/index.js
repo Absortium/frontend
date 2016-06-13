@@ -20,7 +20,6 @@ import {
     logOut
 } from "containers/App/actions";
 import Avatar from "material-ui/Avatar";
-import Balance from "components/Balance";
 
 const styles = {
     avatar: {

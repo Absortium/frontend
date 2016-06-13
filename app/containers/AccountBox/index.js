@@ -9,7 +9,8 @@ import { connect } from "react-redux";
 import Paper from "material-ui/Paper";
 import Subheader from "material-ui/Subheader";
 import Divider from "material-ui/Divider";
-import Balance from "../../components/Balance";
+import RefreshIndicator from "material-ui/RefreshIndicator";
+import AccountRow from "components/AccountRow";
 import {
     Table,
     TableBody,
@@ -49,50 +50,65 @@ const styles = {
 export class AccountBox extends React.Component { // eslint-disable-line react/prefer-stateless-function
     render() {
         return (
-
             <div>
-                <Paper style={styles.block} zDepth={2}>
-                    <Subheader style={styles.subheader}>
-                        Accounts Deposit / Withdrawal
-                    </Subheader>
-                    <Divider />
+                { this.props.isAuthenticated ?
+                    <Paper style={styles.block} zDepth={2}>
+                        <Subheader style={styles.subheader}>
+                            Accounts Deposit / Withdrawal
+                        </Subheader>
+                        <Divider />
 
-                    {this.props.isAccountLoaded ?
-                        <Table
-                            height="3em"
-                            fixedHeader={true}
-                            selectable={true}
-                            multiSelectable={false}
-                            onRowSelection={this.handleRowSelect}>
-                            <TableHeader
-                                displaySelectAll={false}
-                                adjustForCheckbox={false}
-                                enableSelectAll={false}>
-                                <TableRow>
-                                    <TableHeaderColumn>Currency</TableHeaderColumn>
-                                    <TableHeaderColumn>Balance</TableHeaderColumn>
-                                    <TableHeaderColumn>Actions</TableHeaderColumn>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody
-                                displayRowCheckbox={false}
-                                deselectOnClickaway={true}
-                                showRowHover={false}
-                                stripedRows={false}>
+                        {this.props.isAccountLoaded ?
+                            <Table
+                                height="4em"
+                                fixedHeader={true}
+                                selectable={true}
+                                multiSelectable={false}
+                                onRowSelection={this.handleRowSelect}>
+                                <TableHeader
+                                    displaySelectAll={false}
+                                    adjustForCheckbox={false}
+                                    enableSelectAll={false}>
+                                    <TableRow>
+                                        <TableHeaderColumn>Currency</TableHeaderColumn>
+                                        <TableHeaderColumn>Balance</TableHeaderColumn>
+                                        <TableHeaderColumn>Actions</TableHeaderColumn>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody
+                                    displayRowCheckbox={false}
+                                    deselectOnClickaway={true}
+                                    showRowHover={false}
+                                    stripedRows={false}>
 
-                                { Object.keys(this.props.accounts).map(function (currency) {
-                                    let account = this.props.accounts[currency];
-                                    return <Balance currency={currency}
-                                                    balance={account.amount}
-                                                    address={account.address}/>
-                                }, this)}
-                            </TableBody>
-                        </Table>
-                        : null
-                    }
+                                    { Object.keys(this.props.accounts).map(function (currency) {
+                                        let account = this.props.accounts[currency];
+                                        return <AccountRow currency={currency}
+                                                           balance={account.amount}
+                                                           address={account.address}/>
+                                    }, this)}
+                                </TableBody>
+                            </Table>
+                            :
+                            <div>
+                                <br />
+                                <RefreshIndicator
+                                    size={70}
+                                    top={0}
+                                    left={0}
+                                    status="loading"
+                                    style={styles.refresh}
+                                />
+                                <br />
+                                <br />
+                            </div>
+                        }
 
-                </Paper>
+                    </Paper>
+                    : null
+                }
             </div>
+
         );
     }
 }

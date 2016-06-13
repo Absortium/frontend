@@ -11,14 +11,18 @@ import {
     ACCOUNT_UPDATED,
     MARKET_CHANGED
 } from "containers/App/constants";
-import { deconvert, normalize } from "utils/general";
+import {
+    deconvert,
+    normalize
+} from "utils/general";
 
 const initialState = {
+    isAuthenticated: false,
     isAccountLoaded: false,
     isAccountExist: false,
     accounts: null,
     from_currency: null,
-    to_currency: null,
+    to_currency: null
 };
 
 
@@ -59,6 +63,21 @@ function accountBoxReducer(state = initialState, action) {
                     to_currency: action.to_currency
                 });
         }
+
+        case LOGGED_IN:
+            return Object.assign({}, state, {
+                isAuthenticated: true
+            });
+
+        case LOGGED_OUT:
+            return Object.assign({}, state,
+                {
+                    isAuthenticated: false,
+                    isAccountLoaded: false,
+                    isAccountExist: false,
+                    accounts: null
+
+                });
         default:
             return state;
     }

@@ -16,16 +16,20 @@ import {
 var styles = {
     deposit: {
         backgroundColor: "#9CD689",
-        marginRight: "0.4em"
+        marginRight: "0.4em",
+        marginTop: "0.5em",
+        marginBottom: "0.5em"
     },
     withdrawal: {
+        marginTop: "0.5em",
+        marginBottom: "0.5em",
         backgroundColor: "#E87272",
         marginLeft: "0.4em"
     }
 };
 
 
-class Balance extends React.Component {
+class AccountRow extends React.Component {
     state = {
         depositDialogOpen: false,
         withdrawalDialogOpen: false
@@ -62,9 +66,8 @@ class Balance extends React.Component {
                 </FloatingActionButton>
             </TableRowColumn>
         </TableRow>
-
     }
 }
 
 
-export default Balance;
+export default AccountRow;
