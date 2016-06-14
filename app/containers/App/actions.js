@@ -101,10 +101,10 @@ export function offerReceived(offers) {
     };
 }
 
-export function offersChanged(update) {
+export function offersChanged(offers) {
     return {
         type: OFFERS_CHANGED,
-        update
+        offers
     };
 }
 
@@ -172,9 +172,9 @@ export function withdrawalCreated(withdrawal) {
     };
 }
 
-export function marketInfoChanged(info) {
+export function marketInfoChanged(marketInfo) {
     return {
         type: MARKET_INFO_CHANGED,
-        info
+        marketInfo
     };
 }

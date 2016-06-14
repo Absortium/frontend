@@ -321,7 +321,13 @@ class MarketInfoService {
 
     static * handlerUpdate(action) {
         if (MarketInfoService.topic == action.topic) {
-            yield put(marketInfoChanged(action.data))
+            let update = action.data;
+
+            let info = {};
+            info[update.from_currency] = {};
+            info[update.from_currency][update.to_currency] = update;
+
+            yield put(marketInfoChanged(info))
         }
     }
 
@@ -359,7 +365,8 @@ class OfferService {
 
     static * handlerUpdate(action) {
         if (include(OfferService.topics, action.topic)) {
-            yield put(offersChanged(action.data))
+            let offer = action.data;
+            yield put(offersChanged([offer]))
         }
     }
 

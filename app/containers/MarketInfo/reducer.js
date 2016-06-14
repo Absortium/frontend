@@ -6,7 +6,8 @@
 
 import {
     MARKET_INFO_RECEIVED,
-    MARKET_CHANGED
+    MARKET_CHANGED,
+    MARKET_INFO_CHANGED
 } from "containers/App/constants";
 import {
     copy,
@@ -21,14 +22,18 @@ const initialState = {
 
 function marketInfoReducer(state = initialState, action) {
     switch (action.type) {
+        case MARKET_INFO_CHANGED:
         case MARKET_INFO_RECEIVED:
         {
-
-            let newMarketInfo = {};
+            console.log(action.marketInfo);
+            let newMarketInfo = state.marketInfo || {};
             for (let from_currency in action.marketInfo) {
 
                 let info = action.marketInfo[from_currency];
-                newMarketInfo[from_currency] = {};
+
+                if (newMarketInfo[from_currency] == null) {
+                    newMarketInfo[from_currency] = {};
+                }
 
                 for (let to_currency in info) {
                     let data = info[to_currency];

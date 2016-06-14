@@ -22,9 +22,11 @@ const initialState = {
 
 function exchangeOffersReducer(state = initialState, action) {
     switch (action.type) {
+        case OFFERS_CHANGED:
         case OFFERS_RECEIVED:
         {
-            let offers = {};
+            console.log(action.offers);
+            let offers = state.offers || {};
             for (let offer of action.offers) {
                 offers[normalize(offer.price)] = deconvert(parseInt(offer.amount), true)
             }
@@ -42,17 +44,6 @@ function exchangeOffersReducer(state = initialState, action) {
                     offers: null,
                     offersLoaded: false
                 });
-
-        case OFFERS_CHANGED:
-        {
-            let { price, amount } = action.update;
-            return update(state, {
-                offers: {
-                    [normalize(price)]: { $set: deconvert(parseInt(amount), true) }
-                }
-            })
-        }
-
 
         default:
             return state;

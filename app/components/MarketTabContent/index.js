@@ -21,8 +21,8 @@ class MarketTabContent extends React.Component {
         if (ids.length == 1) {
             let id = ids[0];
 
-            let from_currency = this.props.currency;
-            let to_currency = Object.keys(this.props.info)[id];
+            let to_currency = this.props.currency;
+            let from_currency = Object.keys(this.props.info)[id];
             this.props.changeMarket(from_currency, to_currency);
         }
     };
@@ -41,8 +41,8 @@ class MarketTabContent extends React.Component {
                     enableSelectAll={false}>
                     <TableRow>
                         <TableHeaderColumn>Currency</TableHeaderColumn>
-                        <TableHeaderColumn>Volume</TableHeaderColumn>
-                        <TableHeaderColumn>Price</TableHeaderColumn>
+                        <TableHeaderColumn>{"Volume (" + this.props.currency.toUpperCase() + ")"}</TableHeaderColumn>
+                        <TableHeaderColumn>{"Price (" + this.props.currency.toUpperCase() + ")"}</TableHeaderColumn>
                     </TableRow>
                 </TableHeader>
                 <TableBody
