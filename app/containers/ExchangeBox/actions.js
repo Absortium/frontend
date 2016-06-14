@@ -19,8 +19,7 @@
 import {
     CHANGE_FROM_AMOUNT,
     CHANGE_RATE,
-    CHANGE_TO_AMOUNT,
-    EXCHANGE_CREATED
+    CHANGE_TO_AMOUNT
 } from "./constants";
 
 export function changeFromAmount(from_amount) {

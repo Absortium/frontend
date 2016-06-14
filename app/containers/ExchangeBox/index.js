@@ -87,7 +87,7 @@ class ExchangeBox extends React.Component {
 
         top = <Subheader style={styles.subheader}>
             Exchange {this.props.from_currency.toUpperCase()} on {this.props.to_currency.toUpperCase()}
-        </Subheader>
+        </Subheader>;
 
         if (this.props.isRateLoaded) {
             main = (

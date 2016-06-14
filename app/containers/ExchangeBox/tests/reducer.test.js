@@ -4,32 +4,33 @@ import {
     mount
 } from "enzyme";
 import React from "react";
-import exchageBoxReducer from "../reducer";
-import { fromJS } from "immutable";
 import {
-    ERROR_FIELD_IS_REQUIRED,
-    ERROR_FIELD_NOT_VALID,
     ERROR_RATE_LT_MIN,
     ERROR_RATE_GT_MAX,
     ERROR_FROM_AMOUNT_GT_BALANCE,
-    ERROR_TO_AMOUNT_LT_MIN,
-    ERROR_FIELD_LT_ZERO,
+    ERROR_TO_AMOUNT_LT_MIN
 } from "../constants";
-
+import {
+    ERROR_FIELD_IS_REQUIRED,
+    ERROR_FIELD_NOT_VALID,
+    ERROR_FIELD_LT_ZERO
+} from "containers/App/constants";
 import {
     loggedIn,
     accountsReceived,
     marketChanged,
-    marketInfoReceived,
-} from "../../App/actions";
-
+    marketInfoReceived
+} from "containers/App/actions";
 import {
     changeFromAmount,
     changeToAmount,
     changeRate
-} from "../actions"
-
-import { genParam, copy, pprint} from "../../../utils/general";
+} from "../actions";
+import {
+    genParam,
+    copy
+} from "utils/general";
+import exchageBoxReducer from "../reducer";
 import _ from "lodash";
 
 const initialState = {
@@ -109,7 +110,7 @@ describe("ExchangeBoxReducer", () => {
 
     it("calculation #1", () => {
         [state, expected] = preinit(state, expected);
-    
+
         state = exchageBoxReducer(state, changeFromAmount("0"));
         expected["from_amount"] = genParam("0", null);
         expected["to_amount"] = genParam("0", ERROR_TO_AMOUNT_LT_MIN);
@@ -364,7 +365,7 @@ function testAuthentication(state, expected) {
     return [state, expected]
 }
 
-function testAccountLoaded(state, expected, isFirst=true) {
+function testAccountLoaded(state, expected, isFirst = true) {
     state = exchageBoxReducer(state, accountsReceived(copy(accounts)));
     expected["account"] = copy(accounts["btc"]);
     expected["account"]["amount"] = 4;
@@ -380,7 +381,7 @@ function testAccountLoaded(state, expected, isFirst=true) {
     return [state, expected]
 }
 
-function testMarketInfoReceived(state, expected, isFirst=true, isAccountLoaded=true) {
+function testMarketInfoReceived(state, expected, isFirst = true, isAccountLoaded = true) {
     state = exchageBoxReducer(state, marketInfoReceived(copy(marketInfo)));
     expected["isRateLoaded"] = true;
 
@@ -409,7 +410,6 @@ function preinit(state, expected) {
 
     return [state, expected]
 }
-
 
 
 function diff(d1, d2) {

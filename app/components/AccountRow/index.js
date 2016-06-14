@@ -9,7 +9,7 @@ import FloatingActionButton from "material-ui/FloatingActionButton";
 import DepositIcon from "../../../node_modules/material-ui/svg-icons/content/add";
 import WithdrawIcon from "../../../node_modules/material-ui/svg-icons/content/remove";
 import DepositDialog from "components/DepositDialog";
-import WithdrawDialog from "components/WithdrawDialog";
+import WithdrawDialog from "containers/WithdrawDialog";
 import { convertCurrencyName } from "utils/general";
 import {
     TableRow,
@@ -34,24 +34,15 @@ var styles = {
 
 class AccountRow extends React.Component {
     state = {
-        depositDialogOpen: false,
-        withdrawalDialogOpen: false
+        depositDialogOpen: false
     };
 
-    handleDepositButton = () => {
+    handlerDepositButton = () => {
         this.setState({ depositDialogOpen: true });
     };
 
-    handleDepositClose = () => {
+    handlerDepositClose = () => {
         this.setState({ depositDialogOpen: false });
-    };
-
-    handleWithdrawButton = () => {
-        this.setState({ withdrawalDialogOpen: true });
-    };
-
-    handleWithdrawClose = () => {
-        this.setState({ withdrawalDialogOpen: false });
     };
 
     render() {
@@ -62,17 +53,15 @@ class AccountRow extends React.Component {
             <TableRowColumn>
                 <DepositDialog address={this.props.address}
                                open={this.state.depositDialogOpen}
-                               closeHandler={this.handleDepositClose}/>
+                               closeHandler={this.handlerDepositClose}/>
 
-                <WithdrawDialog address={this.props.address}
-                               open={this.state.withdrawalDialogOpen}
-                               closeHandler={this.handleWithdrawClose}/>
+                <WithdrawDialog />
 
                 <FloatingActionButton
                     style={styles.deposit}
                     mini={true}
                     backgroundColor={styles.deposit.backgroundColor}
-                    onClick={this.handleDepositButton}>
+                    onClick={this.handlerDepositButton}>
                     <DepositIcon/>
                 </FloatingActionButton>
 
@@ -80,7 +69,7 @@ class AccountRow extends React.Component {
                     style={styles.withdrawal}
                     mini={true}
                     backgroundColor={styles.withdrawal.backgroundColor}
-                    onClick={this.handleWithdrawButton}>
+                    onClick={this.props.handlerWithdrawButton}>
                     <WithdrawIcon/>
                 </FloatingActionButton>
             </TableRowColumn>

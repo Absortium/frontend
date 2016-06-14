@@ -17,17 +17,20 @@ import {
     CHANGE_FROM_AMOUNT,
     CHANGE_RATE,
     CHANGE_TO_AMOUNT,
-    ERROR_FIELD_IS_REQUIRED,
-    ERROR_FIELD_NOT_VALID,
     ERROR_RATE_LT_MIN,
     ERROR_RATE_GT_MAX,
     ERROR_FROM_AMOUNT_GT_BALANCE,
     ERROR_TO_AMOUNT_LT_MIN,
-    ERROR_FIELD_LT_ZERO,
     RATE_MAX,
     RATE_MIN,
     TO_AMOUNT_MIN
 } from "./constants";
+import {
+    ERROR_FIELD_IS_REQUIRED,
+    ERROR_FIELD_NOT_VALID,
+    ERROR_FIELD_LT_ZERO
+} from "containers/App/constants";
+
 import {
     isValid,
     isDirty,
@@ -35,7 +38,7 @@ import {
     errExist,
     deconvert,
     genParam
-} from "../../utils/general";
+} from "utils/general";
 import BigNumber from "bignumber.js";
 BigNumber.config({ DECIMAL_PLACES: 20 });
 

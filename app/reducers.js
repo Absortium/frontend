@@ -46,6 +46,7 @@ function routeReducer(state = routeInitialState, action) {
  */
 
 import accountBoxReducer from 'containers/AccountBox/reducer';
+import withdrawDialogReducer from 'containers/WithdrawDialog/reducer';
 export default function createReducer(asyncReducers) {
     return combineReducers({
         route: routeReducer,
@@ -55,6 +56,7 @@ export default function createReducer(asyncReducers) {
         exchangeOffers: exchangeOffersReducer,
         marketInfo: marketInfoReducer,
         accountBox: accountBoxReducer,
+        withdrawDialog: withdrawDialogReducer,
         toastr: toastrReducer,
         ...asyncReducers,
     });

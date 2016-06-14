@@ -34,3 +34,7 @@ export const EXCHANGE_CREATED = "app/App/EXCHANGE_CREATED";
 export const EXCHANGE_STATUS_COMPLETED = "completed";
 export const EXCHANGE_STATUS_INIT = "init";
 export const EXCHANGE_STATUS_PENDING = "pending";
+
+export const ERROR_FIELD_NOT_VALID = 'app/App/ERROR_FIELD_NOT_VALID';
+export const ERROR_FIELD_IS_REQUIRED = 'app/App/ERROR_FIELD_IS_REQUIRED';
+export const ERROR_FIELD_LT_ZERO = 'app/App/ERROR_FIELD_LT_ZERO';

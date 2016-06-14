@@ -16,12 +16,6 @@ import { deconvert } from "utils/general";
 const initialState = {
     isAuthenticated: false,
     isAvatarLoaded: false,
-    isAccountLoaded: false,
-    isAccountExist: false,
-    balance: null,
-    address: null,
-    from_currency: null,
-    to_currency: null,
     avatar: null
 };
 
@@ -45,11 +39,7 @@ function headerReducer(state = initialState, action) {
                 {
                     isAuthenticated: false,
                     isAvatarLoaded: false,
-                    isAccountLoaded: false,
-                    isAccountExist: false,
-                    avatar: null,
-                    account: null
-
+                    avatar: null
                 });
 
 

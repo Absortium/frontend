@@ -4,17 +4,19 @@
 
 import BigNumber from "bignumber.js";
 import {
-    ERROR_FIELD_IS_REQUIRED,
-    ERROR_FIELD_NOT_VALID,
     ERROR_RATE_LT_MIN,
     ERROR_RATE_GT_MAX,
     ERROR_FROM_AMOUNT_GT_BALANCE,
     ERROR_TO_AMOUNT_LT_MIN,
-    ERROR_FIELD_LT_ZERO,
     TO_AMOUNT_MIN,
     RATE_MIN,
     RATE_MAX
-} from "../containers/ExchangeBox/constants";
+} from "containers/ExchangeBox/constants";
+import {
+    ERROR_FIELD_IS_REQUIRED,
+    ERROR_FIELD_NOT_VALID,
+    ERROR_FIELD_LT_ZERO
+} from "containers/App/constants";
 import Q from "q";
 BigNumber.config({ DECIMAL_PLACES: 20 });
 
