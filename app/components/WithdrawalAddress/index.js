@@ -16,15 +16,20 @@ import {
 const styles = {
     div: {
         height: "6em",
-        marginLeft: "4em",
-        marginRight: "3em"
+        width: "25em",
+        marginLeft: "3em",
+        marginRight: "0em"
     },
     textField: {
-        width: "15em"
+        width: "23em"
     },
+    input: {
+        fontSize: "1em"
+    },
+
     icon: {
         verticalAlign: "top",
-        marginTop: "2em"
+        marginTop: "2.35em"
     },
     errorStyle: {
         color: "#E87272"
@@ -34,7 +39,6 @@ const styles = {
 export default class WithdrawalAddress extends React.Component {
     render() {
         let errorText = getErrorText(this.props.error);
-        let amount = this.props.amount;
 
         return (
             <div style={styles.div}>
@@ -46,7 +50,8 @@ export default class WithdrawalAddress extends React.Component {
                     onChange={this.props.handler}
                     errorText={errorText}
                     errorStyle={styles.errorStyle}
-                    value={amount}/>
+                    inputStyle={styles.input}
+                    value={this.props.address}/>
                 <WalletIcon style={styles.icon}/>
             </div>
         );

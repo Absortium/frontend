@@ -13,6 +13,7 @@ import {
 import ExchangeBox from "containers/ExchangeBox";
 import MarketInfo from "containers/MarketInfo";
 import ExchangeOffers from "containers/ExchangeOffers";
+import WithdrawalDialog from "containers/WithdrawalDialog";
 import AccountBox from "containers/AccountBox";
 import LastExchanges from "components/LastExchanges";
 import styles from "./styles.css";
@@ -84,6 +85,8 @@ export class ExchangePage extends React.Component {
         return (
             <div className={styles.main}>
                 <div className={styles.content}>
+                    <WithdrawalDialog />
+
                     <Col xs={12}>
                         <Row center="xs">
                             <Col xsOffset={2} xs={3}>

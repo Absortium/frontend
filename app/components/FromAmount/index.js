@@ -10,7 +10,7 @@ import CryptoIcon from "components/CryptoIcon";
 import {
     convertable,
     getErrorText
-} from "../../utils/general";
+} from "utils/general";
 
 const styles = {
     div: {
@@ -23,7 +23,7 @@ const styles = {
     },
     icon: {
         verticalAlign: "top",
-        marginTop: "2em"
+        marginTop: "2.35em"
     },
     errorStyle: {
         color: "#E87272"
@@ -34,9 +34,8 @@ class FromAmount extends React.Component {
     render() {
         let errorText = getErrorText(this.props.error);
 
-        let amount = this.props.amount;
-
-
+        console.log(this.props.amount);
+        console.log(typeof this.props.amount);
         return (
             <div style={styles.div}>
                 <TextField
@@ -49,7 +48,7 @@ class FromAmount extends React.Component {
                     onChange={this.props.handler}
                     errorText={errorText}
                     errorStyle={styles.errorStyle}
-                    value={amount}
+                    value={this.props.amount}
                 />
                 <CryptoIcon style={styles.icon} icon={this.props.currency}/>
                 <br />

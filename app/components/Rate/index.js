@@ -20,7 +20,7 @@ const styles = {
     },
     icon: {
         verticalAlign: "top",
-        marginTop: "2em"
+        marginTop: "2.35em"
     },
     errorStyle: {
         color: "#E87272"

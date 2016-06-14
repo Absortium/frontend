@@ -31,6 +31,9 @@ export const TOPIC_SUBSCRIBE_FAILED = "app/App/TOPIC_SUBSCRIBE_FAILED";
 export const SEND_EXCHANGE = "app/App/SEND_EXCHANGE";
 export const EXCHANGE_CREATED = "app/App/EXCHANGE_CREATED";
 
+export const SEND_WITHDRAWAL = "app/App/SEND_WITHDRAWAL";
+export const WITHDRAWAL_CREATED = "app/App/WITHDRAWAL_CREATED";
+
 export const EXCHANGE_STATUS_COMPLETED = "completed";
 export const EXCHANGE_STATUS_INIT = "init";
 export const EXCHANGE_STATUS_PENDING = "pending";

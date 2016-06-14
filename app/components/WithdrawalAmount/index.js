@@ -10,21 +10,26 @@ import CryptoIcon from "components/CryptoIcon";
 import {
     convertable,
     getErrorText
-} from "../../utils/general";
-
+} from "utils/general";
 
 const styles = {
     div: {
         height: "6em",
-        marginLeft: "4em",
-        marginRight: "3em"
+        width: "14.5em",
+        marginLeft: "3em",
+        marginRight: "0em"
     },
     textField: {
-        width: "15em"
+        width: "12.5em",
     },
+
+    fee: {
+        width: "5.4em",
+    },
+
     icon: {
         verticalAlign: "top",
-        marginTop: "2em"
+        marginTop: "2.35em"
     },
     errorStyle: {
         color: "#E87272"
@@ -34,21 +39,19 @@ const styles = {
 export default class WithdrawalAmount extends React.Component {
     render() {
         let errorText = getErrorText(this.props.error);
-        let amount = this.props.amount;
 
         return (
             <div style={styles.div}>
-                <TextField
-                    floatingLabelText={"Amount of " + this.props.currency.toUpperCase() + " to withdraw"}
-                    floatingLabelFixed={true}
-                    style={styles.textField}
-                    type="number"
-                    min={0}
-                    step={0.1}
-                    onChange={this.props.handler}
-                    errorText={errorText}
-                    errorStyle={styles.errorStyle}
-                    value={amount}/>
+                <TextField floatingLabelText={"Amount of " + this.props.currency.toUpperCase() + " to withdraw"}
+                           floatingLabelFixed={true}
+                           style={styles.textField}
+                           type="number"
+                           min={0}
+                           step={0.1}
+                           onChange={this.props.handler}
+                           errorText={errorText}
+                           errorStyle={styles.errorStyle}
+                           value={this.props.amount}/>
                 <CryptoIcon style={styles.icon} icon={this.props.currency}/>
             </div>
         );

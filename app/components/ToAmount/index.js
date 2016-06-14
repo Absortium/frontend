@@ -24,7 +24,7 @@ const styles = {
     },
     icon: {
         verticalAlign: "top",
-        marginTop: "2em"
+        marginTop: "2.35em"
     },
     errorStyle: {
         color: "#E87272"
@@ -34,21 +34,19 @@ const styles = {
 class ToAmount extends React.Component {
     render() {
         let errorText = getErrorText(this.props.error);
-        let amount = this.props.amount;
 
         return (
             <div style={styles.div}>
-                <TextField
-                    floatingLabelText={"Amount of " + this.props.currency.toUpperCase() + " you will get (buy)"}
-                    floatingLabelFixed={true}
-                    style={styles.textField}
-                    type="number"
-                    min={0}
-                    step={0.1}
-                    onChange={this.props.handler}
-                    errorText={errorText}
-                    errorStyle={styles.errorStyle}
-                    value={amount}/>
+                <TextField floatingLabelText={"Amount of " + this.props.currency.toUpperCase() + " you will get (buy)"}
+                           floatingLabelFixed={true}
+                           style={styles.textField}
+                           type="number"
+                           min={0}
+                           step={0.1}
+                           onChange={this.props.handler}
+                           errorText={errorText}
+                           errorStyle={styles.errorStyle}
+                           value={this.props.amount}/>
                 <CryptoIcon style={styles.icon} icon={this.props.currency}/>
             </div>
         );

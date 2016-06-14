@@ -19,33 +19,38 @@ import {
     CardMedia,
     CardText
 } from "material-ui/Card";
-import { withdrawalDialogClose, changeWithdrawalAmount } from "./actions";
-import selectWithdrawalDialog from "./selectors"
+import {
+    withdrawalDialogClose,
+    changeWithdrawalAddress,
+    changeWithdrawalAmount
+} from "./actions";
+import { sendWithdrawal } from "containers/App/actions";
+import selectWithdrawalDialog from "./selectors";
+import {convert} from "utils/general"
 
 const styles = {
     icon: {
         marginLeft: "0.1em",
         marginRight: "0.3em",
-        marginBottom: "0.2em",
+        marginBottom: "0.2em"
     },
 
     block: {
         width: "100%",
         textAlign: "center",
-        display: "inline-block",
+        display: "inline-block"
     },
 
     dialog: {
         body: {
-            padding: "0.3em 0.3em 0.3em 0.3em"
+            padding: "0.1em 0.1em 0.1em 0.1em"
         },
 
         overlay: {},
 
         content: {
-            textAlign: "center",
             borderRadius: "1em",
-            width: "24.1em"
+            width: "32.1em"
 
         }
     },
@@ -58,12 +63,22 @@ const styles = {
     subheader: {
         backgroundColor: "#E8E8E8"
     }
-
 };
 
 
 export default class WithdrawalDialog extends React.Component {
+    sendWithdrawal = () => {
+        let amount = convert(this.props.amount.value);
+        let address = this.props.address.value;
+        let pk = this.props.pk;
+
+        this.props.sendWithdrawal(amount, address, pk)
+    };
+
     render() {
+        let isDisabled = (this.props.address.error != null) || (this.props.amount.error != null);
+
+        console.log(this.props.currency);
         return (
             <Dialog modal={false}
                     open={this.props.open}
@@ -73,29 +88,28 @@ export default class WithdrawalDialog extends React.Component {
                     onRequestClose={this.props.closeHandler}>
                 <Paper style={styles.block} zDepth={2}>
                     <Subheader style={styles.subheader}>
-                        Withdrawal
+                        {"Withdrawal from " + this.props.currency.toUpperCase() + " account"}
                     </Subheader>
                     <Divider/>
                     <br/>
 
-                    <WithdrawalAmount
-                        currency={this.props.currency}
-                        amount={this.props.amount.value}
-                        error={this.props.amount.error}
-                        handler={this.props.changeWithdrawalAmount}/>
+                    <WithdrawalAmount currency={this.props.currency}
+                                      handler={this.props.changeWithdrawalAmount}
+                                      amount={this.props.amount.value}
+                                      error={this.props.amount.error}/>
 
-                    <WithdrawalAddress
-                        currency={this.props.currency}
-                        address={this.props.address.value}
-                        error={this.props.address.error}
-                        handler={this.props.changeWithdrawalAmount}/>
-                    
+                    <WithdrawalAddress currency={this.props.currency}
+                                       handler={this.props.changeWithdrawalAddress}
+                                       address={this.props.address.value}
+                                       error={this.props.address.error}/>
+
                     <Divider/>
                     <br/>
                     <RaisedButton
                         label="withdraw"
                         primary={true}
-                        onTouchTap={this.props.closeHandler}
+                        disabled={isDisabled}
+                        onTouchTap={this.sendWithdrawal}
                     />
                     <FlatButton
                         label="close"
@@ -115,7 +129,9 @@ const mapStateToProps = selectWithdrawalDialog();
 function mapDispatchToProps(dispatch) {
     return {
         closeHandler: () => dispatch(withdrawalDialogClose()),
-        changeWithdrawalAmount: (event) => dispatch(changeWithdrawalAmount(event.value)),
+        sendWithdrawal: (amount, address, pk) => dispatch(sendWithdrawal(amount, address, pk)),
+        changeWithdrawalAmount: (event) => dispatch(changeWithdrawalAmount(event.target.value)),
+        changeWithdrawalAddress: (event) => dispatch(changeWithdrawalAddress(event.target.value)),
         dispatch,
     };
 }

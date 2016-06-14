@@ -12,6 +12,13 @@ import {
     RATE_MIN,
     RATE_MAX
 } from "containers/ExchangeBox/constants";
+
+import {
+    ERROR_WITHDRAWAL_AMOUNT_GT_BALANCE,
+    ERROR_WITHDRAWAL_AMOUNT_LT_MIN,
+    WITHDRAWAL_AMOUNT_MIN
+} from "containers/WithdrawalDialog/constants";
+
 import {
     ERROR_FIELD_IS_REQUIRED,
     ERROR_FIELD_NOT_VALID,
@@ -99,6 +106,12 @@ export function getErrorText(error) {
         case ERROR_FIELD_LT_ZERO:
             return "Field is negative";
 
+        case ERROR_WITHDRAWAL_AMOUNT_GT_BALANCE:
+            return "Not enough money";
+
+        case ERROR_WITHDRAWAL_AMOUNT_LT_MIN:
+            return "Withdrawal amount lower than " + WITHDRAWAL_AMOUNT_MIN;    
+            
         default:
             return null
     }

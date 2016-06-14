@@ -54,8 +54,6 @@ class AccountRow extends React.Component {
                                open={this.state.depositDialogOpen}
                                closeHandler={this.handlerDepositClose}/>
 
-                <WithdrawDialog />
-
                 <FloatingActionButton
                     style={styles.deposit}
                     mini={true}

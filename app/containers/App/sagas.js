@@ -24,7 +24,8 @@ import {
     subscribeSuccess,
     subscribeFailed,
     topicUpdate,
-    exchangeCreated
+    exchangeCreated,
+    withdrawalCreated
 } from "./actions";
 import {
     LOG_IN,
@@ -38,22 +39,22 @@ import {
     EXCHANGE_CREATED,
     EXCHANGE_STATUS_INIT,
     EXCHANGE_STATUS_PENDING,
-    SEND_EXCHANGE
+    SEND_EXCHANGE,
+    SEND_WITHDRAWAL
 } from "./constants";
 import { LOCATION_CHANGE } from "react-router-redux";
 import axios from "axios";
+import { toastr } from "react-redux-toastr";
 import Auth0Lock from "auth0-lock";
 import {
-    extractCurrencies,
-    sleep,
-    include,
-    setTimeoutGenerator,
-    convert,
-    deconvert
+extractCurrencies,
+sleep,
+include,
+setTimeoutGenerator,
+convert
 } from "utils/general";
 import { isTokenExpired } from "utils/jwt";
 import autobahn from "autobahn";
-import { toastr } from "react-redux-toastr";
 
 // All sagas to be loaded
 export default [
@@ -70,7 +71,8 @@ export function* defaultSaga() {
         RouteService.setup(),
         OfferService.setup(),
         AutobahnService.setup(),
-        ExchangeService.setup()
+        ExchangeService.setup(),
+        WithdrawalService.setup()
     ]
 }
 
@@ -451,6 +453,39 @@ class ExchangeService {
     static * setup() {
         yield [
             takeEvery(SEND_EXCHANGE, ExchangeService.handlerSendExchange)
+        ]
+    }
+}
+
+class WithdrawalService {
+    static * handlerSendWithdrawal(action) {
+        let data = {
+            amount: convert(action.amount),
+            address: action.address,
+            price: action.price
+        };
+
+        try {
+            const url = "/api/accounts/" + action.pk +"/withdrawals/";
+            const response = yield call(axios.post, url, data);
+            let withdrawal = response.data;
+
+            yield put(withdrawalCreated(withdrawal));
+            toastr.success("Withdrawal", "Created successfully");
+
+        } catch (response) {
+            if (response instanceof Error) {
+                let err = response;
+                throw err
+            }
+
+            toastr.error("Withdrawal", JSON.parse(response.request.response)[0]);
+        }
+    }
+
+    static * setup() {
+        yield [
+            takeEvery(SEND_WITHDRAWAL, WithdrawalService.handlerSendWithdrawal)
         ]
     }
 }

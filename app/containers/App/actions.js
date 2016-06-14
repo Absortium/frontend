@@ -32,7 +32,9 @@ import {
     TOPIC_SUBSCRIBE_SUCCESS,
     TOPIC_SUBSCRIBE_FAILED,
     EXCHANGE_CREATED,
-    SEND_EXCHANGE
+    WITHDRAWAL_CREATED,
+    SEND_EXCHANGE,
+    SEND_WITHDRAWAL
 } from "./constants";
 
 export function logIn() {
@@ -149,5 +151,21 @@ export function exchangeCreated(exchanges) {
     return {
         type: EXCHANGE_CREATED,
         exchanges
+    };
+}
+
+export function sendWithdrawal(amount, address, pk) {
+    return {
+        type: SEND_WITHDRAWAL,
+        amount,
+        address,
+        pk
+    };
+}
+
+export function withdrawalCreated(withdrawal) {
+    return {
+        type: WITHDRAWAL_CREATED,
+        withdrawal
     };
 }

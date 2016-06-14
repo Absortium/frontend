@@ -228,6 +228,7 @@ function exchangeBoxReducer(state = initialState, action) {
                 substate.to_amount = genParam("", ERROR_FIELD_IS_REQUIRED);
             }
 
+            console.log(genParam(action.from_amount, error));
             substate.from_amount = genParam(action.from_amount, error);
             return Object.assign({}, state, substate);
         }
