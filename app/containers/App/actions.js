@@ -25,6 +25,7 @@ import {
     ACCOUNT_UPDATED,
     MARKET_CHANGED,
     MARKET_INFO_RECEIVED,
+    MARKET_INFO_CHANGED,
     OFFERS_RECEIVED,
     OFFERS_CHANGED,
     TOPIC_SUBSCRIBE,
@@ -168,5 +169,12 @@ export function withdrawalCreated(withdrawal) {
     return {
         type: WITHDRAWAL_CREATED,
         withdrawal
+    };
+}
+
+export function marketInfoChanged(info) {
+    return {
+        type: MARKET_INFO_CHANGED,
+        info
     };
 }

@@ -24,6 +24,7 @@ import {
     subscribeSuccess,
     subscribeFailed,
     topicUpdate,
+    marketInfoChanged,
     exchangeCreated,
     withdrawalCreated
 } from "./actions";
@@ -256,6 +257,8 @@ class AccountsService {
 
 class RouteService {
 
+    //TODO: Why is router is not working properly?
+    // Why we should intercept LOCATION_CHANGED, analyze it and throw MARKET_CHANGED!?
     static * analyze(action) {
         let s = action.payload.pathname;
         let currencies = extractCurrencies(s);
@@ -272,6 +275,8 @@ class RouteService {
 }
 
 class MarketInfoService {
+    static topic = "marketinfo";
+
     static * get(action) {
 
         //var from_currency = action.from_currency;
@@ -314,8 +319,23 @@ class MarketInfoService {
         yield put(marketInfoReceived(marketInfo));
     };
 
+    static * handlerUpdate(action) {
+        if (MarketInfoService.topic == action.topic) {
+            yield put(marketInfoChanged(action.data))
+        }
+    }
+
+    static * connect() {
+        yield put(subscribeOnTopic(MarketInfoService.topic));
+    }
+
     static *setup() {
-        yield* takeEvery(MARKET_CHANGED, MarketInfoService.get)
+        yield [
+            takeEvery(MARKET_CHANGED, MarketInfoService.get),
+            takeEvery(MARKET_CHANGED, MarketInfoService.connect),
+            takeEvery(TOPIC_UPDATE, MarketInfoService.handlerUpdate)
+        ]
+
     }
 }
 

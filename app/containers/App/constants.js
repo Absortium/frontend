@@ -19,6 +19,7 @@ export const ACCOUNT_UPDATED = "app/App/ACCOUNT_UPDATED";
 
 export const MARKET_INFO_RECEIVED = "app/App/MARKET_INFO_RECEIVED";
 export const MARKET_CHANGED = "app/App/MARKET_CHANGED";
+export const MARKET_INFO_CHANGED = "app/App/MARKET_INFO_CHANGED";
 
 export const OFFERS_RECEIVED = "app/App/OFFERS_RECEIVED";
 export const OFFERS_CHANGED = "app/App/OFFERS_CHANGED";
