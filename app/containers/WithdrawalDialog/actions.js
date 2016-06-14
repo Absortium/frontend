@@ -5,21 +5,21 @@
  */
 
 import {
-    WITHDRAW_DIALOG_CLOSE,
-    WITHDRAW_DIALOG_OPEN,
+    WITHDRAWAL_DIALOG_CLOSE,
+    WITHDRAWAL_DIALOG_OPEN,
     CHANGE_WITHDRAWAL_AMOUNT
 } from "./constants";
 
-export function withdrawOpen(currency) {
+export function withdrawalDialogOpen(currency) {
     return {
-        type: WITHDRAW_DIALOG_OPEN,
+        type: WITHDRAWAL_DIALOG_OPEN,
         currency
     };
 }
 
-export function withdrawClose() {
+export function withdrawalDialogClose() {
     return {
-        type: WITHDRAW_DIALOG_CLOSE
+        type: WITHDRAWAL_DIALOG_CLOSE
     };
 }
 

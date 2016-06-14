@@ -11,6 +11,8 @@ import headerReducer from "containers/Header/reducer";
 import exchangeBoxReducer from "containers/ExchangeBox/reducer";
 import marketInfoReducer from "containers/MarketInfo/reducer";
 import exchangeOffersReducer from "containers/ExchangeOffers/reducer";
+import accountBoxReducer from 'containers/AccountBox/reducer';
+import withdrawalDialogReducer from 'containers/WithdrawalDialog/reducer';
 import {reducer as toastrReducer} from 'react-redux-toastr'
 
 /*
@@ -45,8 +47,6 @@ function routeReducer(state = routeInitialState, action) {
  * Creates the main reducer with the asynchronously loaded ones
  */
 
-import accountBoxReducer from 'containers/AccountBox/reducer';
-import withdrawDialogReducer from 'containers/WithdrawDialog/reducer';
 export default function createReducer(asyncReducers) {
     return combineReducers({
         route: routeReducer,
@@ -56,7 +56,7 @@ export default function createReducer(asyncReducers) {
         exchangeOffers: exchangeOffersReducer,
         marketInfo: marketInfoReducer,
         accountBox: accountBoxReducer,
-        withdrawDialog: withdrawDialogReducer,
+        withdrawalDialog: withdrawalDialogReducer,
         toastr: toastrReducer,
         ...asyncReducers,
     });

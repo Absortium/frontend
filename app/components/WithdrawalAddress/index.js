@@ -1,12 +1,12 @@
 /**
  *
- * WithdrawAmount
+ * ToAmount
  *
  */
 
 import React from "react";
 import TextField from "material-ui/TextField";
-import CryptoIcon from "components/CryptoIcon";
+import WalletIcon from "material-ui/svg-icons/action/account-balance-wallet";
 import {
     convertable,
     getErrorText
@@ -31,7 +31,7 @@ const styles = {
     }
 };
 
-class WithdrawAmount extends React.Component {
+export default class WithdrawalAddress extends React.Component {
     render() {
         let errorText = getErrorText(this.props.error);
         let amount = this.props.amount;
@@ -39,20 +39,16 @@ class WithdrawAmount extends React.Component {
         return (
             <div style={styles.div}>
                 <TextField
-                    floatingLabelText={"Amount of " + this.props.currency.toUpperCase() + " to withdraw"}
+                    floatingLabelText={"Address of " + this.props.currency.toUpperCase() + " wallet"}
                     floatingLabelFixed={true}
                     style={styles.textField}
-                    type="number"
-                    min={0}
-                    step={0.1}
+                    type="text"
                     onChange={this.props.handler}
                     errorText={errorText}
                     errorStyle={styles.errorStyle}
                     value={amount}/>
-                <CryptoIcon style={styles.icon} icon={this.props.currency}/>
+                <WalletIcon style={styles.icon}/>
             </div>
         );
     }
 }
-
-export default WithdrawAmount;

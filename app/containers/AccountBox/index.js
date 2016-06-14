@@ -21,7 +21,7 @@ import {
     TableRowColumn
 } from "material-ui/Table";
 import selectAccountBox from "./selectors";
-import {withdrawOpen} from "../../containers/WithdrawDialog/actions"
+import {withdrawalDialogOpen} from "containers/WithdrawalDialog/actions"
 
 const styles = {
     icon: {
@@ -87,7 +87,7 @@ export class AccountBox extends React.Component { // eslint-disable-line react/p
                                         return <AccountRow currency={currency}
                                                            balance={account.amount}
                                                            address={account.address}
-                                                           handlerWithdrawButton={this.props.openWithdrawDialog}/>
+                                                           openWithdrawalDialog={this.props.openWithdrawalDialog}/>
                                     }, this)}
                                 </TableBody>
                             </Table>
@@ -119,7 +119,7 @@ const mapStateToProps = selectAccountBox();
 
 function mapDispatchToProps(dispatch) {
     return {
-        openWithdrawDialog: () => dispatch(withdrawOpen()),
+        openWithdrawalDialog: (currency) => () => dispatch(withdrawalDialogOpen(currency)),
         dispatch,
     };
 }

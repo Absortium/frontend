@@ -12,15 +12,15 @@ import Divider from "material-ui/Divider";
 import Paper from "material-ui/Paper";
 import Subheader from "material-ui/Subheader";
 import { connect } from "react-redux";
-import WithdrawAmount from "components/WithdrawAmount";
-import WithdrawAddress from "components/WithdrawAddress";
+import WithdrawalAmount from "components/WithdrawalAmount";
+import WithdrawalAddress from "components/WithdrawalAddress";
 import {
     Card,
     CardMedia,
     CardText
 } from "material-ui/Card";
-import { withdrawClose, changeWithdrawalAmount } from "./actions";
-import selectWithdrawDialog from "./selectors"
+import { withdrawalDialogClose, changeWithdrawalAmount } from "./actions";
+import selectWithdrawalDialog from "./selectors"
 
 const styles = {
     icon: {
@@ -62,7 +62,7 @@ const styles = {
 };
 
 
-export default class WithdrawDialog extends React.Component {
+export default class WithdrawalDialog extends React.Component {
     render() {
         return (
             <Dialog modal={false}
@@ -78,13 +78,13 @@ export default class WithdrawDialog extends React.Component {
                     <Divider/>
                     <br/>
 
-                    <WithdrawAmount
+                    <WithdrawalAmount
                         currency={this.props.currency}
                         amount={this.props.amount.value}
                         error={this.props.amount.error}
                         handler={this.props.changeWithdrawalAmount}/>
 
-                    <WithdrawAddress
+                    <WithdrawalAddress
                         currency={this.props.currency}
                         address={this.props.address.value}
                         error={this.props.address.error}
@@ -110,14 +110,14 @@ export default class WithdrawDialog extends React.Component {
 }
 
 
-const mapStateToProps = selectWithdrawDialog();
+const mapStateToProps = selectWithdrawalDialog();
 
 function mapDispatchToProps(dispatch) {
     return {
-        closeHandler: () => dispatch(withdrawClose()),
+        closeHandler: () => dispatch(withdrawalDialogClose()),
         changeWithdrawalAmount: (event) => dispatch(changeWithdrawalAmount(event.value)),
         dispatch,
     };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(WithdrawDialog);
+export default connect(mapStateToProps, mapDispatchToProps)(WithdrawalDialog);
