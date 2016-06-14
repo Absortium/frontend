@@ -154,12 +154,13 @@ export function exchangeCreated(exchanges) {
     };
 }
 
-export function sendWithdrawal(amount, address, pk) {
+export function sendWithdrawal(amount, address, pk, currency) {
     return {
         type: SEND_WITHDRAWAL,
         amount,
         address,
-        pk
+        pk,
+        currency
     };
 }
 

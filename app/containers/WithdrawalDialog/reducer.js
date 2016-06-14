@@ -16,10 +16,10 @@ import {
 import {
     ERROR_FIELD_IS_REQUIRED,
     ERROR_FIELD_NOT_VALID,
-    ERROR_FIELD_LT_ZERO,
     MARKET_CHANGED,
     ACCOUNT_RECEIVED,
-    ACCOUNT_UPDATED
+    ACCOUNT_UPDATED,
+    WITHDRAWAL_CREATED
 } from "containers/App/constants";
 import update from "react/lib/update";
 import {
@@ -50,6 +50,7 @@ const initialState = {
 function withdrawDialogReducer(state = initialState, action) {
     switch (action.type) {
 
+        case WITHDRAWAL_CREATED:
         case MARKET_CHANGED:
         case WITHDRAWAL_DIALOG_CLOSE:
             return Object.assign({}, state, initialState);

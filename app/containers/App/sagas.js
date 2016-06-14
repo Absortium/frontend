@@ -39,6 +39,7 @@ import {
     EXCHANGE_CREATED,
     EXCHANGE_STATUS_INIT,
     EXCHANGE_STATUS_PENDING,
+    WITHDRAWAL_CREATED,
     SEND_EXCHANGE,
     SEND_WITHDRAWAL
 } from "./constants";
@@ -47,11 +48,11 @@ import axios from "axios";
 import { toastr } from "react-redux-toastr";
 import Auth0Lock from "auth0-lock";
 import {
-extractCurrencies,
-sleep,
-include,
-setTimeoutGenerator,
-convert
+    extractCurrencies,
+    sleep,
+    include,
+    setTimeoutGenerator,
+    convert
 } from "utils/general";
 import { isTokenExpired } from "utils/jwt";
 import autobahn from "autobahn";
@@ -175,8 +176,8 @@ class AuthService {
 class AccountsService {
     static isAuthenticated = false;
     static isMarketInit = false;
-    static currency = false;
-    static account = null;
+    static currency = null;
+    static accounts = null;
 
     static *handlerLoggedIn() {
         AccountsService.isAuthenticated = true;
@@ -185,7 +186,8 @@ class AccountsService {
 
     static *handlerLoggedOut() {
         AccountsService.isAuthenticated = false;
-        AccountsService.account = null;
+        AccountsService.accounts = null;
+        AccountsService.currency = null;
     }
 
     static *handlerMarketChanged(action) {
@@ -206,8 +208,17 @@ class AccountsService {
             }
         }
 
-        AccountsService.account.amount -= spent;
-        yield put(accountUpdated(AccountsService.account));
+        let currency = AccountsService.currency;
+
+        AccountsService.accounts[currency].amount -= spent;
+        yield put(accountUpdated(AccountsService.accounts[currency]));
+    }
+
+    static * handleWithdrawalCreated(action) {
+        let currency = action.withdrawal.currency;
+
+        AccountsService.accounts[currency].amount -= action.withdrawal.amount;
+        yield put(accountUpdated(AccountsService.accounts[currency]));
     }
 
     static *get() {
@@ -216,10 +227,10 @@ class AccountsService {
                 const response = yield call(axios.get, "/api/accounts/");
                 let accounts = response["data"];
 
+                AccountsService.accounts = {};
+
                 for (let account of accounts) {
-                    if (account.currency == AccountsService.currency) {
-                        AccountsService.account = account;
-                    }
+                    AccountsService.accounts[account.currency] = account;
                     yield put(accountReceived(account));
                 }
             } catch (e) {
@@ -237,7 +248,8 @@ class AccountsService {
             takeEvery(LOGGED_IN, AccountsService.handlerLoggedIn),
             takeEvery(LOGGED_OUT, AccountsService.handlerLoggedOut),
             takeEvery(MARKET_CHANGED, AccountsService.handlerMarketChanged),
-            takeEvery(EXCHANGE_CREATED, AccountsService.handleExchangeCreated)
+            takeEvery(EXCHANGE_CREATED, AccountsService.handleExchangeCreated),
+            takeEvery(WITHDRAWAL_CREATED, AccountsService.handleWithdrawalCreated)
         ]
     }
 }
@@ -460,15 +472,18 @@ class ExchangeService {
 class WithdrawalService {
     static * handlerSendWithdrawal(action) {
         let data = {
-            amount: convert(action.amount),
+            amount: action.amount,
             address: action.address,
             price: action.price
         };
 
         try {
-            const url = "/api/accounts/" + action.pk +"/withdrawals/";
+            const url = "/api/accounts/" + action.pk + "/withdrawals/";
             const response = yield call(axios.post, url, data);
             let withdrawal = response.data;
+
+            // TODO (backend): Change /account/{pk}/withdrawals/ -> /withdrawals/
+            withdrawal.currency = action.currency;
 
             yield put(withdrawalCreated(withdrawal));
             toastr.success("Withdrawal", "Created successfully");

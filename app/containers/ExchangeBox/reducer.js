@@ -11,7 +11,10 @@ import {
     ACCOUNT_UPDATED,
     MARKET_CHANGED,
     MARKET_INFO_RECEIVED,
-    EXCHANGE_CREATED
+    EXCHANGE_CREATED,
+    ERROR_FIELD_IS_REQUIRED,
+    ERROR_FIELD_NOT_VALID,
+    ERROR_FIELD_LT_ZERO
 } from "containers/App/constants";
 import {
     CHANGE_FROM_AMOUNT,
@@ -25,12 +28,6 @@ import {
     RATE_MIN,
     TO_AMOUNT_MIN
 } from "./constants";
-import {
-    ERROR_FIELD_IS_REQUIRED,
-    ERROR_FIELD_NOT_VALID,
-    ERROR_FIELD_LT_ZERO
-} from "containers/App/constants";
-
 import {
     isValid,
     isDirty,
@@ -227,8 +224,7 @@ function exchangeBoxReducer(state = initialState, action) {
                 error = ERROR_FIELD_IS_REQUIRED;
                 substate.to_amount = genParam("", ERROR_FIELD_IS_REQUIRED);
             }
-
-            console.log(genParam(action.from_amount, error));
+            
             substate.from_amount = genParam(action.from_amount, error);
             return Object.assign({}, state, substate);
         }

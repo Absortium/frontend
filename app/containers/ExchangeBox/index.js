@@ -1,9 +1,7 @@
 import React from "react";
 import {
-    loggedIn,
     logIn,
     accountsReceived,
-    marketChanged,
     sendExchange
 } from "containers/App/actions";
 import selectExchangeBox from "./selectors";
@@ -12,10 +10,6 @@ import {
     changeRate,
     changeToAmount
 } from "./actions";
-import {
-    convert,
-    convertCurrencyName
-} from "utils/general";
 import Paper from "material-ui/Paper";
 import Subheader from "material-ui/Subheader";
 import RaisedButton from "material-ui/RaisedButton";
@@ -23,7 +17,6 @@ import RefreshIndicator from "material-ui/RefreshIndicator";
 import Divider from "material-ui/Divider";
 import FromAmount from "components/FromAmount";
 import ToAmount from "components/ToAmount";
-import CryptoIcon from "components/CryptoIcon";
 import Rate from "components/Rate";
 import { connect } from "react-redux";
 import { toastr } from "react-redux-toastr";

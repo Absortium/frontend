@@ -26,7 +26,7 @@ import {
 } from "./actions";
 import { sendWithdrawal } from "containers/App/actions";
 import selectWithdrawalDialog from "./selectors";
-import {convert} from "utils/general"
+import { convert } from "utils/general";
 
 const styles = {
     icon: {
@@ -71,8 +71,9 @@ export default class WithdrawalDialog extends React.Component {
         let amount = convert(this.props.amount.value);
         let address = this.props.address.value;
         let pk = this.props.pk;
+        let currency = this.props.currency;
 
-        this.props.sendWithdrawal(amount, address, pk)
+        this.props.sendWithdrawal(amount, address, pk, currency)
     };
 
     render() {
@@ -87,9 +88,11 @@ export default class WithdrawalDialog extends React.Component {
                     contentStyle={styles.dialog.content}
                     onRequestClose={this.props.closeHandler}>
                 <Paper style={styles.block} zDepth={2}>
+
                     <Subheader style={styles.subheader}>
                         {"Withdrawal from " + this.props.currency.toUpperCase() + " account"}
                     </Subheader>
+
                     <Divider/>
                     <br/>
 
@@ -105,16 +108,15 @@ export default class WithdrawalDialog extends React.Component {
 
                     <Divider/>
                     <br/>
-                    <RaisedButton
-                        label="withdraw"
-                        primary={true}
-                        disabled={isDisabled}
-                        onTouchTap={this.sendWithdrawal}
-                    />
-                    <FlatButton
-                        label="close"
-                        keyboardFocused={true}
-                        onTouchTap={this.props.closeHandler}/>
+
+                    <RaisedButton label="withdraw"
+                                  primary={true}
+                                  disabled={isDisabled}
+                                  onTouchTap={this.sendWithdrawal}/>
+
+                    <FlatButton label="close"
+                                keyboardFocused={true}
+                                onTouchTap={this.props.closeHandler}/>
                     <br/>
                     <br/>
                 </Paper>
@@ -129,7 +131,7 @@ const mapStateToProps = selectWithdrawalDialog();
 function mapDispatchToProps(dispatch) {
     return {
         closeHandler: () => dispatch(withdrawalDialogClose()),
-        sendWithdrawal: (amount, address, pk) => dispatch(sendWithdrawal(amount, address, pk)),
+        sendWithdrawal: (amount, address, pk, currency) => dispatch(sendWithdrawal(amount, address, pk, currency)),
         changeWithdrawalAmount: (event) => dispatch(changeWithdrawalAmount(event.target.value)),
         changeWithdrawalAddress: (event) => dispatch(changeWithdrawalAddress(event.target.value)),
         dispatch,
