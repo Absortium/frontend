@@ -13,18 +13,18 @@ import InputIcon from "material-ui/svg-icons/action/input";
 
 const styles = {
     inputIcon: {
-        width: "18px",
-        height: "18px",
+        width: "13px",
+        height: "13px",
         fill: "white"
     },
     inputButton: {
         verticalAlign: "top",
         display: "inline",
-        marginTop: "33px",
-        marginLeft: "10px",
-        width: "32px",
-        height: "32px",
-        padding: "7.2px",
+        marginTop: "37px",
+        marginLeft: "20px",
+        width: "25px",
+        height: "25px",
+        padding: "6px",
         backgroundColor: "rgb(0, 188, 212)",
         borderRadius: "100px"
     },
