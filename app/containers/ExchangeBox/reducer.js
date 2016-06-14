@@ -26,7 +26,9 @@ import {
     ERROR_TO_AMOUNT_LT_MIN,
     RATE_MAX,
     RATE_MIN,
-    TO_AMOUNT_MIN
+    TO_AMOUNT_MIN,
+    SUBSTITUTE_FROM_AMOUNT,
+    SUBSTITUTE_RATE
 } from "./constants";
 import {
     isValid,
@@ -224,7 +226,7 @@ function exchangeBoxReducer(state = initialState, action) {
                 error = ERROR_FIELD_IS_REQUIRED;
                 substate.to_amount = genParam("", ERROR_FIELD_IS_REQUIRED);
             }
-            
+
             substate.from_amount = genParam(action.from_amount, error);
             return Object.assign({}, state, substate);
         }
@@ -384,6 +386,21 @@ function exchangeBoxReducer(state = initialState, action) {
                 })
         }
 
+        case SUBSTITUTE_FROM_AMOUNT:
+        {
+            return Object.assign({}, state,
+                {
+                    from_amount: genParam(state.balance, null)
+                })
+        }
+
+        case SUBSTITUTE_RATE:
+        {
+            return Object.assign({}, state,
+                {
+                    rate: genParam(state.market_rate, null)
+                })
+        }
         default:
             return state;
     }

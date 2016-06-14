@@ -1,6 +1,8 @@
 export const CHANGE_FROM_AMOUNT = 'app/ExchangeBox/CHANGE_FROM_AMOUNT';
 export const CHANGE_TO_AMOUNT = 'app/ExchangeBox/CHANGE_TO_AMOUNT';
 export const CHANGE_RATE = 'app/ExchangeBox/CHANGE_RATE';
+export const SUBSTITUTE_RATE = 'app/ExchangeBox/SUBSTITUTE_RATE';
+export const SUBSTITUTE_FROM_AMOUNT = 'app/ExchangeBox/SUBSTITUTE_FROM_AMOUNT';
 
 export const ERROR_RATE_LT_MIN = 'app/ExchangeBox/ERROR_RATE_LT_MIN';
 export const ERROR_RATE_GT_MAX = 'app/ExchangeBox/ERROR_RATE_GT_MAX';

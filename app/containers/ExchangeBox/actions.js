@@ -19,7 +19,9 @@
 import {
     CHANGE_FROM_AMOUNT,
     CHANGE_RATE,
-    CHANGE_TO_AMOUNT
+    CHANGE_TO_AMOUNT,
+    SUBSTITUTE_RATE,
+    SUBSTITUTE_FROM_AMOUNT
 } from "./constants";
 
 export function changeFromAmount(from_amount) {
@@ -41,5 +43,17 @@ export function changeRate(rate) {
     return {
         type: CHANGE_RATE,
         rate
+    };
+}
+
+export function substituteRate() {
+    return {
+        type: SUBSTITUTE_RATE,
+    };
+}
+
+export function substituteFromAmount() {
+    return {
+        type: SUBSTITUTE_FROM_AMOUNT,
     };
 }

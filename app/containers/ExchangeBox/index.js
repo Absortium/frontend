@@ -1,15 +1,16 @@
 import React from "react";
 import {
-    logIn,
     accountsReceived,
     sendExchange
 } from "containers/App/actions";
-import selectExchangeBox from "./selectors";
 import {
+    substituteRate,
+    substituteFromAmount,
     changeFromAmount,
     changeRate,
     changeToAmount
 } from "./actions";
+import selectExchangeBox from "./selectors"
 import Paper from "material-ui/Paper";
 import Subheader from "material-ui/Subheader";
 import RaisedButton from "material-ui/RaisedButton";
@@ -82,6 +83,12 @@ class ExchangeBox extends React.Component {
         this.props.sendExchange(from_currency, to_currency, amount, price);
     };
 
+    substituteRate = () => {
+    };
+
+    substituteFromAmount = () => {
+    };
+
     reverseMarket = () => {
         let to_currency = this.props.from_currency;
         let from_currency = this.props.to_currency;
@@ -118,12 +125,14 @@ class ExchangeBox extends React.Component {
                           rate={this.props.rate.value}
                           error={this.props.rate.error}
                           from_currency={this.props.from_currency}
-                          to_currency={this.props.to_currency}/>
+                          to_currency={this.props.to_currency}
+                          substituteRate={this.props.substituteRate}/>
 
                     <FromAmount currency={this.props.from_currency}
                                 handler={this.props.handlerFromAmount}
                                 amount={this.props.from_amount.value}
-                                error={this.props.from_amount.error}/>
+                                error={this.props.from_amount.error}
+                                substituteFromAmount={this.props.substituteFromAmount}/>
 
                     <ToAmount currency={this.props.to_currency}
                               handler={this.props.handlerToAmount}
@@ -220,6 +229,8 @@ mapDispatchToProps(dispatch) {
         handlerRate: (event) => dispatch(changeRate(event.target.value)),
         sendExchange: (from_currency, to_currency, amount, price) => dispatch(sendExchange(from_currency, to_currency, amount, price)),
         changeMarket: (from_currency, to_currency) => dispatch(replace("/exchange/" + from_currency + "-" + to_currency)),
+        substituteRate: () => dispatch(substituteRate()),
+        substituteFromAmount: () => dispatch(substituteFromAmount()),
         logIn: () => dispatch(logIn()),
         dispatch,
     };
