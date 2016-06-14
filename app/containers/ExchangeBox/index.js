@@ -13,31 +13,42 @@ import {
 import Paper from "material-ui/Paper";
 import Subheader from "material-ui/Subheader";
 import RaisedButton from "material-ui/RaisedButton";
+import IconButton from "material-ui/IconButton"
+import ReverseIcon from "material-ui/svg-icons/action/autorenew";
 import RefreshIndicator from "material-ui/RefreshIndicator";
 import Divider from "material-ui/Divider";
 import FromAmount from "components/FromAmount";
 import ToAmount from "components/ToAmount";
 import Rate from "components/Rate";
+import { replace } from "react-router-redux";
 import { connect } from "react-redux";
 import { toastr } from "react-redux-toastr";
+import {
+    Toolbar,
+    ToolbarGroup,
+    ToolbarSeparator
+} from "material-ui/Toolbar";
+
 
 const styles = {
-
-    top: {
-        padding: "0.5em",
-
-        text: {
-            color: "#B9BCBD",
-            fontSize: "1em"
-        },
-
-
+    reverseIcon: {
+        width: "25px",
+        height: "25px",
+        fill: "white"
+    },
+    reverse: {
+        marginTop: "5px",
+        width: "36px",
+        height: "36px",
+        padding: "6px",
+        backgroundColor: "rgb(0, 188, 212)",
+        borderRadius: "100px"
     },
 
     icon: {
         marginLeft: "0.1em",
         marginRight: "0.3em",
-        marginBottom: "0.2em",
+        marginBottom: "0.2em"
     },
 
     block: {
@@ -52,8 +63,8 @@ const styles = {
         position: "relative"
     },
 
-    subheader: {
-        backgroundColor: "#E8E8E8"
+    toolbar: {
+        height: "3em"
     }
 
 };
@@ -71,6 +82,12 @@ class ExchangeBox extends React.Component {
         this.props.sendExchange(from_currency, to_currency, amount, price);
     };
 
+    reverseMarket = () => {
+        let to_currency = this.props.from_currency;
+        let from_currency = this.props.to_currency;
+
+        this.props.changeMarket(from_currency, to_currency);
+    };
 
     render = () => {
         let top = null;
@@ -78,9 +95,21 @@ class ExchangeBox extends React.Component {
         let down = null;
 
 
-        top = <Subheader style={styles.subheader}>
-            Exchange {this.props.from_currency.toUpperCase()} on {this.props.to_currency.toUpperCase()}
-        </Subheader>;
+        top = <Toolbar style={styles.toolbar}>
+            <Subheader>
+                Exchange {this.props.from_currency.toUpperCase()} on {this.props.to_currency.toUpperCase()}
+            </Subheader>
+            <IconButton
+                style={styles.reverse}
+                iconStyle={styles.reverseIcon}
+                tooltip="reverse market"
+                tooltipPosition="bottom-left"
+                backgroundColor={styles.reverse.backgroundColor}
+                onClick={this.reverseMarket}>
+                <ReverseIcon/>
+            </IconButton>
+        </Toolbar>;
+
 
         if (this.props.isRateLoaded) {
             main = (
@@ -190,6 +219,7 @@ mapDispatchToProps(dispatch) {
         handlerToAmount: (event) => dispatch(changeToAmount(event.target.value)),
         handlerRate: (event) => dispatch(changeRate(event.target.value)),
         sendExchange: (from_currency, to_currency, amount, price) => dispatch(sendExchange(from_currency, to_currency, amount, price)),
+        changeMarket: (from_currency, to_currency) => dispatch(replace("/exchange/" + from_currency + "-" + to_currency)),
         logIn: () => dispatch(logIn()),
         dispatch,
     };

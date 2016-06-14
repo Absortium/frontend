@@ -5,28 +5,35 @@
  */
 
 import React from "react";
-import FloatingActionButton from "material-ui/FloatingActionButton";
-import DepositIcon from "../../../node_modules/material-ui/svg-icons/content/add";
-import WithdrawIcon from "../../../node_modules/material-ui/svg-icons/content/remove";
+import DepositIcon from "material-ui/svg-icons/navigation/arrow-upward";
+import WithdrawIcon from "material-ui/svg-icons/navigation/arrow-downward";
 import DepositDialog from "components/DepositDialog";
-import WithdrawDialog from "containers/WithdrawalDialog";
+import IconButton from "material-ui/IconButton";
 import {
     TableRow,
     TableRowColumn
 } from "material-ui/Table";
 
 var styles = {
+    icon: {
+        width: "18px",
+        height: "18px"
+    },
+
     deposit: {
+        width: "36px",
+        height: "36px",
+        padding: "8px",
         backgroundColor: "#9CD689",
-        marginRight: "0.4em",
-        marginTop: "0.5em",
-        marginBottom: "0.5em"
+        borderRadius: "100px"
     },
     withdrawal: {
-        marginTop: "0.5em",
-        marginBottom: "0.5em",
-        backgroundColor: "#E87272",
-        marginLeft: "0.4em"
+        marginLeft: "3px",
+        width: "36px",
+        height: "36px",
+        padding: "8px",
+        backgroundColor: "#D17373",
+        borderRadius: "100px"
     }
 };
 
@@ -54,21 +61,21 @@ class AccountRow extends React.Component {
                                open={this.state.depositDialogOpen}
                                closeHandler={this.handlerDepositClose}/>
 
-                <FloatingActionButton
+                <IconButton
                     style={styles.deposit}
-                    mini={true}
+                    iconStyle={styles.icon}
                     backgroundColor={styles.deposit.backgroundColor}
                     onClick={this.handlerDepositButton}>
                     <DepositIcon/>
-                </FloatingActionButton>
+                </IconButton>
 
-                <FloatingActionButton
+                <IconButton
                     style={styles.withdrawal}
-                    mini={true}
+                    iconStyle={styles.icon}
                     backgroundColor={styles.withdrawal.backgroundColor}
                     onClick={this.props.openWithdrawalDialog(this.props.currency)}>
                     <WithdrawIcon/>
-                </FloatingActionButton>
+                </IconButton>
             </TableRowColumn>
         </TableRow>
     }

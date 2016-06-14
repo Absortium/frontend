@@ -12,8 +12,7 @@ import FlatButton from "material-ui/FlatButton";
 import {
     Toolbar,
     ToolbarGroup,
-    ToolbarSeparator,
-    ToolbarTitle
+    ToolbarSeparator
 } from "material-ui/Toolbar";
 import {
     logIn,
