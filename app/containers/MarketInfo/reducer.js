@@ -17,7 +17,8 @@ import {
 
 const initialState = {
     marketInfo: null,
-    marketInfoLoaded: false
+    marketInfoLoaded: false,
+    to_currency: null
 };
 
 function marketInfoReducer(state = initialState, action) {
@@ -25,7 +26,6 @@ function marketInfoReducer(state = initialState, action) {
         case MARKET_INFO_CHANGED:
         case MARKET_INFO_RECEIVED:
         {
-            console.log(action.marketInfo);
             let newMarketInfo = state.marketInfo || {};
             for (let from_currency in action.marketInfo) {
 
@@ -64,7 +64,8 @@ function marketInfoReducer(state = initialState, action) {
             return Object.assign({}, state,
                 {
                     marketInfo: null,
-                    marketInfoLoaded: false
+                    marketInfoLoaded: false,
+                    to_currency: action.to_currency
                 });
 
         default:

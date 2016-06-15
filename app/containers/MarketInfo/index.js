@@ -39,12 +39,21 @@ const styles = {
 
 export class MarketInfo extends React.Component {
     render() {
-        return (
+        
+        let index = 0;
+        for (let from_currency in this.props.marketInfo) {
+            if (from_currency == this.props.to_currency) {
+                break;
+            } else {
+                index += 1;
+            }
+        }
 
+        return (
             <div>
                 { this.props.marketInfoLoaded ?
                     <Paper style={styles.block} zDepth={2}>
-                        <Tabs >
+                        <Tabs initialSelectedIndex={index}>
                             {
                                 Object.keys(this.props.marketInfo).map(function (currency) {
                                     let info = this.props.marketInfo[currency];
