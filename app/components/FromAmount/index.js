@@ -58,7 +58,7 @@ class FromAmount extends React.Component {
                 <IconButton
                     style={styles.inputButton}
                     iconStyle={styles.inputIcon}
-                    tooltip="substitute amount"
+                    tooltip="substitute balance"
                     tooltipPosition="bottom-center"
                     backgroundColor={styles.inputButton.backgroundColor}
                     onClick={this.props.substituteFromAmount}>

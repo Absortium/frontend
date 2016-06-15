@@ -41,7 +41,8 @@ import {
     isEmpty,
     errExist,
     deconvert,
-    genParam
+    genParam,
+    cut
 } from "utils/general";
 import BigNumber from "bignumber.js";
 BigNumber.config({ ERRORS: false });
@@ -350,11 +351,11 @@ function exchangeBoxReducer(state = initialState, action) {
         case EXCHANGE_CREATED:
             return Object.assign({}, state, {
                 from_amount: {
-                    value: null,
+                    value: "",
                     error: ERROR_FIELD_IS_REQUIRED
                 },
                 to_amount: {
-                    value: null,
+                    value: "",
                     error: ERROR_FIELD_IS_REQUIRED
                 }
             });
@@ -393,9 +394,11 @@ function exchangeBoxReducer(state = initialState, action) {
         case SUBSTITUTE_OFFER: {
             let substate = {};
             let error = null;
+            let price = cut(new BigNumber(action.price));
 
-            [error, substate] = setRate(action.price, state, substate);
-            substate.rate = genParam(action.price, error);
+
+            [error, substate] = setRate(price, state, substate);
+            substate.rate = genParam(price, error);
 
             return Object.assign({}, state, substate)
         }

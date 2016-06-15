@@ -62,7 +62,7 @@ class ExchangeOffers extends React.Component {
             let amount = this.props.offers[price];
             price = normalize(1/price);
 
-            this.props.substituteOffer(amount , price)
+            this.props.substituteOffer(price * amount , price)
         }
     };
 
