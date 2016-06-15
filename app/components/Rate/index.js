@@ -47,7 +47,7 @@ const styles = {
 class Rate extends React.Component {
     render() {
         let errorText = getErrorText(this.props.error);
-        let rate = this.props.rate != null ? this.props.rate : undefined;
+        let rate = this.props.rate != null ? this.props.rate : "";
         
         return (
             <div style={styles.div}>

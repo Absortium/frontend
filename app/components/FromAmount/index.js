@@ -51,7 +51,7 @@ const styles = {
 class FromAmount extends React.Component {
     render() {
         let errorText = getErrorText(this.props.error);
-        let amount = this.props.amount != null ? this.props.amount : undefined;
+        let amount = this.props.amount != null ? this.props.amount : "";
 
         return (
             <div style={styles.div}>
