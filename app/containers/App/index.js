@@ -37,6 +37,9 @@ import injectTapEventPlugin from "react-tap-event-plugin";
 injectTapEventPlugin();
 
 
+import BigNumber from "bignumber.js";
+BigNumber.config({ ERRORS: false, DECIMAL_PLACES: 15 });
+
 const muiTheme = getMuiTheme({
     palette: {
         primary1Color: cyan500,

@@ -31,10 +31,7 @@ import {
     SUBSTITUTE_FROM_AMOUNT,
     SUBSTITUTE_RATE
 } from "./constants";
-import {
-    SUBSTITUTE_OFFER
-} from "containers/ExchangeOffers/constants"
-
+import { SUBSTITUTE_OFFER } from "containers/ExchangeOffers/constants";
 import {
     isValid,
     isDirty,
@@ -45,7 +42,6 @@ import {
     cut
 } from "utils/general";
 import BigNumber from "bignumber.js";
-BigNumber.config({ ERRORS: false });
 
 const initialState = {
     isAuthenticated: false,
@@ -216,7 +212,7 @@ function exchangeBoxReducer(state = initialState, action) {
                     if (!isDirty(state.from_amount.value)) {
                         [error, substate] = setFromAmount(balance, state, substate);
                         substate.from_amount = genParam(balance, error);
-                    } else if (!isEmpty(state.from_amount.value)){
+                    } else if (!isEmpty(state.from_amount.value)) {
                         // After account update we should substitute the new account balance to the form
                         [error, substate] = setFromAmount(state.from_amount, state, substate);
                         substate.from_amount = genParam(state.from_amount, error);
@@ -391,7 +387,8 @@ function exchangeBoxReducer(state = initialState, action) {
             return Object.assign({}, state, substate)
         }
 
-        case SUBSTITUTE_OFFER: {
+        case SUBSTITUTE_OFFER:
+        {
             let substate = {};
             let error = null;
             let price = cut(new BigNumber(action.price));

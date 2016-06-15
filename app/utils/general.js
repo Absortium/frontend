@@ -2,7 +2,7 @@
  * Created by andrey on 08/06/16.
  */
 
-import BigNumber from "bignumber.js";
+
 import {
     ERROR_RATE_LT_MIN,
     ERROR_RATE_GT_MAX,
@@ -23,8 +23,10 @@ import {
     ERROR_FIELD_LT_ZERO
 } from "containers/App/constants";
 import Q from "q";
+import BigNumber from "bignumber.js";
 
-const precision = 8;
+const precision = 15;
+const visible = 8;
 
 export function isEmpty(value) {
     return value == null || value === ""
@@ -34,20 +36,22 @@ export function isDirty(value) {
     return value != null
 }
 
-export function deconvert(value, withPrecision = false) {
-    if (withPrecision) {
-        return (value / new BigNumber(Math.pow(10, precision))).toPrecision(precision);
-    } else {
-        return value / new BigNumber(Math.pow(10, precision));
+export function deconvert(value, withZeros = false) {
+    value = value / Math.pow(10, 8);
+
+    if (withZeros) {
+        value = value.toFixed(visible)
     }
+
+    return value
 }
 
 export function normalize(value) {
-
-    return new BigNumber(value).toPrecision(precision);
+    return new BigNumber(value).toFixed(visible);
 }
+
 export function convert(value) {
-    return Math.round(new BigNumber(value) * Math.pow(10, precision));
+    return Math.round(new BigNumber(value) * Math.pow(10, 8));
 
 }
 
@@ -70,10 +74,10 @@ export function num2str(value) {
 export function cut(value) {
 
     // cut all numbers after 8th.
-    value = value.toPrecision(precision);
+    value = value.toFixed(visible);
 
     // make from this string and cut the zeros
-    value = parseFloat(value.toString());
+    value = parseFloat(value);
 
     return value.toString();
 }
