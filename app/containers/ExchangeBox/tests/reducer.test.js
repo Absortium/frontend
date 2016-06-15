@@ -119,38 +119,6 @@ describe("ExchangeBoxReducer", () => {
         expect(state).to.deep.equal(expected);
     });
 
-    it("calculation #5", () => {
-        [state, expected] = preinit(state, expected);
-
-        state = exchageBoxReducer(state, changeRate(""));
-
-        // In this case 'to_amount' is not changing because 0 is not valid value
-        state = exchageBoxReducer(state, changeRate("0"));
-        state = exchageBoxReducer(state, changeRate("0,"));
-
-        expected["rate"] = genParam("0,", ERROR_FIELD_NOT_VALID);
-        expected["to_amount"] = genParam("", ERROR_FIELD_IS_REQUIRED);
-
-        expect(state).to.deep.equal(expected);
-    });
-
-    it("calculation #6", () => {
-        [state, expected] = preinit(state, expected);
-
-        state = exchageBoxReducer(state, changeRate(""));
-
-        // In this case 'to_amount' is not changing because 0 is not valid value
-        state = exchageBoxReducer(state, changeRate("0"));
-        state = exchageBoxReducer(state, changeRate("0,"));
-        state = exchageBoxReducer(state, changeRate("0,0"));
-
-        expected["rate"] = genParam("0,0", ERROR_FIELD_NOT_VALID);
-        expected["to_amount"] = genParam("", ERROR_FIELD_IS_REQUIRED);
-
-        expect(state).to.deep.equal(expected);
-
-    });
-
     it("calculation #7", () => {
         [state, expected] = preinit(state, expected);
 
@@ -199,16 +167,6 @@ describe("ExchangeBoxReducer", () => {
         state = exchageBoxReducer(state, changeRate("01"));
 
         expected["rate"] = genParam("01", null);
-
-        expect(state).to.deep.equal(expected);
-    });
-
-    it("calculation #11", () => {
-        [state, expected] = preinit(state, expected);
-
-        state = exchageBoxReducer(state, changeRate("-"));
-
-        expected["rate"] = genParam("-", ERROR_FIELD_NOT_VALID);
 
         expect(state).to.deep.equal(expected);
     });

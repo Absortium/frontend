@@ -166,13 +166,7 @@ export function extractCurrencies(s) {
 }
 
 export function genParam(value, error) {
-    if (typeof value == "number" || typeof value == "object") {
-        value = cut(value);
-
-    } else if (typeof value == "string" && error == null) {
-        value = new BigNumber(value);
-        value = cut(value);
-    }
+    if (typeof value == "number" || typeof value == "object") value = cut(value);
 
     return {
         value: value,

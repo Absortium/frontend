@@ -215,7 +215,8 @@ function exchangeBoxReducer(state = initialState, action) {
                     if (!isDirty(state.from_amount.value)) {
                         [error, substate] = setFromAmount(balance, state, substate);
                         substate.from_amount = genParam(balance, error);
-                    } else {
+                    } else if (!isEmpty(state.from_amount.value)){
+                        // After account update we should substitute the new account balance to the form
                         [error, substate] = setFromAmount(state.from_amount, state, substate);
                         substate.from_amount = genParam(state.from_amount, error);
                     }
