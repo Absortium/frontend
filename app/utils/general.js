@@ -12,20 +12,17 @@ import {
     RATE_MIN,
     RATE_MAX
 } from "containers/ExchangeBox/constants";
-
 import {
     ERROR_WITHDRAWAL_AMOUNT_GT_BALANCE,
     ERROR_WITHDRAWAL_AMOUNT_LT_MIN,
     WITHDRAWAL_AMOUNT_MIN
 } from "containers/WithdrawalDialog/constants";
-
 import {
     ERROR_FIELD_IS_REQUIRED,
     ERROR_FIELD_NOT_VALID,
     ERROR_FIELD_LT_ZERO
 } from "containers/App/constants";
 import Q from "q";
-BigNumber.config({ DECIMAL_PLACES: 20 });
 
 const precision = 8;
 
@@ -46,6 +43,7 @@ export function deconvert(value, withPrecision = false) {
 }
 
 export function normalize(value) {
+
     return new BigNumber(value).toPrecision(precision);
 }
 export function convert(value) {
@@ -107,8 +105,8 @@ export function getErrorText(error) {
             return "Not enough money";
 
         case ERROR_WITHDRAWAL_AMOUNT_LT_MIN:
-            return "Withdrawal amount lower than " + WITHDRAWAL_AMOUNT_MIN;    
-            
+            return "Withdrawal amount lower than " + WITHDRAWAL_AMOUNT_MIN;
+
         default:
             return null
     }
@@ -117,9 +115,9 @@ export function getErrorText(error) {
 export function convertCurrencyName(short) {
     switch (short) {
         case 'btc':
-            return 'Bitcoin';
+            return 'bitcoin';
         case 'eth':
-            return 'Ethereum';
+            return 'ethereum';
     }
 
 }
@@ -130,7 +128,6 @@ export function setIntervalGenerator(g, ...args) {
 
         let r = c.next();
         while (!r.done) {
-            console.log(r);
             r = c.next();
         }
     };

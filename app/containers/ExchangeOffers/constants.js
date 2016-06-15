@@ -1,2 +1,2 @@
 
-export const SUBSTITUTE_EXCHANGE = 'app/ExchangeOffers/SUBSTITUTE_EXCHANGE';
+export const SUBSTITUTE_OFFER = 'app/ExchangeOffers/SUBSTITUTE_OFFER';

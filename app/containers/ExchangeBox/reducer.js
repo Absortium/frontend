@@ -32,6 +32,10 @@ import {
     SUBSTITUTE_RATE
 } from "./constants";
 import {
+    SUBSTITUTE_OFFER
+} from "containers/ExchangeOffers/constants"
+
+import {
     isValid,
     isDirty,
     isEmpty,
@@ -40,7 +44,7 @@ import {
     genParam
 } from "utils/general";
 import BigNumber from "bignumber.js";
-BigNumber.config({ DECIMAL_PLACES: 20 });
+BigNumber.config({ ERRORS: false });
 
 const initialState = {
     isAuthenticated: false,
@@ -368,6 +372,16 @@ function exchangeBoxReducer(state = initialState, action) {
 
             [error, substate] = setFromAmount(state.balance, state, substate);
             substate.from_amount = genParam(state.balance, error);
+
+            return Object.assign({}, state, substate)
+        }
+
+        case SUBSTITUTE_OFFER: {
+            let substate = {};
+            let error = null;
+
+            [error, substate] = setRate(action.price, state, substate);
+            substate.rate = genParam(action.price, error);
 
             return Object.assign({}, state, substate)
         }

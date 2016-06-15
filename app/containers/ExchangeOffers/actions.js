@@ -2,11 +2,11 @@
  * Created by andrey on 12/06/16.
  */
 
-import {SUBSTITUTE_EXCHANGE} from "./constants"
+import {SUBSTITUTE_OFFER} from "./constants"
 
-export function substituteExchange(amount, price) {
+export function substituteOffer(amount, price) {
     return {
-        type: SUBSTITUTE_EXCHANGE,
+        type: SUBSTITUTE_OFFER,
         amount,
         price
     };

@@ -20,7 +20,8 @@ import Subheader from "material-ui/Subheader";
 import RefreshIndicator from "material-ui/RefreshIndicator";
 import Divider from "material-ui/Divider";
 import selectExchangeOffers from "./selectors";
-import { substituteExchange } from "./actions";
+import { substituteOffer } from "./actions";
+import { normalize } from "utils/general";
 
 const styles = {
     block: {
@@ -52,10 +53,17 @@ const styles = {
 
 class ExchangeOffers extends React.Component {
 
-    handleRowSelect = () => {
-        // TODO: Add auto substition to the Exchange Box
-        this.props.substituteExchange()
+    handleRowSelect = (ids) => {
+        if (ids.length == 1) {
+            let id = ids[0];
 
+
+            let price = Object.keys(this.props.offers)[id];
+            let amount = this.props.offers[price];
+            price = normalize(1/price);
+
+            this.props.substituteOffer(amount , price)
+        }
     };
 
     render() {
@@ -77,7 +85,8 @@ class ExchangeOffers extends React.Component {
                                 height="18.6em"
                                 fixedHeader={true}
                                 selectable={true}
-                                multiSelectable={false}>
+                                multiSelectable={false}
+                                onRowSelection={this.handleRowSelect}>
                                 <TableHeader
                                     displaySelectAll={false}
                                     adjustForCheckbox={false}
@@ -96,7 +105,7 @@ class ExchangeOffers extends React.Component {
                                         let amount = this.props.offers[price];
                                         return (
                                             <TableRow key={price}>
-                                                <TableRowColumn>{price}</TableRowColumn>
+                                                <TableRowColumn>{normalize(1/price)}</TableRowColumn>
                                                 <TableRowColumn>{amount}</TableRowColumn>
                                             </TableRow>
                                         )
@@ -130,8 +139,8 @@ const mapStateToProps = selectExchangeOffers();
 
 function mapDispatchToProps(dispatch) {
     return {
-        substituteExchange: (price, amount) => {
-            dispatch(substituteExchange(price, amount))
+        substituteOffer: (amount, price) => {
+            dispatch(substituteOffer(amount, price))
         },
         dispatch,
     };
