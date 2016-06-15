@@ -34,6 +34,7 @@ const styles = {
 class ToAmount extends React.Component {
     render() {
         let errorText = getErrorText(this.props.error);
+        let amount = this.props.amount != null ? this.props.amount : undefined;
 
         return (
             <div style={styles.div}>
@@ -46,7 +47,7 @@ class ToAmount extends React.Component {
                            onChange={this.props.handler}
                            errorText={errorText}
                            errorStyle={styles.errorStyle}
-                           value={this.props.amount}/>
+                           value={amount}/>
                 <CryptoIcon style={styles.icon} icon={this.props.currency}/>
             </div>
         );

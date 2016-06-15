@@ -47,7 +47,8 @@ const styles = {
 class Rate extends React.Component {
     render() {
         let errorText = getErrorText(this.props.error);
-
+        let rate = this.props.rate != null ? this.props.rate : undefined;
+        
         return (
             <div style={styles.div}>
                 <IconButton
@@ -68,7 +69,7 @@ class Rate extends React.Component {
                     type="number"
                     min={0}
                     step={0.01}
-                    value={this.props.rate}
+                    value={rate}
                     onChange={this.props.handler}
                 />
                 <CryptoIcon style={styles.icon} icon={this.props.to_currency}/>

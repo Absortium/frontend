@@ -84,7 +84,8 @@ export class AccountBox extends React.Component { // eslint-disable-line react/p
 
                                     { Object.keys(this.props.accounts).map(function (currency) {
                                         let account = this.props.accounts[currency];
-                                        return <AccountRow currency={currency}
+                                        return <AccountRow key={currency}
+                                                           currency={currency}
                                                            balance={account.amount}
                                                            address={account.address}
                                                            openWithdrawalDialog={this.props.openWithdrawalDialog}/>

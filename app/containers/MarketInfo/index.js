@@ -39,7 +39,7 @@ const styles = {
 
 export class MarketInfo extends React.Component {
     render() {
-        
+
         let index = 0;
         for (let from_currency in this.props.marketInfo) {
             if (from_currency == this.props.to_currency) {
@@ -59,7 +59,8 @@ export class MarketInfo extends React.Component {
                                     let info = this.props.marketInfo[currency];
 
                                     if (info != null) {
-                                        return <Tab label={<MarketTabLabel currency={currency}/>}
+                                        return <Tab key={currency}
+                                                    label={<MarketTabLabel currency={currency}/>}
                                                     style={styles.tab}>
                                             <MarketTabContent currency={currency} changeMarket={this.props.changeMarket}
                                                               info={info}/>
