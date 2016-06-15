@@ -215,6 +215,9 @@ function exchangeBoxReducer(state = initialState, action) {
                     if (!isDirty(state.from_amount.value)) {
                         [error, substate] = setFromAmount(balance, state, substate);
                         substate.from_amount = genParam(balance, error);
+                    } else {
+                        [error, substate] = setFromAmount(state.from_amount, state, substate);
+                        substate.from_amount = genParam(state.from_amount, error);
                     }
                 }
 
@@ -343,6 +346,17 @@ function exchangeBoxReducer(state = initialState, action) {
                 to_currency: action.to_currency
             });
         }
+        case EXCHANGE_CREATED:
+            return Object.assign({}, state, {
+                from_amount: {
+                    value: null,
+                    error: ERROR_FIELD_IS_REQUIRED
+                },
+                to_amount: {
+                    value: null,
+                    error: ERROR_FIELD_IS_REQUIRED
+                }
+            });
 
         case LOGGED_OUT:
             return Object.assign({}, state, {
@@ -354,7 +368,6 @@ function exchangeBoxReducer(state = initialState, action) {
 
 
         case SUBSTITUTE_RATE:
-        case EXCHANGE_CREATED:
         {
             let substate = {};
             let error = null;
