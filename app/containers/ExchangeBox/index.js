@@ -1,7 +1,8 @@
 import React from "react";
 import {
     accountsReceived,
-    sendExchange
+    sendExchange,
+    logIn
 } from "containers/App/actions";
 import {
     substituteRate,

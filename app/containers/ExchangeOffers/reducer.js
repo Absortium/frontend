@@ -24,8 +24,8 @@ function exchangeOffersReducer(state = initialState, action) {
         case OFFERS_CHANGED:
         case OFFERS_RECEIVED:
         {
-            console.log(action.offers);
             let offers = state.offers || {};
+
             for (let offer of action.offers) {
                 offers[normalize(offer.price)] = deconvert(parseInt(offer.amount), true)
             }

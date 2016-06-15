@@ -227,7 +227,6 @@ function exchangeBoxReducer(state = initialState, action) {
         case MARKET_INFO_CHANGED:
         case MARKET_INFO_RECEIVED:
         {
-            console.log(action);
             if (action.marketInfo[state.to_currency] != null) {
 
                 let substate = {
@@ -259,7 +258,6 @@ function exchangeBoxReducer(state = initialState, action) {
 
             if (!isEmpty(from_amount)) {
                 if (isValid(from_amount)) {
-                    console.log(from_amount);
                     [error, substate] = setFromAmount(from_amount, state, substate);
                 } else {
                     error = ERROR_FIELD_NOT_VALID;
