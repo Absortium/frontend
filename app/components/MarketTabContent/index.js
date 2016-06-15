@@ -48,12 +48,13 @@ class MarketTabContent extends React.Component {
                 <TableBody
                     displayRowCheckbox={false}
                     deselectOnClickaway={true}
-                    showRowHover={false}
+                    showRowHover={true}
                     stripedRows={false}>
                     { Object.keys(this.props.info).map(function (currency) {
                         var info = this.props.info[currency];
                         return (
-                            <TableRow key={currency}>
+                            <TableRow hoverable={true}
+                                      key={currency}>
                                 <TableRowColumn>{currency.toUpperCase()}</TableRowColumn>
                                 <TableRowColumn>{info.volume_24h}</TableRowColumn>
                                 <TableRowColumn>{info.rate}</TableRowColumn>

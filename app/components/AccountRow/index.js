@@ -53,31 +53,35 @@ class AccountRow extends React.Component {
 
     render() {
 
-        return <TableRow key={this.props.currency}>
-            <TableRowColumn>{this.props.currency.toUpperCase()}</TableRowColumn>
-            <TableRowColumn>{this.props.balance}</TableRowColumn>
-            <TableRowColumn>
-                <DepositDialog address={this.props.address}
-                               open={this.state.depositDialogOpen}
-                               closeHandler={this.handlerDepositClose}/>
+        return (
+            <TableRow key={this.props.currency}>
+                
+                <TableRowColumn>{this.props.currency.toUpperCase()}</TableRowColumn>
+                <TableRowColumn>{this.props.balance}</TableRowColumn>
+                <TableRowColumn>
+                    <DepositDialog address={this.props.address}
+                                   open={this.state.depositDialogOpen}
+                                   closeHandler={this.handlerDepositClose}/>
 
-                <IconButton
-                    style={styles.deposit}
-                    iconStyle={styles.icon}
-                    backgroundColor={styles.deposit.backgroundColor}
-                    onClick={this.handlerDepositButton}>
-                    <DepositIcon/>
-                </IconButton>
+                    <IconButton
+                        style={styles.deposit}
+                        iconStyle={styles.icon}
+                        backgroundColor={styles.deposit.backgroundColor}
+                        onClick={this.handlerDepositButton}>
+                        <DepositIcon/>
+                    </IconButton>
 
-                <IconButton
-                    style={styles.withdrawal}
-                    iconStyle={styles.icon}
-                    backgroundColor={styles.withdrawal.backgroundColor}
-                    onClick={this.props.openWithdrawalDialog(this.props.currency)}>
-                    <WithdrawIcon/>
-                </IconButton>
-            </TableRowColumn>
-        </TableRow>
+                    <IconButton
+                        style={styles.withdrawal}
+                        iconStyle={styles.icon}
+                        backgroundColor={styles.withdrawal.backgroundColor}
+                        onClick={this.props.openWithdrawalDialog(this.props.currency)}>
+                        <WithdrawIcon/>
+                    </IconButton>
+                </TableRowColumn>
+                
+            </TableRow>
+        )
     }
 }
 

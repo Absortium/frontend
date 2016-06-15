@@ -63,7 +63,6 @@ export class AccountBox extends React.Component { // eslint-disable-line react/p
                             <Table
                                 height="6.74em"
                                 fixedHeader={true}
-                                selectable={true}
                                 multiSelectable={false}
                                 onRowSelection={this.handleRowSelect}>
                                 <TableHeader

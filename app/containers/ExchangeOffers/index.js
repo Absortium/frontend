@@ -67,9 +67,9 @@ class ExchangeOffers extends React.Component {
     };
 
     render() {
-        let subHeader = "Exchanges " + this.props.to_currency.toUpperCase() + " on " + this.props.from_currency.toUpperCase();
+        let subHeader = "Opposite Exchanges";
         let priceHeader = this.props.from_currency.toUpperCase() + " Price (" + this.props.to_currency.toUpperCase() + ")";
-        let amountHeader = "Amount (" + this.props.from_currency.toUpperCase() + ")";
+        let amountHeader = "Amount (" + this.props.to_currency.toUpperCase() + ")";
 
         return (
             <div className={styles.exchangeBox}>
@@ -99,12 +99,13 @@ class ExchangeOffers extends React.Component {
                                 <TableBody
                                     displayRowCheckbox={false}
                                     deselectOnClickaway={true}
-                                    showRowHover={false}
+                                    showRowHover={true}
                                     stripedRows={false}>
                                     { Object.keys(this.props.offers).map(function (price) {
                                         let amount = this.props.offers[price];
                                         return (
-                                            <TableRow key={price}>
+                                            <TableRow hoverable={true}
+                                                      key={price}>
                                                 <TableRowColumn>{normalize(1/price)}</TableRowColumn>
                                                 <TableRowColumn>{amount}</TableRowColumn>
                                             </TableRow>
