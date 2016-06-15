@@ -17,33 +17,35 @@ import {
 } from "containers/App/constants";
 import {
     loggedIn,
-    accountsReceived,
+    accountReceived,
     marketChanged,
     marketInfoReceived
 } from "containers/App/actions";
+
 import {
     changeFromAmount,
     changeToAmount,
     changeRate
 } from "../actions";
+
 import {
     genParam,
-    copy
+    copy,
+    pprint
 } from "utils/general";
 import exchageBoxReducer from "../reducer";
 import _ from "lodash";
 
-var accounts = {
-    btc: {
-        address: "wxaH5tcgFYLYwJiyPmMNFgSLFyKKMP",
-        amount: 4 * Math.pow(10, 8),
-        pk: 2
-    }
+var account = {
+    address: "wxaH5tcgFYLYwJiyPmMNFgSLFyKKMP",
+    amount: 4 * Math.pow(10, 8),
+    currency: "btc",
+    pk: 2
 };
 
 var marketInfo = {
-    btc: {
-        eth: {
+    eth: {
+        btc: {
             rate: "1.000000",
             rate_24h_max: "0.00000000",
             rate_24h_min: "0.00000000",
@@ -51,6 +53,7 @@ var marketInfo = {
         }
     }
 };
+import BigNumber from "bignumber.js"
 
 describe("ExchangeBoxReducer", () => {
     let state;
@@ -81,7 +84,6 @@ describe("ExchangeBoxReducer", () => {
         [state, expected] = testAuthentication(state, expected);
         [state, expected] = testAccountLoaded(state, expected);
 
-        
         testMarketInfoReceived(state, expected)
     });
 
@@ -343,9 +345,8 @@ function testAuthentication(state, expected) {
 }
 
 function testAccountLoaded(state, expected, isFirst = true) {
-    state = exchageBoxReducer(state, accountsReceived(copy(accounts)));
-    expected["account"] = copy(accounts["btc"]);
-    expected["account"]["amount"] = 4;
+    state = exchageBoxReducer(state, accountReceived(account));
+    expected["balance"] = 4;
     expected["isAccountLoaded"] = true;
     expected["isAccountExist"] = true;
 
@@ -358,14 +359,15 @@ function testAccountLoaded(state, expected, isFirst = true) {
     return [state, expected]
 }
 
-function testMarketInfoReceived(state, expected, isFirst = true, isAccountLoaded = true) {
+function testMarketInfoReceived(state, expected, isFirst = true) {
     state = exchageBoxReducer(state, marketInfoReceived(copy(marketInfo)));
     expected["isRateLoaded"] = true;
+    expected["market_rate"] =  new BigNumber("1");
 
     if (isFirst) {
         expected["rate"] = genParam("1", null);
 
-        if (isAccountLoaded) {
+        if (expected["isAccountLoaded"]) {
             expected["to_amount"] = genParam("4", null);
         }
     }
@@ -386,15 +388,4 @@ function preinit(state, expected) {
     [state, expected] = testMarketInfoReceived(state, expected);
 
     return [state, expected]
-}
-
-
-function diff(d1, d2) {
-    _.merge(copy(d1), copy(d2), function (objectValue, sourceValue, key, object, source) {
-        console.log(objectValue);
-
-        if (!(_.isEqual(objectValue, sourceValue)) && (Object(objectValue) !== objectValue)) {
-            console.log(key + "\n    Expected: " + sourceValue + "\n    Actual: " + objectValue);
-        }
-    });
 }

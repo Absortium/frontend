@@ -70,9 +70,6 @@ export function num2str(value) {
 }
 
 export function cut(value) {
-    value = value.toFixed(8);
-
-    value = new BigNumber(value);
 
     // cut all numbers after 8th.
     value = value.toPrecision(precision);
@@ -172,10 +169,16 @@ export function extractCurrencies(s) {
 }
 
 export function genParam(value, error) {
-    let shouldCut = typeof value == "number";
+    if (typeof value == "number" || typeof value == "object") {
+        value = cut(value);
+
+    } else if (typeof value == "string" && error == null) {
+        value = new BigNumber(value);
+        value = cut(value);
+    }
 
     return {
-        value: shouldCut ? cut(value) : value,
+        value: value,
         error: error
     }
 }

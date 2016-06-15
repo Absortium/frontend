@@ -69,13 +69,8 @@ const initialState = {
 };
 
 
-// TODO:
-// HOLY SHIT YOU MUTATE STATE AND ACTION OBJ IN THE REDUCER!!
-// IF YOU NOT FIX THIS SHIT THIS MAY LEAD TO CANCER OF YOUR PENIS MAN!
-
-
 function setToAmount(to_amount, state, substate) {
-    let error;
+    let error = null;
     let rate = state.rate.value;
     let isAccountExist = state.isAccountExist;
 
@@ -138,7 +133,7 @@ function setFromAmount(from_amount, state, substate) {
 }
 
 function setRate(rate, state, substate) {
-    let error;
+    let error = null;
     let to_amount = state.to_amount.value;
     let from_amount = state.from_amount.value;
     let isAccountExist = state.isAccountExist;
@@ -240,7 +235,7 @@ function exchangeBoxReducer(state = initialState, action) {
                 };
 
                 let error = null;
-                let market_rate = action.marketInfo[state.to_currency][state.from_currency].rate;
+                let market_rate = new BigNumber(action.marketInfo[state.to_currency][state.from_currency].rate);
                 let rate = state.rate.value;
 
                 substate.market_rate = market_rate;

@@ -5,6 +5,11 @@ module.exports = (config) => {
     config.set({
         frameworks: ['mocha'],
         reporters: ['coverage', 'mocha'],
+
+        mochaReporter: {
+            showDiff: true
+        },
+
         browsers: ['PhantomJS'],
 
         // you can define custom flags
