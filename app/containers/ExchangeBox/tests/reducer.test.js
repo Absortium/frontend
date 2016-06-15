@@ -33,30 +33,6 @@ import {
 import exchageBoxReducer from "../reducer";
 import _ from "lodash";
 
-const initialState = {
-    isAuthenticated: false,
-    isRateLoaded: false,
-    isAccountExist: false,
-    isAccountLoaded: false,
-    account: null,
-
-    rate: {
-        value: null,
-        error: ERROR_FIELD_IS_REQUIRED
-    },
-    from_amount: {
-        value: null,
-        error: ERROR_FIELD_IS_REQUIRED
-    },
-    to_amount: {
-        value: null,
-        error: ERROR_FIELD_IS_REQUIRED
-    },
-
-    from_currency: null,
-    to_currency: null
-};
-
 var accounts = {
     btc: {
         address: "wxaH5tcgFYLYwJiyPmMNFgSLFyKKMP",
@@ -85,26 +61,27 @@ describe("ExchangeBoxReducer", () => {
         expected = copy(getInitState());
     });
 
-    it("change market", () => {
+    it("MARKET_CHANGED", () => {
         testChangeMarket(state, expected);
     });
 
-    it("is authenticated", () => {
+    it("LOGGED_IN", () => {
         testAuthentication(state, expected)
     });
 
-    it("accounts loaded", () => {
+    it("ACCOUNT_RECEIVED", () => {
         [state, expected] = testChangeMarket(state, expected);
         [state, expected] = testAuthentication(state, expected);
 
         testAccountLoaded(state, expected);
     });
 
-    it("market info received", () => {
+    it("MARKET_INFO_RECEIVED", () => {
         [state, expected] = testChangeMarket(state, expected);
         [state, expected] = testAuthentication(state, expected);
         [state, expected] = testAccountLoaded(state, expected);
 
+        
         testMarketInfoReceived(state, expected)
     });
 

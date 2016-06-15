@@ -22,6 +22,9 @@ module.exports = {
         noParse: [
             /node_modules(\\|\/)sinon/,
             /node_modules(\\|\/)acorn/,
+            /node_modules\/when\/dist/,
+            'ws'
+
         ],
         preLoaders: [
             {
@@ -43,6 +46,26 @@ module.exports = {
                 test: /node_modules[\\\/]auth0-lock[\\\/].*\.ejs$/,
                 loader: 'transform-loader/cacheable?ejsify'
             },
+            {
+                test: /\.jpe?g$|\.gif$|\.png$|\.svg$/i,
+                loader: 'url-loader?limit=10000',
+            },
+            {
+                test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
+                loader: 'file?name=fonts/[name].[hash].[ext]&mimetype=application/font-woff',
+            },
+            {
+                test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
+                loader: 'file?name=fonts/[name].[hash].[ext]&mimetype=application/font-woff',
+            },
+            {
+                test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
+                loader: 'file?name=fonts/[name].[hash].[ext]&mimetype=application/octet-stream',
+            },
+            {
+                test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
+                loader: 'file?name=fonts/[name].[hash].[ext]',
+            },
             // sinon.js--aliased for enzyme--expects/requires global vars.
             // imports-loader allows for global vars to be injected into the module.
             // See https://github.com/webpack/webpack/issues/304
@@ -59,6 +82,7 @@ module.exports = {
                 test: /\.jpe?g$|\.gif$|\.png$/i,
                 loader: 'null-loader',
             },
+            { test: /\.less$/, loader: "style!css!less" },
         ],
     },
 
@@ -70,7 +94,7 @@ module.exports = {
         new webpack.DefinePlugin({
             'process.env': {
                 NODE_ENV: JSON.stringify(process.env.NODE_ENV),
-            },
+            }
         })],
 
     // Some node_modules pull in Node-specific dependencies.
@@ -87,6 +111,7 @@ module.exports = {
 
     // required for enzyme to work properly
     externals: {
+        'ws': true,
         jsdom: 'window',
         'react/addons': true,
         'react/lib/ExecutionEnvironment': true,

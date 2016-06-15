@@ -188,7 +188,7 @@ function setRate(rate, state, substate) {
 
 function exchangeBoxReducer(state = initialState, action) {
     switch (action.type) {
-        case LOGGED_IN:
+            case LOGGED_IN:
             return Object.assign({}, state,
                 {
                     isAuthenticated: true
@@ -249,7 +249,7 @@ function exchangeBoxReducer(state = initialState, action) {
                     [error, substate] = setRate(market_rate, state, substate);
                     substate.rate = genParam(market_rate, error);
                 }
-                
+
                 return Object.assign({}, state, substate);
             } else {
                 return state;
@@ -326,7 +326,6 @@ function exchangeBoxReducer(state = initialState, action) {
         case MARKET_CHANGED:
         {
             return Object.assign({}, state, {
-                isAuthenticated: false,
                 isRateLoaded: false,
                 isAccountExist: false,
                 isAccountLoaded: false,

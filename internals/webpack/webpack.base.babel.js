@@ -94,7 +94,7 @@ module.exports = (options) => ({
     },
 
     externals: ['ws'],
-
+    
     plugins: options.plugins.concat([
         new ExtractTextPlugin("styles.css"),
         new webpack.optimize.CommonsChunkPlugin('common.js'),

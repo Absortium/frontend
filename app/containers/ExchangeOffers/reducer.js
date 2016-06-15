@@ -13,7 +13,6 @@ import {
     deconvert,
     normalize
 } from "utils/general";
-import update from "react/lib/update";
 
 const initialState = {
     offers: {},
