@@ -53,18 +53,22 @@ const styles = {
 class ExchangeOffers extends React.Component {
 
     handleRowSelect = () => {
-        // TODO: 
+        // TODO: Add auto substition to the Exchange Box
         this.props.substituteExchange()
 
     };
 
     render() {
+        let subHeader = "Exchanges " + this.props.to_currency.toUpperCase() + " on " + this.props.from_currency.toUpperCase();
+        let priceHeader = this.props.from_currency.toUpperCase() + " Price (" + this.props.to_currency.toUpperCase() + ")";
+        let amountHeader = "Amount (" + this.props.from_currency.toUpperCase() + ")";
+
         return (
             <div className={styles.exchangeBox}>
                 <Paper style={styles.block} zDepth={2}>
                     <div>
                         <Subheader style={styles.subheader}>
-                            Offers table
+                            {subHeader}
                         </Subheader>
                         <Divider />
 
@@ -79,8 +83,8 @@ class ExchangeOffers extends React.Component {
                                     adjustForCheckbox={false}
                                     enableSelectAll={false}>
                                     <TableRow>
-                                        <TableHeaderColumn tooltip="The Price">Price</TableHeaderColumn>
-                                        <TableHeaderColumn tooltip="The Amount">Amount</TableHeaderColumn>
+                                        <TableHeaderColumn>{priceHeader}</TableHeaderColumn>
+                                        <TableHeaderColumn>{amountHeader}</TableHeaderColumn>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody

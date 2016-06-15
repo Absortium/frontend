@@ -16,7 +16,9 @@ import {
 
 const initialState = {
     offers: {},
-    offersLoaded: false
+    offersLoaded: false,
+    from_currency: null,
+    to_currency: null
 };
 
 function exchangeOffersReducer(state = initialState, action) {
@@ -41,7 +43,9 @@ function exchangeOffersReducer(state = initialState, action) {
             return Object.assign({}, state,
                 {
                     offers: null,
-                    offersLoaded: false
+                    offersLoaded: false,
+                    from_currency: action.from_currency,
+                    to_currency: action.to_currency
                 });
 
         default:
