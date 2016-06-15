@@ -6,7 +6,6 @@
 
 import {
     LOGGED_IN,
-    LOGGED_OUT,
     ACCOUNT_RECEIVED,
     ACCOUNT_UPDATED,
     MARKET_INFO_RECEIVED,
@@ -15,7 +14,8 @@ import {
     EXCHANGE_CREATED,
     ERROR_FIELD_IS_REQUIRED,
     ERROR_FIELD_NOT_VALID,
-    ERROR_FIELD_LT_ZERO
+    ERROR_FIELD_LT_ZERO,
+    LOGGED_OUT
 } from "containers/App/constants";
 import {
     CHANGE_FROM_AMOUNT,
@@ -183,15 +183,11 @@ function setRate(rate, state, substate) {
 
 function exchangeBoxReducer(state = initialState, action) {
     switch (action.type) {
-            case LOGGED_IN:
+        case LOGGED_IN:
             return Object.assign({}, state,
                 {
                     isAuthenticated: true
                 });
-
-
-        case LOGGED_OUT:
-            return Object.assign({}, state, initialState);
 
         case ACCOUNT_UPDATED:
         case ACCOUNT_RECEIVED:
@@ -343,6 +339,14 @@ function exchangeBoxReducer(state = initialState, action) {
                 to_currency: action.to_currency
             });
         }
+
+        case LOGGED_OUT:
+            return Object.assign({}, state, {
+                isAccountExist: false,
+                isAccountLoaded: false,
+                balance: null,
+                address: null
+            });
 
 
         case SUBSTITUTE_RATE:
