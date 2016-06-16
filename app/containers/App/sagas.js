@@ -410,8 +410,7 @@ class AutobahnService {
             }
         };
 
-        let subscription = yield AutobahnService.session.subscribe(topic, onevent);
-        AutobahnService.subscriptions[topic] = subscription;
+        AutobahnService.subscriptions[topic] = yield AutobahnService.session.subscribe(topic, onevent);
 
         return {
             callback() {

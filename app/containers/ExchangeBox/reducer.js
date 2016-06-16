@@ -392,12 +392,18 @@ function exchangeBoxReducer(state = initialState, action) {
             let substate = {};
             let error = null;
             let price = cut(new BigNumber(action.price));
+            let amount = cut(new BigNumber(action.amount));
+            let newState = state;
 
-
-            [error, substate] = setRate(price, state, substate);
+            [error, substate] = setRate(price, newState, substate);
             substate.rate = genParam(price, error);
 
-            return Object.assign({}, state, substate)
+            newState = Object.assign({}, newState, substate);
+
+            [error, substate] = setToAmount(amount, newState, substate);
+            substate.to_amount = genParam(amount, error);
+
+            return Object.assign({}, newState, substate)
         }
 
         default:
