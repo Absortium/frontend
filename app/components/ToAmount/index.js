@@ -10,7 +10,7 @@ import CryptoIcon from "components/CryptoIcon";
 import {
     convertable,
     getErrorText
-} from "../../utils/general";
+} from "utils/general";
 
 
 const styles = {

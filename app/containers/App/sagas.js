@@ -27,7 +27,9 @@ import {
     topicUpdate,
     marketInfoChanged,
     exchangeCreated,
-    withdrawalCreated
+    withdrawalCreated,
+    userExchangesHistoryReceived,
+    allExchangesHistoryReceived
 } from "./actions";
 import {
     LOG_IN,
@@ -61,7 +63,7 @@ import autobahn from "autobahn";
 
 // All sagas to be loaded
 export default [
-    defaultSaga,
+    defaultSaga
 ];
 
 
@@ -484,6 +486,52 @@ class AutobahnService {
 }
 
 class ExchangeService {
+    static isAuthenticated = false;
+    static isMarketInit = false;
+    static from_currency = null;
+    static to_currency = null;
+
+    static *handlerLoggedIn() {
+        ExchangeService.isAuthenticated = true;
+        yield* ExchangeService.getUserExchanges();
+    }
+
+    static *handlerLoggedOut() {
+        ExchangeService.isAuthenticated = false;
+        ExchangeService.from_currency = null;
+        ExchangeService.to_currency = null;
+    }
+
+    static *handlerMarketChanged(action) {
+        ExchangeService.isMarketInit = true;
+        ExchangeService.from_currency = action.from_currency;
+        ExchangeService.to_currency = action.to_currency;
+        yield* ExchangeService.getUserExchanges();
+    }
+
+    static *getUserExchanges() {
+        if (ExchangeService.isMarketInit && ExchangeService.isAuthenticated) {
+            let from_currency = ExchangeService.from_currency;
+            let to_currency = ExchangeService.to_currency;
+
+            let q = "?";
+            q += "from_currency=" + from_currency;
+            q += "&to_currency=" + to_currency;
+
+            const response = yield call(axios.get, "/api/exchanges/" + q);
+            yield put(userExchangesHistoryReceived(response.data));
+        }
+    }
+
+    static * getAllExchanges(action) {
+        let q = "?";
+        q += "from_currency=" + action.from_currency;
+        q += "&to_currency=" + action.to_currency;
+
+        const response = yield call(axios.get, "/api/history/" + q);
+        yield put(allExchangesHistoryReceived(response.data));
+    }
+
     static * handlerSendExchange(action) {
         let data = {
             from_currency: action.from_currency,
@@ -511,6 +559,10 @@ class ExchangeService {
 
     static * setup() {
         yield [
+            takeEvery(LOGGED_IN, ExchangeService.handlerLoggedIn),
+            takeEvery(LOGGED_OUT, ExchangeService.handlerLoggedOut),
+            takeEvery(MARKET_CHANGED, ExchangeService.handlerMarketChanged),
+            takeEvery(MARKET_CHANGED, ExchangeService.getAllExchanges),
             takeEvery(SEND_EXCHANGE, ExchangeService.handlerSendExchange)
         ]
     }

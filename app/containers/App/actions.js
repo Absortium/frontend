@@ -34,6 +34,8 @@ import {
     TOPIC_SUBSCRIBE_SUCCESS,
     TOPIC_SUBSCRIBE_FAILED,
     EXCHANGE_CREATED,
+    USER_EXCHANGE_HISTORY_RECEIVED,
+    ALL_EXCHANGE_HISTORY_RECEIVED,
     WITHDRAWAL_CREATED,
     SEND_EXCHANGE,
     SEND_WITHDRAWAL
@@ -185,5 +187,20 @@ export function marketInfoChanged(marketInfo) {
     return {
         type: MARKET_INFO_CHANGED,
         marketInfo
+    };
+}
+
+
+export function userExchangesHistoryReceived(exchanges) {
+    return {
+        type: USER_EXCHANGE_HISTORY_RECEIVED,
+        exchanges
+    };
+}
+
+export function allExchangesHistoryReceived(exchanges) {
+    return {
+        type: ALL_EXCHANGE_HISTORY_RECEIVED,
+        exchanges
     };
 }

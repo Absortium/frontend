@@ -20,10 +20,15 @@ import Divider from "material-ui/Divider";
 
 const styles = {
     block: {
-        width: '100%',
+        width: "100%",
         margin: "1.5em",
-        textAlign: 'center',
-        display: 'inline-block',
+        textAlign: "center",
+        display: "inline-block"
+    },
+
+    tab: {
+        backgroundColor: "#E8E8E8",
+        textTransform: "capitalize"
     },
 
     propContainer: {
