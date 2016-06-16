@@ -60,9 +60,8 @@ class ExchangeOffers extends React.Component {
 
             let price = Object.keys(this.props.offers)[id];
             let amount = this.props.offers[price];
-            price = normalize(1/price);
 
-            this.props.substituteOffer(price * amount , price)
+            this.props.substituteOffer(amount , price)
         }
     };
 
@@ -106,7 +105,7 @@ class ExchangeOffers extends React.Component {
                                         return (
                                             <TableRow hoverable={true}
                                                       key={price}>
-                                                <TableRowColumn>{normalize(1/price)}</TableRowColumn>
+                                                <TableRowColumn>{price}</TableRowColumn>
                                                 <TableRowColumn>{amount}</TableRowColumn>
                                             </TableRow>
                                         )

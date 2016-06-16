@@ -10,10 +10,10 @@ import {
     MARKET_INFO_CHANGED
 } from "containers/App/constants";
 import {
-    copy,
     deconvert,
     normalize
 } from "utils/general";
+import update from "react-addons-update";
 
 const initialState = {
     marketInfo: null,
@@ -21,35 +21,62 @@ const initialState = {
     to_currency: null
 };
 
+function transform(info) {
+    var data = {};
+
+    for (var fc in info) {
+        data[fc] = {};
+
+        for (var tc in info[fc]) {
+            data[fc][tc] = {};
+
+            for (var key in info[fc][tc]) {
+                var value = info[fc][tc][key];
+
+                if (key == "volume_24h") {
+                    value = deconvert(value, true)
+                } else if (key == "rate") {
+                    value = normalize(value)
+                }
+
+                data[fc][tc][key] = value;
+            }
+        }
+    }
+    return data;
+}
+
 function marketInfoReducer(state = initialState, action) {
     switch (action.type) {
         case MARKET_INFO_CHANGED:
         case MARKET_INFO_RECEIVED:
         {
+
+            let info = transform(action.marketInfo);
             let newMarketInfo = state.marketInfo || {};
-            for (let from_currency in action.marketInfo) {
 
-                let info = action.marketInfo[from_currency];
-
-                if (newMarketInfo[from_currency] == null) {
-                    newMarketInfo[from_currency] = {};
-                }
-
-                for (let to_currency in info) {
-                    let data = info[to_currency];
-                    newMarketInfo[from_currency][to_currency] = {};
-
-                    for (let key in data) {
-                        let value = data[key];
-
-                        if (key == "volume_24h") {
-                            value = deconvert(value, true)
-                        } else if (key == "rate") {
-                            value = normalize(value)
-                        }
-
-                        newMarketInfo[from_currency][to_currency][key] = value;
+            for (let fc in info) {
+                for (let tc in info[fc]) {
+                    if(newMarketInfo[fc]) {
+                        newMarketInfo = update(newMarketInfo,
+                            {
+                                [fc]: {
+                                    $merge: {
+                                        [tc]: info[fc][tc]
+                                    }
+                                }
+                            });
+                    } else {
+                        newMarketInfo = update(newMarketInfo,
+                            {
+                                [fc]: {
+                                    $set: {
+                                        [tc]: info[fc][tc]
+                                    }
+                                }
+                            });
                     }
+
                 }
             }
 

@@ -13,6 +13,7 @@ import {
     deconvert,
     normalize
 } from "utils/general";
+import update from "react-addons-update";
 
 const initialState = {
     offers: {},
@@ -21,20 +22,42 @@ const initialState = {
     to_currency: null
 };
 
+function transform(offers) {
+    let data = {};
+    for (let offer of offers) {
+        let price = normalize(1 / offer.price);
+        let amount = offer.amount;
+        data[price] = deconvert(amount, true);
+    }
+
+    return data;
+}
+
 function exchangeOffersReducer(state = initialState, action) {
     switch (action.type) {
         case OFFERS_CHANGED:
         case OFFERS_RECEIVED:
         {
-            let offers = state.offers || {};
+            let newOffers = state.offers;
 
-            for (let offer of action.offers) {
-                offers[normalize(offer.price)] = deconvert(parseInt(offer.amount), true)
+            let offers = transform(action.offers);
+
+            if (newOffers) {
+                newOffers = update(newOffers, { $merge: offers });
+            } else {
+                newOffers = update(newOffers, { $set: offers });
+            }
+
+            for (let price in newOffers) {
+                let amount = newOffers[price];
+                if (amount == 0) {
+                    delete newOffers[price];
+                }
             }
 
             return Object.assign({}, state,
                 {
-                    offers: offers,
+                    offers: newOffers,
                     offersLoaded: true
                 });
         }
