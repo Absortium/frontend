@@ -230,14 +230,14 @@ function exchangeBoxReducer(state = initialState, action) {
         case MARKET_INFO_CHANGED:
         case MARKET_INFO_RECEIVED:
         {
-            if (action.marketInfo[state.to_currency] != null) {
+            if (action.marketInfo[state.from_currency] != null) {
 
                 let substate = {
                     isRateLoaded: true
                 };
 
                 let error = null;
-                let market_rate = new BigNumber(action.marketInfo[state.to_currency][state.from_currency].rate);
+                let market_rate = new BigNumber(action.marketInfo[state.from_currency][state.to_currency].rate);
                 let rate = state.rate.value;
 
                 substate.market_rate = market_rate;

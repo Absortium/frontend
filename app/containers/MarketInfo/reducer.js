@@ -25,10 +25,9 @@ function transform(info) {
     var data = {};
 
     for (var fc in info) {
-        data[fc] = {};
-
         for (var tc in info[fc]) {
-            data[fc][tc] = {};
+            data[tc] = data[tc] || {};
+            data[tc][fc] = data[tc][fc] || {};
 
             for (var key in info[fc][tc]) {
                 var value = info[fc][tc][key];
@@ -39,7 +38,7 @@ function transform(info) {
                     value = normalize(value)
                 }
 
-                data[fc][tc][key] = value;
+                data[tc][fc][key] = value;
             }
         }
     }
