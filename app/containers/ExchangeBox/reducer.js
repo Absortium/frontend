@@ -69,7 +69,9 @@ const initialState = {
     to_currency: null
 };
 
-
+function update(state, substate) {
+    return Object.assign({}, state, substate);
+}
 function setToAmount(to_amount, state, substate) {
     let error = null;
     let rate = state.rate.value;
@@ -397,13 +399,21 @@ function exchangeBoxReducer(state = initialState, action) {
 
             [error, substate] = setRate(price, newState, substate);
             substate.rate = genParam(price, error);
-
-            newState = Object.assign({}, newState, substate);
+            newState = update(newState, substate);
 
             [error, substate] = setToAmount(amount, newState, substate);
             substate.to_amount = genParam(amount, error);
+            newState = update(newState, substate);
 
-            return Object.assign({}, newState, substate)
+            if (newState.from_amount.error == ERROR_FROM_AMOUNT_GT_BALANCE) {
+                let error = null;
+
+                [error, substate] = setFromAmount(newState.balance, newState, substate);
+                substate.from_amount = genParam(newState.balance, error);
+                newState = update(newState, substate);
+            }
+
+            return newState
         }
 
         default:
