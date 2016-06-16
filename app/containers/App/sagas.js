@@ -21,6 +21,7 @@ import {
     offerReceived,
     offersChanged,
     subscribeOnTopic,
+    unsubscribeFromTopic,
     subscribeSuccess,
     subscribeFailed,
     topicUpdate,
@@ -35,6 +36,7 @@ import {
     LOGGED_OUT,
     MARKET_CHANGED,
     TOPIC_SUBSCRIBE,
+    TOPIC_UNSUBSCRIBE,
     TOPIC_SUBSCRIBE_FAILED,
     TOPIC_UPDATE,
     EXCHANGE_CREATED,
@@ -51,7 +53,6 @@ import Auth0Lock from "auth0-lock";
 import {
     extractCurrencies,
     sleep,
-    include,
     setTimeoutGenerator,
     convert
 } from "utils/general";
@@ -346,7 +347,7 @@ class MarketInfoService {
 }
 
 class OfferService {
-    static topics = [];
+    static topic;
 
     static * get(action) {
 
@@ -364,7 +365,7 @@ class OfferService {
     };
 
     static * handlerUpdate(action) {
-        if (include(OfferService.topics, action.topic)) {
+        if (OfferService.topic == action.topic) {
             let offer = action.data;
             yield put(offersChanged([offer]))
         }
@@ -375,7 +376,11 @@ class OfferService {
         let to_currency = action.to_currency;
         let topic = to_currency + "_" + from_currency;
 
-        OfferService.topics.push(topic);
+        if (OfferService.topic) {
+            yield put(unsubscribeFromTopic(OfferService.topic));
+        }
+
+        OfferService.topic = topic;
         yield put(subscribeOnTopic(topic));
     }
 
@@ -393,16 +398,20 @@ class AutobahnService {
     // Additional info about this service https://github.com/yelouafi/redux-saga/issues/51
 
     static session = null;
+    static subscriptions = {};
 
     static * listner(topic) {
         let deferred;
 
-        AutobahnService.session.subscribe(topic, (args, data) => {
+        let onevent = function (args, data) {
             if (deferred) {
                 deferred.resolve(data);
                 deferred = null
             }
-        });
+        };
+
+        let subscription = yield AutobahnService.session.subscribe(topic, onevent);
+        AutobahnService.subscriptions[topic] = subscription;
 
         return {
             callback() {
@@ -422,6 +431,17 @@ class AutobahnService {
         while (true) {
             const data = yield call(callback);
             yield put(topicUpdate(topic, data));
+        }
+    }
+
+    static * handlerUnsubscribe(action) {
+        let topic = action.topic;
+
+        if (AutobahnService.session != null) {
+            let subscription = AutobahnService.subscriptions[topic];
+            if (subscription) {
+                AutobahnService.session.unsubscribe(subscription);
+            }
         }
     }
 
@@ -457,6 +477,7 @@ class AutobahnService {
 
         yield [
             takeEvery(TOPIC_SUBSCRIBE, AutobahnService.handlerSubscribe),
+            takeEvery(TOPIC_UNSUBSCRIBE, AutobahnService.handlerUnsubscribe),
             takeEvery(TOPIC_SUBSCRIBE_FAILED, AutobahnService.handlerSubscribe)
         ]
 

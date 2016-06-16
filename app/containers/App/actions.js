@@ -29,6 +29,7 @@ import {
     OFFERS_RECEIVED,
     OFFERS_CHANGED,
     TOPIC_SUBSCRIBE,
+    TOPIC_UNSUBSCRIBE,
     TOPIC_UPDATE,
     TOPIC_SUBSCRIBE_SUCCESS,
     TOPIC_SUBSCRIBE_FAILED,
@@ -111,6 +112,14 @@ export function offersChanged(offers) {
 export function subscribeOnTopic(topic) {
     return {
         type: TOPIC_SUBSCRIBE,
+        topic
+    };
+}
+
+
+export function unsubscribeFromTopic(topic) {
+    return {
+        type: TOPIC_UNSUBSCRIBE,
         topic
     };
 }
