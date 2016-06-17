@@ -13,6 +13,7 @@ import marketInfoReducer from "containers/MarketInfo/reducer";
 import exchangeOffersReducer from "containers/ExchangeOffers/reducer";
 import accountBoxReducer from 'containers/AccountBox/reducer';
 import withdrawalDialogReducer from 'containers/WithdrawalDialog/reducer';
+import exchangeListBoxReducer from 'containers/ExchangeListBox/reducer';
 import {reducer as toastrReducer} from 'react-redux-toastr'
 
 /*
@@ -57,6 +58,7 @@ export default function createReducer(asyncReducers) {
         marketInfo: marketInfoReducer,
         accountBox: accountBoxReducer,
         withdrawalDialog: withdrawalDialogReducer,
+        exchangeListBox: exchangeListBoxReducer,
         toastr: toastrReducer,
         ...asyncReducers,
     });

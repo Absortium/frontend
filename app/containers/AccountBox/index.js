@@ -9,8 +9,8 @@ import { connect } from "react-redux";
 import Paper from "material-ui/Paper";
 import Subheader from "material-ui/Subheader";
 import Divider from "material-ui/Divider";
-import RefreshIndicator from "material-ui/RefreshIndicator";
 import AccountRow from "components/AccountRow";
+import Refresh from "components/Refresh";
 import {
     Table,
     TableBody,
@@ -35,11 +35,6 @@ const styles = {
         margin: "1.5em",
         textAlign: "center",
         display: "inline-block"
-    },
-
-    refresh: {
-        display: "inline-block",
-        position: "relative"
     },
 
     subheader: {
@@ -92,18 +87,7 @@ export class AccountBox extends React.Component { // eslint-disable-line react/p
                                 </TableBody>
                             </Table>
                             :
-                            <div>
-                                <br />
-                                <RefreshIndicator
-                                    size={70}
-                                    top={0}
-                                    left={0}
-                                    status="loading"
-                                    style={styles.refresh}
-                                />
-                                <br />
-                                <br />
-                            </div>
+                            <Refresh />
                         }
 
                     </Paper>

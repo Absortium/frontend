@@ -11,13 +11,13 @@ import {
     changeRate,
     changeToAmount
 } from "./actions";
-import selectExchangeBox from "./selectors"
+import selectExchangeBox from "./selectors";
 import Paper from "material-ui/Paper";
 import Subheader from "material-ui/Subheader";
 import RaisedButton from "material-ui/RaisedButton";
-import IconButton from "material-ui/IconButton"
+import IconButton from "material-ui/IconButton";
 import ReverseIcon from "material-ui/svg-icons/action/autorenew";
-import RefreshIndicator from "material-ui/RefreshIndicator";
+import Refresh from "components/Refresh";
 import Divider from "material-ui/Divider";
 import FromAmount from "components/FromAmount";
 import ToAmount from "components/ToAmount";
@@ -58,11 +58,6 @@ const styles = {
         margin: "1.5em",
         textAlign: "center",
         display: "inline-block"
-    },
-
-    refresh: {
-        display: "inline-block",
-        position: "relative"
     },
 
     toolbar: {
@@ -143,20 +138,7 @@ class ExchangeBox extends React.Component {
                 </div>
             )
         } else {
-            main = (
-                <div>
-                    <br />
-                    <RefreshIndicator
-                        size={70}
-                        top={0}
-                        left={0}
-                        status="loading"
-                        style={styles.refresh}
-                    />
-                    <br />
-                    <br />
-                </div>
-            )
+            main = <Refresh />
         }
 
 
