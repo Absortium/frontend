@@ -17,11 +17,10 @@ import {
 } from "material-ui/Table";
 import { connect } from "react-redux";
 import Subheader from "material-ui/Subheader";
-import RefreshIndicator from "material-ui/RefreshIndicator";
 import Divider from "material-ui/Divider";
+import Refresh from "components/Refresh";
 import selectExchangeOffers from "./selectors";
 import { substituteOffer } from "./actions";
-import { normalize } from "utils/general";
 
 const styles = {
     block: {
@@ -42,13 +41,7 @@ const styles = {
 
     subheader: {
         backgroundColor: "#E8E8E8"
-    },
-
-    refresh: {
-        display: "inline-block",
-        position: "relative"
     }
-
 };
 
 class ExchangeOffers extends React.Component {
@@ -61,7 +54,7 @@ class ExchangeOffers extends React.Component {
             let price = Object.keys(this.props.offers)[id];
             let amount = this.props.offers[price];
 
-            this.props.substituteOffer(amount , price)
+            this.props.substituteOffer(amount, price)
         }
     };
 
@@ -113,18 +106,7 @@ class ExchangeOffers extends React.Component {
                                 </TableBody>
                             </Table>
                             :
-                            <div>
-                                <br />
-                                <RefreshIndicator
-                                    size={70}
-                                    top={0}
-                                    left={0}
-                                    status="loading"
-                                    style={styles.refresh}
-                                />
-                                <br />
-                                <br />
-                            </div>
+                            <Refresh />
                         }
                     </div>
                 </Paper>
