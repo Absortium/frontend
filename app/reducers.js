@@ -11,10 +11,10 @@ import headerReducer from "containers/Header/reducer";
 import exchangeBoxReducer from "containers/ExchangeBox/reducer";
 import marketInfoReducer from "containers/MarketInfo/reducer";
 import exchangeOffersReducer from "containers/ExchangeOffers/reducer";
-import accountBoxReducer from 'containers/AccountBox/reducer';
-import withdrawalDialogReducer from 'containers/WithdrawalDialog/reducer';
-import exchangeListBoxReducer from 'containers/ExchangeListBox/reducer';
-import {reducer as toastrReducer} from 'react-redux-toastr'
+import accountBoxReducer from "containers/AccountBox/reducer";
+import withdrawalDialogReducer from "containers/WithdrawalDialog/reducer";
+import exchangeListBoxReducer from "containers/ExchangeListBox/reducer";
+import { reducer as toastrReducer } from "react-redux-toastr";
 
 /*
  * routeReducer

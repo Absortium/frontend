@@ -38,8 +38,7 @@ const styles = {
 
 
 export class MarketInfo extends React.Component {
-    render() {
-
+    getActiveTab = () => {
         let index = 0;
         for (let from_currency in this.props.marketInfo) {
             if (from_currency == this.props.to_currency) {
@@ -48,12 +47,19 @@ export class MarketInfo extends React.Component {
                 index += 1;
             }
         }
+        
+        return index;
+    };
+    
+    render() {
+
+        
 
         return (
             <div>
                 { this.props.marketInfoLoaded ?
                     <Paper style={styles.block} zDepth={2}>
-                        <Tabs initialSelectedIndex={index}>
+                        <Tabs initialSelectedIndex={this.getActiveTab()}>
                             {
                                 Object.keys(this.props.marketInfo).map(function (currency) {
                                     let info = this.props.marketInfo[currency];

@@ -185,3 +185,7 @@ export function copy(obj) {
 export function pprint(obj) {
     console.log(JSON.stringify(copy(obj), null, 2));
 }
+
+export function update(state, substate) {
+    return Object.assign({}, state, substate);
+}

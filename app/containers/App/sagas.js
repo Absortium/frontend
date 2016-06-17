@@ -69,15 +69,17 @@ export default [
 
 // Individual exports for testing
 export function* defaultSaga() {
+
+    // Be careful the order of services is matter!
     yield [
-        AccountsService.setup(),
-        AuthService.setup(),
         MarketInfoService.setup(),
         RouteService.setup(),
         OfferService.setup(),
         AutobahnService.setup(),
         ExchangeService.setup(),
-        WithdrawalService.setup()
+        WithdrawalService.setup(),
+        AccountsService.setup(),
+        AuthService.setup()
     ]
 }
 
@@ -563,7 +565,7 @@ class ExchangeService {
             takeEvery(LOGGED_OUT, ExchangeService.handlerLoggedOut),
             takeEvery(MARKET_CHANGED, ExchangeService.handlerMarketChanged),
             takeEvery(MARKET_CHANGED, ExchangeService.getAllExchanges),
-            takeEvery(SEND_EXCHANGE, ExchangeService.handlerSendExchange)
+            takeLatest(SEND_EXCHANGE, ExchangeService.handlerSendExchange)
         ]
     }
 }
@@ -599,7 +601,7 @@ class WithdrawalService {
 
     static * setup() {
         yield [
-            takeEvery(SEND_WITHDRAWAL, WithdrawalService.handlerSendWithdrawal)
+            takeLatest(SEND_WITHDRAWAL, WithdrawalService.handlerSendWithdrawal)
         ]
     }
 }

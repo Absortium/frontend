@@ -9,8 +9,10 @@ import RefreshIndicator from "material-ui/RefreshIndicator";
 
 const styles = {
     refresh: {
-        display: "inline-block",
-        position: "relative"
+        display: "inherit",
+        position: "relative",
+        marginLeft: "auto",
+        marginRight: "auto"
     }
 };
 
@@ -26,7 +28,6 @@ class Refresh extends React.Component {
                     status="loading"
                     style={styles.refresh}
                 />
-                <br />
                 <br />
             </div>
         );

@@ -117,18 +117,18 @@ class ExchangeBox extends React.Component {
         if (this.props.isRateLoaded) {
             main = (
                 <div>
+                    <FromAmount currency={this.props.from_currency}
+                                handler={this.props.handlerFromAmount}
+                                amount={this.props.from_amount.value}
+                                error={this.props.from_amount.error}
+                                substituteFromAmount={this.props.substituteFromAmount}/>
+                    
                     <Rate handler={this.props.handlerRate}
                           rate={this.props.rate.value}
                           error={this.props.rate.error}
                           from_currency={this.props.from_currency}
                           to_currency={this.props.to_currency}
                           substituteRate={this.props.substituteRate}/>
-
-                    <FromAmount currency={this.props.from_currency}
-                                handler={this.props.handlerFromAmount}
-                                amount={this.props.from_amount.value}
-                                error={this.props.from_amount.error}
-                                substituteFromAmount={this.props.substituteFromAmount}/>
 
                     <ToAmount currency={this.props.to_currency}
                               handler={this.props.handlerToAmount}

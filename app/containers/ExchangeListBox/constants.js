@@ -1,5 +1,0 @@
-/*
- *
- * ExchangeListBox constants
- *
- */
