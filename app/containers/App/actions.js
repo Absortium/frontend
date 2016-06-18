@@ -35,7 +35,8 @@ import {
     TOPIC_SUBSCRIBE_FAILED,
     EXCHANGE_CREATED,
     USER_EXCHANGE_HISTORY_RECEIVED,
-    ALL_EXCHANGE_HISTORY_RECEIVED,
+    EXCHANGE_HISTORY_RECEIVED,
+    EXCHANGE_HISTORY_CHANGED,
     WITHDRAWAL_CREATED,
     SEND_EXCHANGE,
     SEND_WITHDRAWAL
@@ -166,6 +167,14 @@ export function exchangeCreated(exchanges) {
     };
 }
 
+export function exchangesHistoryChanged(exchanges) {
+    return {
+        type: EXCHANGE_HISTORY_CHANGED,
+        exchanges
+    };
+}
+
+
 export function sendWithdrawal(amount, address, pk, currency) {
     return {
         type: SEND_WITHDRAWAL,
@@ -200,7 +209,7 @@ export function userExchangesHistoryReceived(exchanges) {
 
 export function allExchangesHistoryReceived(exchanges) {
     return {
-        type: ALL_EXCHANGE_HISTORY_RECEIVED,
+        type: EXCHANGE_HISTORY_RECEIVED,
         exchanges
     };
 }

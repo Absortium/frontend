@@ -36,23 +36,8 @@ export function isDirty(value) {
     return value != null
 }
 
-export function deconvert(value, withZeros = false) {
-    value = value / Math.pow(10, 8);
-
-    if (withZeros) {
-        value = value.toFixed(visible)
-    }
-
-    return value
-}
-
 export function normalize(value) {
     return new BigNumber(value).toFixed(visible);
-}
-
-export function convert(value) {
-    return Math.round(new BigNumber(value) * Math.pow(10, 8));
-
 }
 
 export function isValid(value) {

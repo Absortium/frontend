@@ -9,12 +9,12 @@ import {
     LOGGED_IN,
     MARKET_CHANGED,
     LOGGED_OUT,
-    ALL_EXCHANGE_HISTORY_RECEIVED,
+    EXCHANGE_HISTORY_RECEIVED,
+    EXCHANGE_HISTORY_CHANGED,
     USER_EXCHANGE_HISTORY_RECEIVED
 } from "containers/App/constants";
 import {
     update,
-    deconvert,
     normalize
 } from "utils/general";
 
@@ -38,7 +38,7 @@ function transform(exchanges) {
             let value = exchange[key];
 
             if (key == "amount") {
-                value = normalize(deconvert(value));
+                value = normalize(parseFloat(value));
             } else if (key == "price") {
                 value = normalize(value)
             }
@@ -71,7 +71,8 @@ function exchangeListBoxReducer(state = initialState, action) {
                 to_currency: action.to_currency
             });
 
-        case ALL_EXCHANGE_HISTORY_RECEIVED:
+        case EXCHANGE_HISTORY_CHANGED:
+        case EXCHANGE_HISTORY_RECEIVED:
             return update(state, {
                 isAllExchangesLoaded: true,
                 all_exchanges: transform(action.exchanges)

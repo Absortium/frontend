@@ -61,7 +61,7 @@ class ExchangeOffers extends React.Component {
 
     render() {
         let subHeader = "Opposite Exchanges";
-        let priceHeader = this.props.from_currency.toUpperCase() + " Price (" + this.props.to_currency.toUpperCase() + ")";
+        let priceHeader = this.props.to_currency.toUpperCase() + " Price (" + this.props.from_currency.toUpperCase() + ")";
         let fromAmountHeader = "Give (" + this.props.to_currency.toUpperCase() + ")";
         let toAmountHeader = "Get (" + this.props.from_currency.toUpperCase() + ")";
 
@@ -86,9 +86,10 @@ class ExchangeOffers extends React.Component {
                                     adjustForCheckbox={false}
                                     enableSelectAll={false}>
                                     <TableRow>
-                                        <TableHeaderColumn>{toAmountHeader}</TableHeaderColumn>
-                                        <TableHeaderColumn>{priceHeader}</TableHeaderColumn>
                                         <TableHeaderColumn>{fromAmountHeader}</TableHeaderColumn>
+                                        <TableHeaderColumn>{priceHeader}</TableHeaderColumn>
+                                        <TableHeaderColumn>{toAmountHeader}</TableHeaderColumn>
+
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody
@@ -101,9 +102,10 @@ class ExchangeOffers extends React.Component {
                                         return (
                                             <TableRow hoverable={true}
                                                       key={price}>
-                                                <TableRowColumn>{normalize(amount / price)}</TableRowColumn>
-                                                <TableRowColumn>{price}</TableRowColumn>
                                                 <TableRowColumn>{amount}</TableRowColumn>
+                                                <TableRowColumn>{price}</TableRowColumn>
+                                                <TableRowColumn>{normalize(amount * price)}</TableRowColumn>
+
 
                                             </TableRow>
                                         )

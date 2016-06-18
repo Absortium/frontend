@@ -10,7 +10,6 @@ import {
     MARKET_INFO_CHANGED
 } from "containers/App/constants";
 import {
-    deconvert,
     normalize
 } from "utils/general";
 import update from "react-addons-update";
@@ -33,7 +32,7 @@ function transform(info) {
                 var value = info[fc][tc][key];
 
                 if (key == "volume_24h") {
-                    value = deconvert(value, true)
+                    value = normalize(value)
                 } else if (key == "rate") {
                     value = normalize(value)
                 }

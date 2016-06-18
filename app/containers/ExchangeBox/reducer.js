@@ -29,7 +29,6 @@ import {
     isValid,
     isDirty,
     isEmpty,
-    deconvert,
     genParam,
     cut,
     update
@@ -88,7 +87,7 @@ function exchangeBoxReducer(state = initialState, action) {
 
                 if (isAccountExist) {
                     let error = null;
-                    let balance = deconvert(parseInt(action.account.amount));
+                    let balance = new BigNumber(action.account.amount);
                     substate.balance = balance;
 
 
@@ -270,7 +269,7 @@ function exchangeBoxReducer(state = initialState, action) {
         {
             let substate = {};
             let error = null;
-            let price = cut(new BigNumber(action.price));
+            let price = cut(1 / new BigNumber(action.price));
             let amount = cut(new BigNumber(action.amount));
             let newState = state;
 

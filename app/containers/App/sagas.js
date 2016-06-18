@@ -29,7 +29,8 @@ import {
     exchangeCreated,
     withdrawalCreated,
     userExchangesHistoryReceived,
-    allExchangesHistoryReceived
+    allExchangesHistoryReceived,
+    exchangesHistoryChanged
 } from "./actions";
 import {
     LOG_IN,
@@ -55,8 +56,7 @@ import Auth0Lock from "auth0-lock";
 import {
     extractCurrencies,
     sleep,
-    setTimeoutGenerator,
-    convert
+    setTimeoutGenerator
 } from "utils/general";
 import { isTokenExpired } from "utils/jwt";
 import autobahn from "autobahn";
@@ -73,6 +73,7 @@ export function* defaultSaga() {
     // Be careful the order of services is matter!
     yield [
         MarketInfoService.setup(),
+        HistoryService.setup(),
         RouteService.setup(),
         OfferService.setup(),
         AutobahnService.setup(),
@@ -351,7 +352,7 @@ class MarketInfoService {
 }
 
 class OfferService {
-    static topic;
+    static topic = null;
 
     static * get(action) {
 
@@ -378,9 +379,9 @@ class OfferService {
     static * connect(action) {
         let from_currency = action.from_currency;
         let to_currency = action.to_currency;
-        let topic = to_currency + "_" + from_currency;
+        let topic = "offers_" + to_currency + "_" + from_currency;
 
-        if (OfferService.topic) {
+        if (OfferService.topic != topic) {
             yield put(unsubscribeFromTopic(OfferService.topic));
         }
 
@@ -525,20 +526,11 @@ class ExchangeService {
         }
     }
 
-    static * getAllExchanges(action) {
-        let q = "?";
-        q += "from_currency=" + action.from_currency;
-        q += "&to_currency=" + action.to_currency;
-
-        const response = yield call(axios.get, "/api/history/" + q);
-        yield put(allExchangesHistoryReceived(response.data));
-    }
-
     static * handlerSendExchange(action) {
         let data = {
             from_currency: action.from_currency,
             to_currency: action.to_currency,
-            amount: convert(action.amount),
+            amount: action.amount,
             price: action.price
         };
 
@@ -564,8 +556,48 @@ class ExchangeService {
             takeEvery(LOGGED_IN, ExchangeService.handlerLoggedIn),
             takeEvery(LOGGED_OUT, ExchangeService.handlerLoggedOut),
             takeEvery(MARKET_CHANGED, ExchangeService.handlerMarketChanged),
-            takeEvery(MARKET_CHANGED, ExchangeService.getAllExchanges),
             takeLatest(SEND_EXCHANGE, ExchangeService.handlerSendExchange)
+        ]
+    }
+}
+
+class HistoryService {
+    static topic = null;
+
+    static * handlerUpdate(action) {
+        if (HistoryService.topic == action.topic) {
+            let exchange = action.data;
+            yield put(exchangesHistoryChanged([exchange]))
+        }
+    }
+
+    static * connect(action) {
+        let from_currency = action.from_currency;
+        let to_currency = action.to_currency;
+        let topic = "history_" + to_currency + "_" + from_currency;
+
+        if (HistoryService.topic != topic) {
+            yield put(unsubscribeFromTopic(HistoryService.topic));
+        }
+
+        HistoryService.topic = topic;
+        yield put(subscribeOnTopic(topic));
+    }
+
+    static * getAllExchanges(action) {
+        let q = "?";
+        q += "from_currency=" + action.from_currency;
+        q += "&to_currency=" + action.to_currency;
+
+        const response = yield call(axios.get, "/api/history/" + q);
+        yield put(allExchangesHistoryReceived(response.data));
+    }
+
+    static * setup() {
+        yield [
+            takeEvery(MARKET_CHANGED, HistoryService.getAllExchanges),
+            takeEvery(MARKET_CHANGED, HistoryService.connect),
+            takeEvery(TOPIC_UPDATE, HistoryService.handlerUpdate)
         ]
     }
 }

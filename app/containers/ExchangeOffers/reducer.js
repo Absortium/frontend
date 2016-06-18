@@ -10,7 +10,6 @@ import {
     OFFERS_CHANGED
 } from "containers/App/constants";
 import {
-    deconvert,
     normalize
 } from "utils/general";
 import update from "react-addons-update";
@@ -25,9 +24,8 @@ const initialState = {
 function transform(offers) {
     let data = {};
     for (let offer of offers) {
-        let price = normalize(1 / offer.price);
-        let amount = offer.amount;
-        data[price] = deconvert(amount, true);
+        let price = normalize(offer.price);
+        data[price] = normalize(offer.amount);
     }
 
     return data;
