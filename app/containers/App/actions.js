@@ -207,7 +207,7 @@ export function userExchangesHistoryReceived(exchanges) {
     };
 }
 
-export function allExchangesHistoryReceived(exchanges) {
+export function exchangesHistoryReceived(exchanges) {
     return {
         type: EXCHANGE_HISTORY_RECEIVED,
         exchanges

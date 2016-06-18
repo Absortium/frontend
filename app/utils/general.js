@@ -171,6 +171,6 @@ export function pprint(obj) {
     console.log(JSON.stringify(copy(obj), null, 2));
 }
 
-export function update(state, substate) {
+export function updateState(state, substate) {
     return Object.assign({}, state, substate);
 }

@@ -31,7 +31,7 @@ import {
     isEmpty,
     genParam,
     cut,
-    update
+    updateState
 } from "utils/general";
 import {
     setFromAmount,
@@ -70,7 +70,7 @@ const initialState = {
 function exchangeBoxReducer(state = initialState, action) {
     switch (action.type) {
         case LOGGED_IN:
-            return update(state, { isAuthenticated: true });
+            return updateState(state, { isAuthenticated: true });
 
         case ACCOUNT_UPDATED:
         case ACCOUNT_RECEIVED:
@@ -97,7 +97,7 @@ function exchangeBoxReducer(state = initialState, action) {
                     }
                 }
 
-                return update(state, substate);
+                return updateState(state, substate);
             } else {
                 return state
             }
@@ -123,7 +123,7 @@ function exchangeBoxReducer(state = initialState, action) {
                     substate.rate = genParam(market_rate, error);
                 }
 
-                return update(state, substate);
+                return updateState(state, substate);
             } else {
                 return state;
             }
@@ -147,7 +147,7 @@ function exchangeBoxReducer(state = initialState, action) {
             }
 
             substate.from_amount = genParam(action.from_amount, error);
-            return update(state, substate);
+            return updateState(state, substate);
         }
 
 
@@ -169,7 +169,7 @@ function exchangeBoxReducer(state = initialState, action) {
             }
 
             substate.to_amount = genParam(action.to_amount, error);
-            return update(state, substate);
+            return updateState(state, substate);
         }
 
         case CHANGE_RATE:
@@ -191,13 +191,13 @@ function exchangeBoxReducer(state = initialState, action) {
             }
 
             substate.rate = genParam(action.rate, error);
-            return update(state, substate);
+            return updateState(state, substate);
 
         }
 
         case MARKET_CHANGED:
         {
-            return update(state, {
+            return updateState(state, {
                 isRateLoaded: false,
                 isAccountExist: false,
                 isAccountLoaded: false,
@@ -223,7 +223,7 @@ function exchangeBoxReducer(state = initialState, action) {
             });
         }
         case EXCHANGE_CREATED:
-            return update(state, {
+            return updateState(state, {
                 from_amount: {
                     value: "",
                     error: ERROR_FIELD_IS_REQUIRED
@@ -235,7 +235,7 @@ function exchangeBoxReducer(state = initialState, action) {
             });
 
         case LOGGED_OUT:
-            return update(state, {
+            return updateState(state, {
                 isAccountExist: false,
                 isAccountLoaded: false,
                 balance: null,
@@ -251,7 +251,7 @@ function exchangeBoxReducer(state = initialState, action) {
             [error, substate] = setRate(state.market_rate, state, substate);
             substate.rate = genParam(state.market_rate, error);
 
-            return update(state, substate)
+            return updateState(state, substate)
         }
 
         case SUBSTITUTE_FROM_AMOUNT:
@@ -262,7 +262,7 @@ function exchangeBoxReducer(state = initialState, action) {
             [error, substate] = setFromAmount(state.balance, state, substate);
             substate.from_amount = genParam(state.balance, error);
 
-            return update(state, substate)
+            return updateState(state, substate)
         }
 
         case SUBSTITUTE_OFFER:
@@ -275,18 +275,18 @@ function exchangeBoxReducer(state = initialState, action) {
 
             [error, substate] = setRate(price, newState, substate);
             substate.rate = genParam(price, error);
-            newState = update(newState, substate);
+            newState = updateState(newState, substate);
 
             [error, substate] = setToAmount(amount, newState, substate);
             substate.to_amount = genParam(amount, error);
-            newState = update(newState, substate);
+            newState = updateState(newState, substate);
 
             if (newState.from_amount.error == ERROR_FROM_AMOUNT_GT_BALANCE) {
                 let error = null;
 
                 [error, substate] = setFromAmount(newState.balance, newState, substate);
                 substate.from_amount = genParam(newState.balance, error);
-                newState = update(newState, substate);
+                newState = updateState(newState, substate);
             }
 
             return newState

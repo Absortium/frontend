@@ -14,9 +14,10 @@ import {
     USER_EXCHANGE_HISTORY_RECEIVED
 } from "containers/App/constants";
 import {
-    update,
+    updateState,
     normalize
 } from "utils/general";
+import update from "react-addons-update";
 
 const initialState = {
     all_exchanges: null,
@@ -38,7 +39,7 @@ function transform(exchanges) {
             let value = exchange[key];
 
             if (key == "amount") {
-                value = normalize(parseFloat(value));
+                value = normalize(value);
             } else if (key == "price") {
                 value = normalize(value)
             }
@@ -54,17 +55,17 @@ function transform(exchanges) {
 function exchangeListBoxReducer(state = initialState, action) {
     switch (action.type) {
         case LOGGED_IN:
-            return update(state, { isAuthenticated: true });
+            return updateState(state, { isAuthenticated: true });
 
         case LOGGED_OUT:
-            return update(state, {
+            return updateState(state, {
                 isAuthenticated: false,
                 isUserExchangesLoaded: false,
                 user_exchanges: null
             });
 
         case MARKET_CHANGED:
-            return update(state, {
+            return updateState(state, {
                 isUserExchangesLoaded: false,
                 user_exchanges: null,
                 from_currency: action.from_currency,
@@ -73,14 +74,26 @@ function exchangeListBoxReducer(state = initialState, action) {
 
         case EXCHANGE_HISTORY_CHANGED:
         case EXCHANGE_HISTORY_RECEIVED:
-            return update(state, {
+        {
+            let newAllExchanges = state.all_exchanges;
+
+            let exchanges = transform(action.exchanges);
+
+            if (newAllExchanges) {
+                newAllExchanges = update(newAllExchanges, { $merge: exchanges });
+            } else {
+                newAllExchanges = update(newAllExchanges, { $set: exchanges });
+            }
+
+            return updateState(state, {
                 isAllExchangesLoaded: true,
-                all_exchanges: transform(action.exchanges)
+                all_exchanges: newAllExchanges
             });
+        }
 
 
         case USER_EXCHANGE_HISTORY_RECEIVED:
-            return update(state, {
+            return updateState(state, {
                 isUserExchangesLoaded: true,
                 user_exchanges: transform(action.exchanges)
             });

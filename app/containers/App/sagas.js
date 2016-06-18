@@ -29,7 +29,7 @@ import {
     exchangeCreated,
     withdrawalCreated,
     userExchangesHistoryReceived,
-    allExchangesHistoryReceived,
+    exchangesHistoryReceived,
     exchangesHistoryChanged
 } from "./actions";
 import {
@@ -574,7 +574,7 @@ class HistoryService {
     static * connect(action) {
         let from_currency = action.from_currency;
         let to_currency = action.to_currency;
-        let topic = "history_" + to_currency + "_" + from_currency;
+        let topic = "history_" + from_currency + "_" + to_currency;
 
         if (HistoryService.topic != topic) {
             yield put(unsubscribeFromTopic(HistoryService.topic));
@@ -590,7 +590,7 @@ class HistoryService {
         q += "&to_currency=" + action.to_currency;
 
         const response = yield call(axios.get, "/api/history/" + q);
-        yield put(allExchangesHistoryReceived(response.data));
+        yield put(exchangesHistoryReceived(response.data));
     }
 
     static * setup() {
