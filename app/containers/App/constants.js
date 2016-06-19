@@ -47,5 +47,4 @@ export const ERROR_FIELD_NOT_VALID = "app/App/ERROR_FIELD_NOT_VALID";
 export const ERROR_FIELD_IS_REQUIRED = "app/App/ERROR_FIELD_IS_REQUIRED";
 export const ERROR_FIELD_LT_ZERO = "app/App/ERROR_FIELD_LT_ZERO";
 
-
 export const DEPOSIT_ARRIVED = "app/App/DEPOSIT_ARRIVED";

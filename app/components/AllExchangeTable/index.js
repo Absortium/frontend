@@ -50,7 +50,7 @@ class AllExchangeTable extends React.Component {
                             let amount = new BigNumber(row.amount);
 
                             return (
-                                <TableRow key={index}>
+                                <TableRow key={row.pk}>
                                     <TableRowColumn>{normalize(amount)}</TableRowColumn>
                                     <TableRowColumn>{normalize(price)}</TableRowColumn>
                                     <TableRowColumn>{normalize(price.times(amount))}</TableRowColumn>

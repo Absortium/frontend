@@ -43,7 +43,6 @@ import {
     ACCOUNTS_EMPTY,
     DEPOSIT_ARRIVED
 } from "./constants";
-import { copy } from "utils/general";
 
 export function logIn() {
     return {
@@ -74,7 +73,7 @@ export function loggedOut() {
 export function accountReceived(account) {
     return {
         type: ACCOUNT_RECEIVED,
-        account: copy(account)
+        account: Object.assign({}, account)
     };
 }
 
