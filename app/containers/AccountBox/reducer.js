@@ -31,13 +31,9 @@ function accountBoxReducer(state = initialState, action) {
         case ACCOUNT_UPDATED:
         case ACCOUNT_RECEIVED:
         {
-            let isAccountLoaded = action.account != null;
-            let isAccountNotEmpty = action.account != {};
-            let isAccountExist = isAccountLoaded && isAccountNotEmpty;
-
-            let substate = {
-                isAccountLoaded: isAccountLoaded,
-                isAccountExist: isAccountExist
+            const substate = {
+                isAccountLoaded: !!action.account,
+                isAccountExist: !!action.account && Objec.keys(action.account).length>0,
             };
 
             if (isAccountExist) {
