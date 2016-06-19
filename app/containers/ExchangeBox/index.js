@@ -11,13 +11,13 @@ import {
     changeRate,
     changeToAmount
 } from "./actions";
-import selectExchangeBox from "./selectors"
+import selectExchangeBox from "./selectors";
 import Paper from "material-ui/Paper";
 import Subheader from "material-ui/Subheader";
 import RaisedButton from "material-ui/RaisedButton";
-import IconButton from "material-ui/IconButton"
+import IconButton from "material-ui/IconButton";
 import ReverseIcon from "material-ui/svg-icons/action/autorenew";
-import RefreshIndicator from "material-ui/RefreshIndicator";
+import Refresh from "components/Refresh";
 import Divider from "material-ui/Divider";
 import FromAmount from "components/FromAmount";
 import ToAmount from "components/ToAmount";
@@ -58,11 +58,6 @@ const styles = {
         margin: "1.5em",
         textAlign: "center",
         display: "inline-block"
-    },
-
-    refresh: {
-        display: "inline-block",
-        position: "relative"
     },
 
     toolbar: {
@@ -122,18 +117,18 @@ class ExchangeBox extends React.Component {
         if (this.props.isRateLoaded) {
             main = (
                 <div>
+                    <FromAmount currency={this.props.from_currency}
+                                handler={this.props.handlerFromAmount}
+                                amount={this.props.from_amount.value}
+                                error={this.props.from_amount.error}
+                                substituteFromAmount={this.props.substituteFromAmount}/>
+
                     <Rate handler={this.props.handlerRate}
                           rate={this.props.rate.value}
                           error={this.props.rate.error}
                           from_currency={this.props.from_currency}
                           to_currency={this.props.to_currency}
                           substituteRate={this.props.substituteRate}/>
-
-                    <FromAmount currency={this.props.from_currency}
-                                handler={this.props.handlerFromAmount}
-                                amount={this.props.from_amount.value}
-                                error={this.props.from_amount.error}
-                                substituteFromAmount={this.props.substituteFromAmount}/>
 
                     <ToAmount currency={this.props.to_currency}
                               handler={this.props.handlerToAmount}
@@ -143,20 +138,7 @@ class ExchangeBox extends React.Component {
                 </div>
             )
         } else {
-            main = (
-                <div>
-                    <br />
-                    <RefreshIndicator
-                        size={70}
-                        top={0}
-                        left={0}
-                        status="loading"
-                        style={styles.refresh}
-                    />
-                    <br />
-                    <br />
-                </div>
-            )
+            main = <Refresh />
         }
 
 
@@ -166,7 +148,7 @@ class ExchangeBox extends React.Component {
                     let isDisabled = true;
                     if (this.props.rate.error == null &&
                         this.props.from_amount.error == null &&
-                        this.props.to_amount.error == null) {
+                        this.props.to_amount.error == null && !this.props.disabled) {
                         isDisabled = false;
                     }
 

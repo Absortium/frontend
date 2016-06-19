@@ -17,8 +17,8 @@ import {
 } from "material-ui/Table";
 import { connect } from "react-redux";
 import Subheader from "material-ui/Subheader";
-import RefreshIndicator from "material-ui/RefreshIndicator";
 import Divider from "material-ui/Divider";
+import Refresh from "components/Refresh";
 import selectExchangeOffers from "./selectors";
 import { substituteOffer } from "./actions";
 import { normalize } from "utils/general";
@@ -42,13 +42,7 @@ const styles = {
 
     subheader: {
         backgroundColor: "#E8E8E8"
-    },
-
-    refresh: {
-        display: "inline-block",
-        position: "relative"
     }
-
 };
 
 class ExchangeOffers extends React.Component {
@@ -61,14 +55,15 @@ class ExchangeOffers extends React.Component {
             let price = Object.keys(this.props.offers)[id];
             let amount = this.props.offers[price];
 
-            this.props.substituteOffer(amount , price)
+            this.props.substituteOffer(amount, price)
         }
     };
 
     render() {
         let subHeader = "Opposite Exchanges";
-        let priceHeader = this.props.from_currency.toUpperCase() + " Price (" + this.props.to_currency.toUpperCase() + ")";
-        let amountHeader = "Amount (" + this.props.to_currency.toUpperCase() + ")";
+        let priceHeader = this.props.to_currency.toUpperCase() + " Price (" + this.props.from_currency.toUpperCase() + ")";
+        let fromAmountHeader = "Give (" + this.props.to_currency.toUpperCase() + ")";
+        let toAmountHeader = "Get (" + this.props.from_currency.toUpperCase() + ")";
 
         return (
             <div className={styles.exchangeBox}>
@@ -91,8 +86,10 @@ class ExchangeOffers extends React.Component {
                                     adjustForCheckbox={false}
                                     enableSelectAll={false}>
                                     <TableRow>
+                                        <TableHeaderColumn>{fromAmountHeader}</TableHeaderColumn>
                                         <TableHeaderColumn>{priceHeader}</TableHeaderColumn>
-                                        <TableHeaderColumn>{amountHeader}</TableHeaderColumn>
+                                        <TableHeaderColumn>{toAmountHeader}</TableHeaderColumn>
+
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody
@@ -105,26 +102,18 @@ class ExchangeOffers extends React.Component {
                                         return (
                                             <TableRow hoverable={true}
                                                       key={price}>
-                                                <TableRowColumn>{price}</TableRowColumn>
-                                                <TableRowColumn>{amount}</TableRowColumn>
+                                                <TableRowColumn>{normalize(amount)}</TableRowColumn>
+                                                <TableRowColumn>{normalize(price)}</TableRowColumn>
+                                                <TableRowColumn>{normalize(amount * price)}</TableRowColumn>
+
+
                                             </TableRow>
                                         )
                                     }, this)}
                                 </TableBody>
                             </Table>
                             :
-                            <div>
-                                <br />
-                                <RefreshIndicator
-                                    size={70}
-                                    top={0}
-                                    left={0}
-                                    status="loading"
-                                    style={styles.refresh}
-                                />
-                                <br />
-                                <br />
-                            </div>
+                            <Refresh />
                         }
                     </div>
                 </Paper>

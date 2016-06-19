@@ -6,7 +6,7 @@
 
 import React from "react";
 
-var CryptoIcon = React.createClass({
+const CryptoIcon = React.createClass({
     propTypes: {
         icon: React.PropTypes.string.isRequired,
         size: React.PropTypes.oneOfType([

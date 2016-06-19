@@ -25,7 +25,6 @@ import update from "react/lib/update";
 import {
     isValid,
     isEmpty,
-    deconvert,
     genParam
 } from "utils/general";
 import BigNumber from "bignumber.js";
@@ -131,7 +130,7 @@ function withdrawDialogReducer(state = initialState, action) {
         case ACCOUNT_RECEIVED:
         {
 
-            let amount = deconvert(parseInt(action.account.amount));
+            let amount = new BigNumber(action.account.amount);
 
             let substate = {
                 balance: amount

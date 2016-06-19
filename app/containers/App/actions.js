@@ -35,10 +35,13 @@ import {
     TOPIC_SUBSCRIBE_FAILED,
     EXCHANGE_CREATED,
     USER_EXCHANGE_HISTORY_RECEIVED,
-    ALL_EXCHANGE_HISTORY_RECEIVED,
+    EXCHANGE_HISTORY_RECEIVED,
+    EXCHANGE_HISTORY_CHANGED,
     WITHDRAWAL_CREATED,
     SEND_EXCHANGE,
-    SEND_WITHDRAWAL
+    SEND_WITHDRAWAL,
+    ACCOUNTS_EMPTY,
+    DEPOSIT_ARRIVED
 } from "./constants";
 
 export function logIn() {
@@ -52,7 +55,6 @@ export function logOut() {
         type: LOG_OUT
     };
 }
-
 
 export function loggedIn(token, profile) {
     return {
@@ -71,14 +73,20 @@ export function loggedOut() {
 export function accountReceived(account) {
     return {
         type: ACCOUNT_RECEIVED,
-        account
+        account: Object.assign({}, account)
+    };
+}
+
+export function accountsEmpty() {
+    return {
+        type: ACCOUNTS_EMPTY
     };
 }
 
 export function accountUpdated(account) {
     return {
         type: ACCOUNT_UPDATED,
-        account
+        account: Object.assign({}, account)
     };
 }
 
@@ -93,14 +101,14 @@ export function marketChanged(from_currency, to_currency) {
 export function marketInfoReceived(marketInfo) {
     return {
         type: MARKET_INFO_RECEIVED,
-        marketInfo
+        marketInfo: Object.assign({}, marketInfo)
     };
 }
 
 export function offerReceived(offers) {
     return {
         type: OFFERS_RECEIVED,
-        offers
+        offers: Object.assign([], offers)
     };
 }
 
@@ -117,7 +125,6 @@ export function subscribeOnTopic(topic) {
         topic
     };
 }
-
 
 export function unsubscribeFromTopic(topic) {
     return {
@@ -162,7 +169,14 @@ export function sendExchange(from_currency, to_currency, amount, price) {
 export function exchangeCreated(exchanges) {
     return {
         type: EXCHANGE_CREATED,
-        exchanges
+        exchanges: Object.assign([], exchanges)
+    };
+}
+
+export function exchangesHistoryChanged(exchanges) {
+    return {
+        type: EXCHANGE_HISTORY_CHANGED,
+        exchanges: Object.assign([], exchanges)
     };
 }
 
@@ -179,28 +193,34 @@ export function sendWithdrawal(amount, address, pk, currency) {
 export function withdrawalCreated(withdrawal) {
     return {
         type: WITHDRAWAL_CREATED,
-        withdrawal
+        withdrawal: Object.assign({}, withdrawal)
     };
 }
 
 export function marketInfoChanged(marketInfo) {
     return {
         type: MARKET_INFO_CHANGED,
-        marketInfo
+        marketInfo: Object.assign({}, marketInfo)
     };
 }
-
 
 export function userExchangesHistoryReceived(exchanges) {
     return {
         type: USER_EXCHANGE_HISTORY_RECEIVED,
-        exchanges
+        exchanges: Object.assign([], exchanges)
     };
 }
 
-export function allExchangesHistoryReceived(exchanges) {
+export function exchangesHistoryReceived(exchanges) {
     return {
-        type: ALL_EXCHANGE_HISTORY_RECEIVED,
-        exchanges
+        type: EXCHANGE_HISTORY_RECEIVED,
+        exchanges: Object.assign([], exchanges)
+    };
+}
+
+export function depositArrived(deposit) {
+    return {
+        type: DEPOSIT_ARRIVED,
+        deposit: Object.assign([], deposit)
     };
 }

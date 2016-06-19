@@ -8,8 +8,9 @@ import React from "react";
 import TextField from "material-ui/TextField";
 import CryptoIcon from "components/CryptoIcon";
 import {
-    convertable,
-    getErrorText
+    representation,
+    getErrorText,
+    isEmpty
 } from "utils/general";
 import IconButton from "material-ui/IconButton";
 import InputIcon from "material-ui/svg-icons/action/input";
@@ -51,8 +52,8 @@ const styles = {
 class FromAmount extends React.Component {
     render() {
         let errorText = getErrorText(this.props.error);
-        let amount = this.props.amount != null ? this.props.amount : "";
-
+        let amount = !isEmpty(this.props.amount) ? this.props.amount : "";
+        
         return (
             <div style={styles.div}>
                 <IconButton
@@ -65,7 +66,7 @@ class FromAmount extends React.Component {
                     <InputIcon/>
                 </IconButton>
                 <TextField
-                    floatingLabelText={"Amount of " + this.props.currency.toUpperCase() + " you will give (sell)"}
+                    floatingLabelText={"Give (" + this.props.currency.toUpperCase() + ")"}
                     floatingLabelFixed={true}
                     style={styles.textField}
                     type="number"

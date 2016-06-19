@@ -8,8 +8,9 @@ import React from "react";
 import TextField from "material-ui/TextField";
 import CryptoIcon from "components/CryptoIcon";
 import {
-    convertable,
-    getErrorText
+    getErrorText,
+    representation,
+    isEmpty
 } from "utils/general";
 
 
@@ -34,11 +35,11 @@ const styles = {
 class ToAmount extends React.Component {
     render() {
         let errorText = getErrorText(this.props.error);
-        let amount = this.props.amount != null ? this.props.amount : "";
+        let amount = !isEmpty(this.props.amount) ? this.props.amount : "";
 
         return (
             <div style={styles.div}>
-                <TextField floatingLabelText={"Amount of " + this.props.currency.toUpperCase() + " you will get (buy)"}
+                <TextField floatingLabelText={"Get (" + this.props.currency.toUpperCase() + ")"}
                            floatingLabelFixed={true}
                            style={styles.textField}
                            type="number"

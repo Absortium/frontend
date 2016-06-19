@@ -25,33 +25,31 @@ import {
 import Q from "q";
 import BigNumber from "bignumber.js";
 
-const precision = 15;
+const precision = 12;
 const visible = 8;
 
 export function isEmpty(value) {
     return value == null || value === ""
 }
 
+export function isArrayEmpty(array) {
+    return array.length == 0;
+}
+
 export function isDirty(value) {
     return value != null
 }
 
-export function deconvert(value, withZeros = false) {
-    value = value / Math.pow(10, 8);
+export function normalize(value, ceil = false) {
+    if (typeof value == "string") value = parseFloat(value);
 
-    if (withZeros) {
-        value = value.toFixed(visible)
+    if (ceil) {
+        return cutUp(value, visible).toFixed(visible);
+    }
+    else {
+        return value.toFixed(visible);
     }
 
-    return value
-}
-
-export function normalize(value) {
-    return new BigNumber(value).toFixed(visible);
-}
-
-export function convert(value) {
-    return Math.round(new BigNumber(value) * Math.pow(10, 8));
 
 }
 
@@ -71,10 +69,20 @@ export function num2str(value) {
     return value + ''
 }
 
-export function cut(value) {
+export function cutUp(value, n) {
+    return Math.ceil(value * Math.pow(10, n)) / Math.pow(10, n);
 
-    // cut all numbers after 8th.
-    value = value.toFixed(visible);
+}
+export function cut(value, backend = false) {
+
+    if (backend) {
+        // cut all numbers after 10th.
+        value = cutUp(value, precision)
+    } else {
+        // cut all numbers after 8th.
+        value = value.toFixed(visible)
+    }
+
 
     // make from this string and cut the zeros
     value = parseFloat(value);
@@ -132,11 +140,12 @@ export function setIntervalGenerator(g, ...args) {
 
         let r = c.next();
         while (!r.done) {
+            console.log(r);
             r = c.next();
         }
     };
 
-    setInterval(fn, ...args);
+    return setInterval(fn, ...args);
 }
 
 export function setTimeoutGenerator(g, ...args) {
@@ -149,7 +158,7 @@ export function setTimeoutGenerator(g, ...args) {
         }
     };
 
-    setTimeout(fn, ...args);
+    return setTimeout(fn, ...args);
 }
 
 export function sleep(millis) {
@@ -169,8 +178,15 @@ export function extractCurrencies(s) {
     return r.exec(s);
 }
 
+export function representation(value) {
+    if (isValid(value)) {
+        value = cut(new BigNumber(value))
+    }
+    return value
+}
+
 export function genParam(value, error) {
-    if (typeof value == "number" || typeof value == "object") value = cut(value);
+    if (typeof value == "number" || typeof value == "object") value = value.toString();
 
     return {
         value: value,
@@ -184,4 +200,8 @@ export function copy(obj) {
 
 export function pprint(obj) {
     console.log(JSON.stringify(copy(obj), null, 2));
+}
+
+export function updateState(state, substate) {
+    return Object.assign({}, state, substate);
 }
