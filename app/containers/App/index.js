@@ -38,7 +38,7 @@ injectTapEventPlugin();
 
 
 import BigNumber from "bignumber.js";
-BigNumber.config({ ERRORS: false, DECIMAL_PLACES: 15 });
+BigNumber.config({ ERRORS: false, DECIMAL_PLACES: 12 });
 
 const muiTheme = getMuiTheme({
     palette: {

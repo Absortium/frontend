@@ -26,7 +26,6 @@ import {
 } from "./actions";
 import { sendWithdrawal } from "containers/App/actions";
 import selectWithdrawalDialog from "./selectors";
-import { convert } from "utils/general";
 
 const styles = {
     icon: {
@@ -68,7 +67,7 @@ const styles = {
 
 export default class WithdrawalDialog extends React.Component {
     sendWithdrawal = () => {
-        let amount = convert(this.props.amount.value);
+        let amount = this.props.amount.value;
         let address = this.props.address.value;
         let pk = this.props.pk;
         let currency = this.props.currency;

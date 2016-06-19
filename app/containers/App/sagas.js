@@ -15,6 +15,7 @@ import {
     loggedIn,
     logOut,
     accountReceived,
+    accountsEmpty,
     accountUpdated,
     marketInfoReceived,
     marketChanged,
@@ -29,7 +30,8 @@ import {
     exchangeCreated,
     withdrawalCreated,
     userExchangesHistoryReceived,
-    allExchangesHistoryReceived
+    exchangesHistoryReceived,
+    exchangesHistoryChanged
 } from "./actions";
 import {
     LOG_IN,
@@ -46,7 +48,8 @@ import {
     EXCHANGE_STATUS_PENDING,
     WITHDRAWAL_CREATED,
     SEND_EXCHANGE,
-    SEND_WITHDRAWAL
+    SEND_WITHDRAWAL,
+    ACCOUNTS_EMPTY
 } from "./constants";
 import { LOCATION_CHANGE } from "react-router-redux";
 import axios from "axios";
@@ -56,10 +59,12 @@ import {
     extractCurrencies,
     sleep,
     setTimeoutGenerator,
-    convert
+    cut,
+    isArrayEmpty
 } from "utils/general";
 import { isTokenExpired } from "utils/jwt";
 import autobahn from "autobahn";
+import BigNumber from "bignumber.js"
 
 // All sagas to be loaded
 export default [
@@ -69,15 +74,18 @@ export default [
 
 // Individual exports for testing
 export function* defaultSaga() {
+
+    // Be careful the order of services is matter!
     yield [
-        AccountsService.setup(),
-        AuthService.setup(),
         MarketInfoService.setup(),
+        HistoryService.setup(),
         RouteService.setup(),
         OfferService.setup(),
         AutobahnService.setup(),
         ExchangeService.setup(),
-        WithdrawalService.setup()
+        WithdrawalService.setup(),
+        AccountsService.setup(),
+        AuthService.setup()
     ]
 }
 
@@ -191,21 +199,23 @@ class AccountsService {
     static *handlerLoggedOut() {
         AccountsService.isAuthenticated = false;
         AccountsService.accounts = null;
-        AccountsService.currency = null;
     }
 
     static *handlerMarketChanged(action) {
         AccountsService.isMarketInit = true;
         AccountsService.currency = action.from_currency;
+        AccountsService.accounts = null;
         yield* AccountsService.get();
     }
 
     static * handleExchangeCreated(action) {
-        let spent = 0;
+        let spent = new BigNumber(0);
         let shouldCheck = false;
 
         for (let exchange of action.exchanges) {
-            spent += exchange.amount;
+            let amount = new BigNumber(exchange.amount);
+
+            spent = spent.plus(amount);
 
             if (exchange.status == EXCHANGE_STATUS_INIT || exchange.status == EXCHANGE_STATUS_PENDING) {
                 shouldCheck = true;
@@ -231,9 +241,15 @@ class AccountsService {
                 const response = yield call(axios.get, "/api/accounts/");
                 let accounts = response["data"];
 
+                if (isArrayEmpty(accounts)) {
+                    sleep(1);
+                    yield put(accountsEmpty());
+                }
+
                 AccountsService.accounts = {};
 
                 for (let account of accounts) {
+                    account.amount = new BigNumber(account.amount);
                     AccountsService.accounts[account.currency] = account;
                     yield put(accountReceived(account));
                 }
@@ -253,7 +269,8 @@ class AccountsService {
             takeEvery(LOGGED_OUT, AccountsService.handlerLoggedOut),
             takeEvery(MARKET_CHANGED, AccountsService.handlerMarketChanged),
             takeEvery(EXCHANGE_CREATED, AccountsService.handleExchangeCreated),
-            takeEvery(WITHDRAWAL_CREATED, AccountsService.handleWithdrawalCreated)
+            takeEvery(WITHDRAWAL_CREATED, AccountsService.handleWithdrawalCreated),
+            takeEvery(ACCOUNTS_EMPTY, AccountsService.get)
         ]
     }
 }
@@ -349,7 +366,7 @@ class MarketInfoService {
 }
 
 class OfferService {
-    static topic;
+    static topic = null;
 
     static * get(action) {
 
@@ -376,9 +393,9 @@ class OfferService {
     static * connect(action) {
         let from_currency = action.from_currency;
         let to_currency = action.to_currency;
-        let topic = to_currency + "_" + from_currency;
+        let topic = "offers_" + to_currency + "_" + from_currency;
 
-        if (OfferService.topic) {
+        if (OfferService.topic != topic) {
             yield put(unsubscribeFromTopic(OfferService.topic));
         }
 
@@ -498,8 +515,6 @@ class ExchangeService {
 
     static *handlerLoggedOut() {
         ExchangeService.isAuthenticated = false;
-        ExchangeService.from_currency = null;
-        ExchangeService.to_currency = null;
     }
 
     static *handlerMarketChanged(action) {
@@ -523,21 +538,12 @@ class ExchangeService {
         }
     }
 
-    static * getAllExchanges(action) {
-        let q = "?";
-        q += "from_currency=" + action.from_currency;
-        q += "&to_currency=" + action.to_currency;
-
-        const response = yield call(axios.get, "/api/history/" + q);
-        yield put(allExchangesHistoryReceived(response.data));
-    }
-
     static * handlerSendExchange(action) {
         let data = {
             from_currency: action.from_currency,
             to_currency: action.to_currency,
-            amount: convert(action.amount),
-            price: action.price
+            amount: cut(action.amount, true),
+            price: cut(action.price, true)
         };
 
         try {
@@ -562,8 +568,48 @@ class ExchangeService {
             takeEvery(LOGGED_IN, ExchangeService.handlerLoggedIn),
             takeEvery(LOGGED_OUT, ExchangeService.handlerLoggedOut),
             takeEvery(MARKET_CHANGED, ExchangeService.handlerMarketChanged),
-            takeEvery(MARKET_CHANGED, ExchangeService.getAllExchanges),
-            takeEvery(SEND_EXCHANGE, ExchangeService.handlerSendExchange)
+            takeLatest(SEND_EXCHANGE, ExchangeService.handlerSendExchange)
+        ]
+    }
+}
+
+class HistoryService {
+    static topic = null;
+
+    static * handlerUpdate(action) {
+        if (HistoryService.topic == action.topic) {
+            let exchange = action.data;
+            yield put(exchangesHistoryChanged([exchange]))
+        }
+    }
+
+    static * connect(action) {
+        let from_currency = action.from_currency;
+        let to_currency = action.to_currency;
+        let topic = "history_" + from_currency + "_" + to_currency;
+
+        if (HistoryService.topic != topic) {
+            yield put(unsubscribeFromTopic(HistoryService.topic));
+        }
+
+        HistoryService.topic = topic;
+        yield put(subscribeOnTopic(topic));
+    }
+
+    static * getAllExchanges(action) {
+        let q = "?";
+        q += "from_currency=" + action.from_currency;
+        q += "&to_currency=" + action.to_currency;
+
+        const response = yield call(axios.get, "/api/history/" + q);
+        yield put(exchangesHistoryReceived(response.data));
+    }
+
+    static * setup() {
+        yield [
+            takeEvery(MARKET_CHANGED, HistoryService.getAllExchanges),
+            takeEvery(MARKET_CHANGED, HistoryService.connect),
+            takeEvery(TOPIC_UPDATE, HistoryService.handlerUpdate)
         ]
     }
 }
@@ -599,7 +645,7 @@ class WithdrawalService {
 
     static * setup() {
         yield [
-            takeEvery(SEND_WITHDRAWAL, WithdrawalService.handlerSendWithdrawal)
+            takeLatest(SEND_WITHDRAWAL, WithdrawalService.handlerSendWithdrawal)
         ]
     }
 }

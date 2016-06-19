@@ -12,7 +12,6 @@ import {
     MARKET_CHANGED
 } from "containers/App/constants";
 import {
-    deconvert,
     normalize
 } from "utils/general";
 import update from "react/lib/update";
@@ -45,7 +44,7 @@ function accountBoxReducer(state = initialState, action) {
                 substate.accounts = update(state.accounts || {}, {
                     [action.account.currency]: {
                         $set: {
-                            amount: normalize(deconvert(parseInt(action.account.amount))),
+                            amount: normalize(action.account.amount),
                             address: action.account.address
                         }
                     }

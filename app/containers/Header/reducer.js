@@ -6,12 +6,8 @@
 
 import {
     LOGGED_IN,
-    LOGGED_OUT,
-    ACCOUNT_RECEIVED,
-    ACCOUNT_UPDATED,
-    MARKET_CHANGED
+    LOGGED_OUT
 } from "containers/App/constants";
-import { deconvert } from "utils/general";
 
 const initialState = {
     isAuthenticated: false,

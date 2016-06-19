@@ -35,10 +35,12 @@ import {
     TOPIC_SUBSCRIBE_FAILED,
     EXCHANGE_CREATED,
     USER_EXCHANGE_HISTORY_RECEIVED,
-    ALL_EXCHANGE_HISTORY_RECEIVED,
+    EXCHANGE_HISTORY_RECEIVED,
+    EXCHANGE_HISTORY_CHANGED,
     WITHDRAWAL_CREATED,
     SEND_EXCHANGE,
-    SEND_WITHDRAWAL
+    SEND_WITHDRAWAL,
+    ACCOUNTS_EMPTY
 } from "./constants";
 
 export function logIn() {
@@ -72,6 +74,12 @@ export function accountReceived(account) {
     return {
         type: ACCOUNT_RECEIVED,
         account
+    };
+}
+
+export function accountsEmpty() {
+    return {
+        type: ACCOUNTS_EMPTY
     };
 }
 
@@ -166,6 +174,14 @@ export function exchangeCreated(exchanges) {
     };
 }
 
+export function exchangesHistoryChanged(exchanges) {
+    return {
+        type: EXCHANGE_HISTORY_CHANGED,
+        exchanges
+    };
+}
+
+
 export function sendWithdrawal(amount, address, pk, currency) {
     return {
         type: SEND_WITHDRAWAL,
@@ -198,9 +214,9 @@ export function userExchangesHistoryReceived(exchanges) {
     };
 }
 
-export function allExchangesHistoryReceived(exchanges) {
+export function exchangesHistoryReceived(exchanges) {
     return {
-        type: ALL_EXCHANGE_HISTORY_RECEIVED,
+        type: EXCHANGE_HISTORY_RECEIVED,
         exchanges
     };
 }
