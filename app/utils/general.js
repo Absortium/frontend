@@ -140,11 +140,12 @@ export function setIntervalGenerator(g, ...args) {
 
         let r = c.next();
         while (!r.done) {
+            console.log(r);
             r = c.next();
         }
     };
 
-    setInterval(fn, ...args);
+    return setInterval(fn, ...args);
 }
 
 export function setTimeoutGenerator(g, ...args) {
@@ -157,7 +158,7 @@ export function setTimeoutGenerator(g, ...args) {
         }
     };
 
-    setTimeout(fn, ...args);
+    return setTimeout(fn, ...args);
 }
 
 export function sleep(millis) {
