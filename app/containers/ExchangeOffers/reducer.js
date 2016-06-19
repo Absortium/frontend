@@ -24,8 +24,8 @@ const initialState = {
 function transform(offers) {
     let data = {};
     for (let offer of offers) {
-        let price = normalize(offer.price);
-        data[price] = normalize(offer.amount);
+        let price = offer.price;
+        data[price] = offer.amount;
     }
 
     return data;

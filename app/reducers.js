@@ -53,12 +53,12 @@ export default function createReducer(asyncReducers) {
         route: routeReducer,
         global: globalReducer,
         header: headerReducer,
+        exchangeListBox: exchangeListBoxReducer,
         exchangeBox: exchangeBoxReducer,
         exchangeOffers: exchangeOffersReducer,
         marketInfo: marketInfoReducer,
         accountBox: accountBoxReducer,
         withdrawalDialog: withdrawalDialogReducer,
-        exchangeListBox: exchangeListBoxReducer,
         toastr: toastrReducer,
         ...asyncReducers,
     });

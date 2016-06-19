@@ -24,7 +24,8 @@ import {
     TableRowColumn
 } from "material-ui/Table";
 import ExchangeTabLabel from "components/ExchangeTabLabel";
-import { normalize } from "../../utils/general";
+import { normalize } from "utils/general";
+import BigNumber from "bignumber.js";
 
 /**
  *
@@ -64,7 +65,7 @@ const styles = {
     }
 };
 
-export class ExchangeListBox extends React.Component {
+class ExchangeListBox extends React.Component {
     render() {
         return (
             <div>
@@ -94,13 +95,20 @@ export class ExchangeListBox extends React.Component {
                                         deselectOnClickaway={true}
                                         showRowHover={true}
                                         stripedRows={false}>
-                                        {this.props.all_exchanges.map((row, index) => (
-                                            <TableRow key={index}>
-                                                <TableRowColumn>{row.amount}</TableRowColumn>
-                                                <TableRowColumn>{row.price}</TableRowColumn>
-                                                <TableRowColumn>{normalize(row.price * row.amount)}</TableRowColumn>
-                                            </TableRow>
-                                        ))}
+                                        {this.props.all_exchanges.map((row, index) => {
+                                            let price = new BigNumber(row.price);
+                                            let amount = new BigNumber(row.amount);
+
+                                            return (
+                                                <TableRow key={index}>
+
+
+                                                    <TableRowColumn>{normalize(amount)}</TableRowColumn>
+                                                    <TableRowColumn>{normalize(price)}</TableRowColumn>
+                                                    <TableRowColumn>{normalize(price.times(amount))}</TableRowColumn>
+                                                </TableRow>
+                                            )}
+                                        )}
                                     </TableBody>
                                 </Table>
                                 :
@@ -132,14 +140,22 @@ export class ExchangeListBox extends React.Component {
                                             deselectOnClickaway={true}
                                             showRowHover={true}
                                             stripedRows={false}>
-                                            {this.props.user_exchanges.map((row, index) => (
-                                                <TableRow key={index}>
-                                                    <TableRowColumn>{row.amount}</TableRowColumn>
-                                                    <TableRowColumn>{row.price}</TableRowColumn>
-                                                    <TableRowColumn>{normalize(row.price * row.amount)}</TableRowColumn>
-                                                    <TableRowColumn><StatusIcon status={row.status}/></TableRowColumn>
-                                                </TableRow>
-                                            ))}
+                                            {this.props.user_exchanges.map((row, index) => {
+
+                                                let price = new BigNumber(row.price);
+                                                let amount = new BigNumber(row.amount);
+
+                                                return (
+                                                    <TableRow key={index}>
+                                                        <TableRowColumn>{normalize(amount)}</TableRowColumn>
+                                                        <TableRowColumn>{normalize(price)}</TableRowColumn>
+                                                        <TableRowColumn>{normalize(amount.times(price))}</TableRowColumn>
+                                                        <TableRowColumn><StatusIcon
+                                                            status={row.status}/></TableRowColumn>
+                                                    </TableRow>
+                                                )
+                                            })
+                                            }
                                         </TableBody>
                                     </Table>
                                     :
@@ -156,6 +172,7 @@ export class ExchangeListBox extends React.Component {
     }
 }
 
+export default ExchangeListBox;
 
 const mapStateToProps = selectExchangeListBox();
 

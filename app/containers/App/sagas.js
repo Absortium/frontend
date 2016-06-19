@@ -56,10 +56,12 @@ import Auth0Lock from "auth0-lock";
 import {
     extractCurrencies,
     sleep,
-    setTimeoutGenerator
+    setTimeoutGenerator,
+    cut
 } from "utils/general";
 import { isTokenExpired } from "utils/jwt";
 import autobahn from "autobahn";
+import BigNumber from "bignumber.js"
 
 // All sagas to be loaded
 export default [
@@ -200,15 +202,18 @@ class AccountsService {
     static *handlerMarketChanged(action) {
         AccountsService.isMarketInit = true;
         AccountsService.currency = action.from_currency;
+        AccountsService.accounts = null;
         yield* AccountsService.get();
     }
 
     static * handleExchangeCreated(action) {
-        let spent = 0;
+        let spent = new BigNumber(0);
         let shouldCheck = false;
 
         for (let exchange of action.exchanges) {
-            spent += exchange.amount;
+            let amount = new BigNumber(exchange.amount);
+
+            spent = spent.plus(amount);
 
             if (exchange.status == EXCHANGE_STATUS_INIT || exchange.status == EXCHANGE_STATUS_PENDING) {
                 shouldCheck = true;
@@ -237,6 +242,7 @@ class AccountsService {
                 AccountsService.accounts = {};
 
                 for (let account of accounts) {
+                    account.amount = new BigNumber(account.amount);
                     AccountsService.accounts[account.currency] = account;
                     yield put(accountReceived(account));
                 }
@@ -530,8 +536,8 @@ class ExchangeService {
         let data = {
             from_currency: action.from_currency,
             to_currency: action.to_currency,
-            amount: action.amount,
-            price: action.price
+            amount: cut(action.amount, true),
+            price: cut(action.price, true)
         };
 
         try {

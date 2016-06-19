@@ -13,10 +13,7 @@ import {
     EXCHANGE_HISTORY_CHANGED,
     USER_EXCHANGE_HISTORY_RECEIVED
 } from "containers/App/constants";
-import {
-    updateState,
-    normalize
-} from "utils/general";
+import { updateState } from "utils/general";
 import update from "react-addons-update";
 
 const initialState = {
@@ -29,29 +26,6 @@ const initialState = {
     to_currency: null
 };
 
-function transform(exchanges) {
-    let newExchanges = [];
-
-    for (let exchange of exchanges) {
-        let newExchange = {};
-
-        for (let key in exchange) {
-            let value = exchange[key];
-
-            if (key == "amount") {
-                value = normalize(value);
-            } else if (key == "price") {
-                value = normalize(value)
-            }
-
-            newExchange[key] = value;
-        }
-
-        newExchanges.push(newExchange)
-    }
-
-    return newExchanges
-}
 function exchangeListBoxReducer(state = initialState, action) {
     switch (action.type) {
         case LOGGED_IN:
@@ -77,7 +51,7 @@ function exchangeListBoxReducer(state = initialState, action) {
         {
             let newAllExchanges = state.all_exchanges;
 
-            let exchanges = transform(action.exchanges);
+            let exchanges = action.exchanges;
 
             if (newAllExchanges) {
                 newAllExchanges = update(newAllExchanges, { $merge: exchanges });
@@ -95,7 +69,7 @@ function exchangeListBoxReducer(state = initialState, action) {
         case USER_EXCHANGE_HISTORY_RECEIVED:
             return updateState(state, {
                 isUserExchangesLoaded: true,
-                user_exchanges: transform(action.exchanges)
+                user_exchanges: action.exchanges
             });
 
 

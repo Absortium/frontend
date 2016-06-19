@@ -1,4 +1,4 @@
-import { createSelector } from 'reselect';
+import { createSelector } from "reselect";
 
 /**
  * Direct selector to the exchangeListBox state domain
@@ -15,11 +15,11 @@ const selectExchangeListBoxDomain = () => state => state.get('exchangeListBox');
  */
 
 const selectExchangeListBox = () => createSelector(
-  selectExchangeListBoxDomain(),
-  (substate) => substate
+    selectExchangeListBoxDomain(),
+    (substate) => substate
 );
 
 export default selectExchangeListBox;
 export {
-  selectExchangeListBoxDomain,
+    selectExchangeListBoxDomain,
 };

@@ -37,7 +37,7 @@ const styles = {
 };
 
 
-export class MarketInfo extends React.Component {
+class MarketInfo extends React.Component {
     getActiveTab = () => {
         let index = 0;
         for (let from_currency in this.props.marketInfo) {
@@ -81,6 +81,8 @@ export class MarketInfo extends React.Component {
         )
     }
 }
+
+export default MarketInfo;
 
 const mapStateToProps = selectMarketInfo();
 

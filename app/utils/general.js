@@ -25,7 +25,7 @@ import {
 import Q from "q";
 import BigNumber from "bignumber.js";
 
-const precision = 15;
+const precision = 12;
 const visible = 8;
 
 export function isEmpty(value) {
@@ -36,8 +36,17 @@ export function isDirty(value) {
     return value != null
 }
 
-export function normalize(value) {
-    return new BigNumber(value).toFixed(visible);
+export function normalize(value, ceil = false) {
+    if (typeof value == "string") value = parseFloat(value);
+    
+    if (ceil) {
+        return cutUp(value, visible).toFixed(visible);
+    }
+    else {
+        return value.toFixed(visible);
+    }
+
+
 }
 
 export function isValid(value) {
@@ -56,10 +65,20 @@ export function num2str(value) {
     return value + ''
 }
 
-export function cut(value) {
+export function cutUp(value, n) {
+    return Math.ceil(value * Math.pow(10, n)) / Math.pow(10, n);
 
-    // cut all numbers after 8th.
-    value = value.toFixed(visible);
+}
+export function cut(value, backend = false) {
+
+    if (backend) {
+        // cut all numbers after 10th.
+        value = cutUp(value, precision)
+    } else {
+        // cut all numbers after 8th.
+        value = value.toFixed(visible)
+    }
+
 
     // make from this string and cut the zeros
     value = parseFloat(value);
@@ -154,8 +173,15 @@ export function extractCurrencies(s) {
     return r.exec(s);
 }
 
+export function representation(value) {
+    if (isValid(value)) {
+        value = cut(new BigNumber(value))
+    }
+    return value
+}
+
 export function genParam(value, error) {
-    if (typeof value == "number" || typeof value == "object") value = cut(value);
+    if (typeof value == "number" || typeof value == "object") value = value.toString();
 
     return {
         value: value,

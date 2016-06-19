@@ -21,17 +21,18 @@ export function setToAmount(to_amount, state, substate) {
 
     to_amount = new BigNumber(to_amount);
 
-    if (to_amount > TO_AMOUNT_MIN) {
+    if (to_amount.greaterThan(TO_AMOUNT_MIN)) {
         if (!errExist(state.rate.error)) {
             let error = null;
 
             rate = new BigNumber(rate);
-            let from_amount = to_amount / rate;
-            let enoughMoney = !(isAccountExist && from_amount > state.balance);
 
-            if (!enoughMoney) {
+            let from_amount = to_amount.dividedBy(rate);
+            let notEnoughMoney = isAccountExist && from_amount.greaterThan(state.balance);
+
+            if (notEnoughMoney) {
                 error = ERROR_FROM_AMOUNT_GT_BALANCE;
-            } else if (from_amount < 0) {
+            } else if (from_amount.lessThan(0)) {
                 error = ERROR_FIELD_LT_ZERO;
             }
 
@@ -50,17 +51,18 @@ export function setFromAmount(from_amount, state, substate) {
 
     from_amount = new BigNumber(from_amount);
 
-    if (from_amount >= 0) {
-        let enoughMoney = !(state.isAccountExist && from_amount > state.balance);
+    if (from_amount.greaterThanOrEqualTo(0)) {
+
+        let enoughMoney = !(state.isAccountExist && from_amount.greaterThan(state.balance));
 
         if (enoughMoney) {
             if (!errExist(state.rate.error)) {
                 let error = null;
                 rate = new BigNumber(rate);
 
-                let to_amount = from_amount * rate;
+                let to_amount = from_amount.times(rate);
 
-                if (to_amount < TO_AMOUNT_MIN) {
+                if (to_amount.lessThan(TO_AMOUNT_MIN)) {
                     error = ERROR_TO_AMOUNT_LT_MIN
                 }
 
@@ -83,15 +85,17 @@ export function setRate(rate, state, substate) {
 
     rate = new BigNumber(rate);
 
-    if (rate < RATE_MAX) {
-        if (rate > RATE_MIN) {
+    if (rate.lessThan(RATE_MAX)) {
+
+        if (rate.greaterThanOrEqualTo(RATE_MIN)) {
+
             if (!errExist(state.from_amount.error)) {
                 let error = null;
 
                 from_amount = new BigNumber(from_amount);
-                to_amount = rate * from_amount;
+                to_amount = rate.times(from_amount);
 
-                if (to_amount < TO_AMOUNT_MIN) {
+                if (to_amount.lessThan(TO_AMOUNT_MIN)) {
                     error = ERROR_TO_AMOUNT_LT_MIN;
                 }
 
@@ -101,13 +105,13 @@ export function setRate(rate, state, substate) {
                 let error = null;
 
                 to_amount = new BigNumber(to_amount);
-                from_amount = to_amount / rate;
+                from_amount = to_amount.divideBy(rate);
 
-                let enoughMoney = !(isAccountExist && from_amount > state.balance);
+                let enoughMoney = !(isAccountExist && from_amount.greaterThan(state.balance));
 
                 if (!enoughMoney) {
                     error = ERROR_FROM_AMOUNT_GT_BALANCE;
-                } else if (from_amount < 0) {
+                } else if (from_amount.lessthan(0)) {
                     error = ERROR_FIELD_LT_ZERO;
                 }
 

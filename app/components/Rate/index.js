@@ -6,7 +6,7 @@
 
 import React from "react";
 import TextField from "material-ui/TextField";
-import { getErrorText } from "utils/general";
+import { getErrorText, representation} from "utils/general";
 import CryptoIcon from "components/CryptoIcon";
 import IconButton from "material-ui/IconButton"
 import InputIcon from "material-ui/svg-icons/action/input";
@@ -47,7 +47,7 @@ const styles = {
 class Rate extends React.Component {
     render() {
         let errorText = getErrorText(this.props.error);
-        let rate = this.props.rate != null ? this.props.rate : "";
+        let rate = this.props.rate != null ? representation(this.props.rate) : "";
         
         return (
             <div style={styles.div}>
@@ -61,7 +61,7 @@ class Rate extends React.Component {
                     <InputIcon/>
                 </IconButton>
                 <TextField
-                    floatingLabelText={"Price for 1 " + this.props.from_currency.toUpperCase() + " in " + this.props.to_currency.toUpperCase()}
+                    floatingLabelText={this.props.from_currency.toUpperCase() + " Price (" + this.props.to_currency.toUpperCase() + ")"}
                     floatingLabelFixed={true}
                     errorText={errorText}
                     style={styles.textField}

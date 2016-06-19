@@ -102,8 +102,8 @@ class ExchangeOffers extends React.Component {
                                         return (
                                             <TableRow hoverable={true}
                                                       key={price}>
-                                                <TableRowColumn>{amount}</TableRowColumn>
-                                                <TableRowColumn>{price}</TableRowColumn>
+                                                <TableRowColumn>{normalize(amount)}</TableRowColumn>
+                                                <TableRowColumn>{normalize(price)}</TableRowColumn>
                                                 <TableRowColumn>{normalize(amount * price)}</TableRowColumn>
 
 
