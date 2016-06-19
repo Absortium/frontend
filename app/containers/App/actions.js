@@ -39,7 +39,8 @@ import {
     EXCHANGE_HISTORY_CHANGED,
     WITHDRAWAL_CREATED,
     SEND_EXCHANGE,
-    SEND_WITHDRAWAL
+    SEND_WITHDRAWAL,
+    ACCOUNTS_EMPTY
 } from "./constants";
 
 export function logIn() {
@@ -73,6 +74,12 @@ export function accountReceived(account) {
     return {
         type: ACCOUNT_RECEIVED,
         account
+    };
+}
+
+export function accountsEmpty() {
+    return {
+        type: ACCOUNTS_EMPTY
     };
 }
 

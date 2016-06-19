@@ -32,13 +32,17 @@ export function isEmpty(value) {
     return value == null || value === ""
 }
 
+export function isArrayEmpty(array) {
+    return array.length == 0;
+}
+
 export function isDirty(value) {
     return value != null
 }
 
 export function normalize(value, ceil = false) {
     if (typeof value == "string") value = parseFloat(value);
-    
+
     if (ceil) {
         return cutUp(value, visible).toFixed(visible);
     }

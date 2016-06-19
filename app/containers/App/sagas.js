@@ -15,6 +15,7 @@ import {
     loggedIn,
     logOut,
     accountReceived,
+    accountsEmpty,
     accountUpdated,
     marketInfoReceived,
     marketChanged,
@@ -47,7 +48,8 @@ import {
     EXCHANGE_STATUS_PENDING,
     WITHDRAWAL_CREATED,
     SEND_EXCHANGE,
-    SEND_WITHDRAWAL
+    SEND_WITHDRAWAL,
+    ACCOUNTS_EMPTY
 } from "./constants";
 import { LOCATION_CHANGE } from "react-router-redux";
 import axios from "axios";
@@ -57,7 +59,8 @@ import {
     extractCurrencies,
     sleep,
     setTimeoutGenerator,
-    cut
+    cut,
+    isArrayEmpty
 } from "utils/general";
 import { isTokenExpired } from "utils/jwt";
 import autobahn from "autobahn";
@@ -196,7 +199,6 @@ class AccountsService {
     static *handlerLoggedOut() {
         AccountsService.isAuthenticated = false;
         AccountsService.accounts = null;
-        AccountsService.currency = null;
     }
 
     static *handlerMarketChanged(action) {
@@ -239,6 +241,11 @@ class AccountsService {
                 const response = yield call(axios.get, "/api/accounts/");
                 let accounts = response["data"];
 
+                if (isArrayEmpty(accounts)) {
+                    sleep(1);
+                    yield put(accountsEmpty());
+                }
+
                 AccountsService.accounts = {};
 
                 for (let account of accounts) {
@@ -262,7 +269,8 @@ class AccountsService {
             takeEvery(LOGGED_OUT, AccountsService.handlerLoggedOut),
             takeEvery(MARKET_CHANGED, AccountsService.handlerMarketChanged),
             takeEvery(EXCHANGE_CREATED, AccountsService.handleExchangeCreated),
-            takeEvery(WITHDRAWAL_CREATED, AccountsService.handleWithdrawalCreated)
+            takeEvery(WITHDRAWAL_CREATED, AccountsService.handleWithdrawalCreated),
+            takeEvery(ACCOUNTS_EMPTY, AccountsService.get)
         ]
     }
 }
@@ -507,8 +515,6 @@ class ExchangeService {
 
     static *handlerLoggedOut() {
         ExchangeService.isAuthenticated = false;
-        ExchangeService.from_currency = null;
-        ExchangeService.to_currency = null;
     }
 
     static *handlerMarketChanged(action) {

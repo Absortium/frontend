@@ -16,6 +16,7 @@ export const LOGGED_OUT = "app/App/LOGGED_OUT";
 
 export const ACCOUNT_RECEIVED = "app/App/ACCOUNT_RECEIVED";
 export const ACCOUNT_UPDATED = "app/App/ACCOUNT_UPDATED";
+export const ACCOUNTS_EMPTY = "app/App/ACCOUNTS_EMPTY";
 
 export const MARKET_INFO_RECEIVED = "app/App/MARKET_INFO_RECEIVED";
 export const MARKET_CHANGED = "app/App/MARKET_CHANGED";
