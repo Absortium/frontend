@@ -9,7 +9,8 @@ import TextField from "material-ui/TextField";
 import CryptoIcon from "components/CryptoIcon";
 import {
     getErrorText,
-    representation
+    representation,
+    isEmpty
 } from "utils/general";
 
 
@@ -34,8 +35,9 @@ const styles = {
 class ToAmount extends React.Component {
     render() {
         let errorText = getErrorText(this.props.error);
-        let amount = this.props.amount != null ? representation(this.props.amount) : "";
+        let amount = !isEmpty(this.props.amount) ? this.props.amount : "";
 
+        console.log("to_amount", amount, this.props.amount);
         return (
             <div style={styles.div}>
                 <TextField floatingLabelText={"Get (" + this.props.currency.toUpperCase() + ")"}

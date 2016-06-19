@@ -6,9 +6,13 @@
 
 import React from "react";
 import TextField from "material-ui/TextField";
-import { getErrorText, representation} from "utils/general";
+import {
+    getErrorText,
+    representation,
+    isEmpty
+} from "utils/general";
 import CryptoIcon from "components/CryptoIcon";
-import IconButton from "material-ui/IconButton"
+import IconButton from "material-ui/IconButton";
 import InputIcon from "material-ui/svg-icons/action/input";
 
 const styles = {
@@ -47,8 +51,9 @@ const styles = {
 class Rate extends React.Component {
     render() {
         let errorText = getErrorText(this.props.error);
-        let rate = this.props.rate != null ? representation(this.props.rate) : "";
-        
+        let rate = !isEmpty(this.props.rate) ? this.props.rate : "";
+
+        console.log("rate", rate, this.props.rate);
         return (
             <div style={styles.div}>
                 <IconButton

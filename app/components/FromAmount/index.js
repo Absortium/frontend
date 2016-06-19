@@ -9,7 +9,8 @@ import TextField from "material-ui/TextField";
 import CryptoIcon from "components/CryptoIcon";
 import {
     representation,
-    getErrorText
+    getErrorText,
+    isEmpty
 } from "utils/general";
 import IconButton from "material-ui/IconButton";
 import InputIcon from "material-ui/svg-icons/action/input";
@@ -51,8 +52,10 @@ const styles = {
 class FromAmount extends React.Component {
     render() {
         let errorText = getErrorText(this.props.error);
-        let amount = this.props.amount != null ? representation(this.props.amount) : "";
+        let amount = !isEmpty(this.props.amount) ? this.props.amount : "";
 
+        console.log("from_amount", amount, this.props.amount);
+        
         return (
             <div style={styles.div}>
                 <IconButton
