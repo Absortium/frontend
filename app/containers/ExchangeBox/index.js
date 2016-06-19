@@ -122,7 +122,7 @@ class ExchangeBox extends React.Component {
                                 amount={this.props.from_amount.value}
                                 error={this.props.from_amount.error}
                                 substituteFromAmount={this.props.substituteFromAmount}/>
-                    
+
                     <Rate handler={this.props.handlerRate}
                           rate={this.props.rate.value}
                           error={this.props.rate.error}
@@ -148,7 +148,7 @@ class ExchangeBox extends React.Component {
                     let isDisabled = true;
                     if (this.props.rate.error == null &&
                         this.props.from_amount.error == null &&
-                        this.props.to_amount.error == null) {
+                        this.props.to_amount.error == null && !this.props.disabled) {
                         isDisabled = false;
                     }
 

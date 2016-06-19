@@ -42,6 +42,7 @@ export function setToAmount(to_amount, state, substate) {
         error = ERROR_TO_AMOUNT_LT_MIN;
     }
 
+    substate.disabled = false;
     return [error, substate]
 }
 export function setFromAmount(from_amount, state, substate) {
@@ -75,6 +76,7 @@ export function setFromAmount(from_amount, state, substate) {
         error = ERROR_FIELD_LT_ZERO
     }
 
+    substate.disabled = false;
     return [error, substate]
 }
 export function setRate(rate, state, substate) {
@@ -124,5 +126,6 @@ export function setRate(rate, state, substate) {
         error = ERROR_RATE_GT_MAX
     }
 
+    substate.disabled = false;
     return [error, substate]
 }

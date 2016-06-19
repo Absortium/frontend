@@ -14,7 +14,8 @@ import {
     EXCHANGE_CREATED,
     ERROR_FIELD_IS_REQUIRED,
     ERROR_FIELD_NOT_VALID,
-    LOGGED_OUT
+    LOGGED_OUT,
+    SEND_EXCHANGE
 } from "containers/App/constants";
 import {
     CHANGE_FROM_AMOUNT,
@@ -62,7 +63,8 @@ const initialState = {
     },
 
     from_currency: null,
-    to_currency: null
+    to_currency: null,
+    disabled: false
 };
 
 
@@ -221,16 +223,18 @@ function exchangeBoxReducer(state = initialState, action) {
                 to_currency: action.to_currency
             });
         }
-        case EXCHANGE_CREATED:
+           
+        case SEND_EXCHANGE:
             return updateState(state, {
                 from_amount: {
                     value: "",
-                    error: ERROR_FIELD_IS_REQUIRED
+                    error: null
                 },
                 to_amount: {
                     value: "",
-                    error: ERROR_FIELD_IS_REQUIRED
-                }
+                    error: null
+                },
+                disabled: true
             });
 
         case LOGGED_OUT:
