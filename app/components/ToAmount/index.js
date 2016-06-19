@@ -37,7 +37,6 @@ class ToAmount extends React.Component {
         let errorText = getErrorText(this.props.error);
         let amount = !isEmpty(this.props.amount) ? this.props.amount : "";
 
-        console.log("to_amount", amount, this.props.amount);
         return (
             <div style={styles.div}>
                 <TextField floatingLabelText={"Get (" + this.props.currency.toUpperCase() + ")"}

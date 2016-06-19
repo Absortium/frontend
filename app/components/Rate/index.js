@@ -53,7 +53,6 @@ class Rate extends React.Component {
         let errorText = getErrorText(this.props.error);
         let rate = !isEmpty(this.props.rate) ? this.props.rate : "";
 
-        console.log("rate", rate, this.props.rate);
         return (
             <div style={styles.div}>
                 <IconButton

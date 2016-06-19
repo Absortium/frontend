@@ -53,8 +53,6 @@ class FromAmount extends React.Component {
     render() {
         let errorText = getErrorText(this.props.error);
         let amount = !isEmpty(this.props.amount) ? this.props.amount : "";
-
-        console.log("from_amount", amount, this.props.amount);
         
         return (
             <div style={styles.div}>
