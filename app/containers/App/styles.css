@@ -1,15 +1,63 @@
 /* Global styles */
+* {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
 
-html,
-body {
+*:before,
+*:after {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+html {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     height: 100%;
     width: 100%;
 }
 
 body {
+    min-height: 100%;
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
 body.fontLoaded {
     font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+input,
+button,
+select,
+textarea {
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+a:hover,
+a:focus {
+    border-bottom: 1px dashed;
+}
+
+figure {
+    margin: 0;
+}
+
+img {
+    vertical-align: middle;
+}
+
+p {
+    -webkit-margin-before: 0.43em;
+    -webkit-margin-after: 0.43em;
+    -webkit-margin-start: 0px;
+    -webkit-margin-end: 0px;
+    margin-top: 0.43em;
+    margin-bottom: 0.43em;
 }

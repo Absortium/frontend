@@ -1,20 +1,20 @@
 .main {
+    width: 100%;
     display: flex;
     flex-direction: column;
+    justify-content: flex-start;
 }
+.block {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+}
+.items {
 
+}
 @media (min-width: 768px) {
-    .main {
+    .block {
         flex-direction: row;
-        flex: 1;
-    }
-
-    .content {
-        flex: 0 0 100em;
-    }
-
-    .market {
-        /* 50em is the width of the market column */
-        flex: 0 0 0em;
     }
 }

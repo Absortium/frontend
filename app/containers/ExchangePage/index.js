@@ -18,47 +18,36 @@ import AccountBox from "containers/AccountBox";
 import ExchangeListBox from "containers/ExchangeListBox";
 import styles from "./styles.css";
 
-
 export class ExchangePage extends React.Component {
     render() {
         return (
-            <div className={styles.main}>
-                <div className={styles.content}>
-                    <WithdrawalDialog />
-
-                    <Col xs={12}>
-                        <Row center="xs">
-                            <Col xsOffset={2} xs={3}>
-                                <ExchangeBox />
-                            </Col>
-                            <Col xs={3}>
-                                <Row left="xs">
-                                    <Col xs={12}>
-                                        <AccountBox />
-                                    </Col>
-                                </Row>
-                                <Row left="xs">
-                                    <Col xs={12}>
-                                        <MarketInfo />
-                                    </Col>
-                                </Row>
-                            </Col>
-                        </Row>
-                        <Row center="xs">
-                            <Col xsOffset={2} xs={4}>
-                                <ExchangeListBox />
-                            </Col>
-                            <Col xs={4}>
-                                <ExchangeOffers />
-                            </Col>
-                        </Row>
-                    </Col>
+            <main className={styles.main}>
+                <div className={styles.block}>
+                    <div style={ {width: '30%'} }>
+                        <ExchangeBox />
+                    </div>
+                    {this.props.accountBox &&
+                        <div style={ {width: '30%'} }>
+                            <AccountBox />
+                        </div>
+                    }
+                    <div style={ {width: '30%'} }>
+                        <MarketInfo />
+                    </div>
                 </div>
-            </div>
+                <div className={styles.block}>
+                    <div>
+                        <ExchangeListBox />
+                    </div>
+                    <div>
+                        <ExchangeOffers />
+                    </div>
+                </div>
+                <WithdrawalDialog />
+            </main>
         );
     }
 }
-
 
 function mapDispatchToProps(dispatch) {
     return {
@@ -66,4 +55,7 @@ function mapDispatchToProps(dispatch) {
     };
 }
 
-export default connect(null, mapDispatchToProps)(ExchangePage);
+export default connect(
+  state => ({ accountBox: state.accountBox}),
+  mapDispatchToProps
+)(ExchangePage);

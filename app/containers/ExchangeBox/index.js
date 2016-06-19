@@ -54,7 +54,6 @@ const styles = {
     },
 
     block: {
-        width: "100%",
         margin: "1.5em",
         textAlign: "center",
         display: "inline-block"
@@ -185,16 +184,14 @@ class ExchangeBox extends React.Component {
         }
 
         return (
-            <div>
-                <Paper style={styles.block} zDepth={2}>
-                    {top}
-                    <Divider />
-                    {main}
-                    <Divider />
-                    <br />
-                    {down}
-                </Paper>
-            </div>
+            <Paper style={styles.block} zDepth={2}>
+                {top}
+                <Divider />
+                {main}
+                <Divider />
+                <br />
+                {down}
+            </Paper>
         )
     }
 }
