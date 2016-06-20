@@ -54,7 +54,7 @@ const styles = {
     },
 
     block: {
-        margin: "1.5em",
+        width: "100%",
         textAlign: "center",
         display: "inline-block"
     },

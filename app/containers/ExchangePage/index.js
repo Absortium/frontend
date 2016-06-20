@@ -23,23 +23,23 @@ export class ExchangePage extends React.Component {
         return (
             <main className={styles.main}>
                 <div className={styles.block}>
-                    <div style={ {width: '30%'} }>
+                    <div className={styles.dashboardComponent}>
                         <ExchangeBox />
                     </div>
                     {this.props.accountBox &&
-                        <div style={ {width: '30%'} }>
+                        <div className={styles.dashboardComponent}>
                             <AccountBox />
                         </div>
                     }
-                    <div style={ {width: '30%'} }>
+                    <div className={styles.dashboardComponent}>
                         <MarketInfo />
                     </div>
                 </div>
                 <div className={styles.block}>
-                    <div>
+                    <div className={styles.dashboardComponent}>
                         <ExchangeListBox />
                     </div>
-                    <div>
+                    <div className={styles.dashboardComponent}>
                         <ExchangeOffers />
                     </div>
                 </div>

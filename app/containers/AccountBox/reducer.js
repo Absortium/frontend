@@ -33,7 +33,7 @@ function accountBoxReducer(state = initialState, action) {
         {
             const substate = {
                 isAccountLoaded: !!action.account,
-                isAccountExist: !!action.account && Objec.keys(action.account).length>0,
+                isAccountExist: !!action.account && Object.keys(action.account).length>0,
             };
 
             if (isAccountExist) {
