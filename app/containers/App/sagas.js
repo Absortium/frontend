@@ -214,22 +214,20 @@ class AccountsService {
     }
 
     static * handleExchangeCreated(action) {
-        let spent = new BigNumber(0);
         let shouldCheck = false;
+        let currency = AccountsService.currency;
+
+        let amount = AccountsService.accounts[currency].amount;
 
         for (let exchange of action.exchanges) {
-            let amount = new BigNumber(exchange.amount);
-
-            spent = spent.plus(amount);
+            amount = amount.minus(exchange.amount);
 
             if (exchange.status == EXCHANGE_STATUS_INIT || exchange.status == EXCHANGE_STATUS_PENDING) {
                 shouldCheck = true;
             }
         }
 
-        let currency = AccountsService.currency;
-
-        AccountsService.accounts[currency].amount -= spent;
+        AccountsService.accounts[currency].amount = amount;
         yield put(accountUpdated(AccountsService.accounts[currency]));
     }
 
