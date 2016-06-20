@@ -23,8 +23,7 @@ import Paper from "material-ui/Paper";
 
 const styles = {
     block: {
-        width: "100%",
-        margin: "1.5em",
+        width: '100%',
         textAlign: "center",
         display: "inline-block"
     },

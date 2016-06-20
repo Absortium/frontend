@@ -26,7 +26,6 @@ import { normalize } from "utils/general";
 const styles = {
     block: {
         width: '100%',
-        margin: "1.5em",
         textAlign: 'center',
         display: 'inline-block',
     },
