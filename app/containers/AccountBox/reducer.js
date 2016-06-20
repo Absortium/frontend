@@ -36,7 +36,7 @@ function accountBoxReducer(state = initialState, action) {
                 isAccountExist: !!action.account && Object.keys(action.account).length>0,
             };
 
-            if (isAccountExist) {
+            if (substate.isAccountExist) {
                 substate.accounts = update(state.accounts || {}, {
                     [action.account.currency]: {
                         $set: {

@@ -4,6 +4,7 @@
     flex-direction: column;
     justify-content: flex-start;
     max-width: 1400px; /* TODO: cast to em and real tested number */
+    margin: 0 auto;
 }
 .block {
     width: 100%;
