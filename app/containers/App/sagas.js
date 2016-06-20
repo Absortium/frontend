@@ -62,7 +62,6 @@ import {
     extractCurrencies,
     sleep,
     setTimeoutGenerator,
-    setIntervalGenerator,
     cut,
     isArrayEmpty,
     include
@@ -672,6 +671,7 @@ class WithdrawalService {
 
 class DepositService {
     static accounts = {};
+    static isAuthenticated = false;
 
     static * get(pk) {
         try {
@@ -687,29 +687,39 @@ class DepositService {
         }
     }
 
+    static * handlerLoggedIn() {
+        DepositService.isAuthenticated = true;
+    }
+
+    static * handlerLoggedOut() {
+        DepositService.isAuthenticated = false;
+    }
+
     static * handlerAccountReceived(action) {
         let account = action.account;
 
         try {
             let data = yield* DepositService.get(account.pk);
-            let deposits = data.map(function(deposit, index)  {
+            let deposits = data.map(function (deposit, index) {
                 return deposit.pk
             });
 
-            while (true) {
-                yield sleep(5000);
+            while (DepositService.isAuthenticated) {
+                try {
+                    for (let deposit of yield* DepositService.get(account.pk)) {
+                        if (!include(deposits, deposit.pk)) {
+                            toastr.success("Deposit", "New deposit arrived!");
+                            deposits.push(deposit.pk);
 
-                for (let deposit of yield* DepositService.get(account.pk)) {
-                    if (!include(deposits, deposit.pk)) {
-                        toastr.success("Deposit", "New deposit arrived!");
-                        deposits.push(deposit.pk);
+                            deposit.currency = account.currency;
 
-                        deposit.currency = account.currency;
+                            yield put(depositArrived(deposit));
 
-                        yield put(depositArrived(deposit));
-
+                        }
                     }
                 }
+
+                yield sleep(5000);
             }
         } catch (response) {
             if (response instanceof Error) {
@@ -722,7 +732,9 @@ class DepositService {
 
     static * setup() {
         yield [
-            takeEvery(ACCOUNT_RECEIVED, DepositService.handlerAccountReceived)
+            takeEvery(ACCOUNT_RECEIVED, DepositService.handlerAccountReceived),
+            takeEvery(LOGGED_OUT, DepositService.handlerLoggedOut),
+            takeEvery(LOGGED_IN, DepositService.handlerLoggedIn)
         ]
     }
 }
