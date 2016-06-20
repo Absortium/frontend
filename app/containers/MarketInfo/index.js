@@ -11,10 +11,6 @@ import selectMarketInfo from "./selectors";
 import MarketTabContent from "components/MarketTabContent";
 import MarketTabLabel from "components/MarketTabLabel";
 import {
-    Row,
-    Col
-} from "react-flexbox-grid";
-import {
     Tabs,
     Tab
 } from "material-ui/Tabs";

@@ -6,10 +6,6 @@
 
 import React from "react";
 import { connect } from "react-redux";
-import {
-    Row,
-    Col
-} from "react-flexbox-grid";
 import ExchangeBox from "containers/ExchangeBox";
 import MarketInfo from "containers/MarketInfo";
 import ExchangeOffers from "containers/ExchangeOffers";
