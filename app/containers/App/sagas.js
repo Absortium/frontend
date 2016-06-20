@@ -717,6 +717,8 @@ class DepositService {
 
                         }
                     }
+                } catch (e) {
+                    // In case of LOGGED_OUT happened after while condition.
                 }
 
                 yield sleep(5000);
