@@ -11,7 +11,8 @@ import {
     LOGGED_OUT,
     EXCHANGE_HISTORY_RECEIVED,
     EXCHANGE_HISTORY_CHANGED,
-    USER_EXCHANGE_HISTORY_RECEIVED
+    USER_EXCHANGE_HISTORY_RECEIVED,
+    EXCHANGE_CREATED
 } from "containers/App/constants";
 import { updateState } from "utils/general";
 import update from "react-addons-update";
@@ -65,13 +66,23 @@ function exchangeListBoxReducer(state = initialState, action) {
             });
         }
 
+        case EXCHANGE_CREATED:
+        case USER_EXCHANGE_HISTORY_RECEIVED: {
+            let newUserExchanges = state.user_exchanges;
 
-        case USER_EXCHANGE_HISTORY_RECEIVED:
+            let exchanges = action.exchanges;
+
+            if (newUserExchanges) {
+                newUserExchanges = update(newUserExchanges, { $merge: exchanges });
+            } else {
+                newUserExchanges = update(newUserExchanges, { $set: exchanges });
+            }
+
             return updateState(state, {
                 isUserExchangesLoaded: true,
-                user_exchanges: action.exchanges
+                user_exchanges: newUserExchanges
             });
-
+        }
 
         default:
             return state;

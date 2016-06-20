@@ -31,7 +31,8 @@ import {
     withdrawalCreated,
     userExchangesHistoryReceived,
     exchangesHistoryReceived,
-    exchangesHistoryChanged
+    exchangesHistoryChanged,
+    depositArrived
 } from "./actions";
 import {
     LOG_IN,
@@ -49,7 +50,9 @@ import {
     WITHDRAWAL_CREATED,
     SEND_EXCHANGE,
     SEND_WITHDRAWAL,
-    ACCOUNTS_EMPTY
+    ACCOUNTS_EMPTY,
+    ACCOUNT_RECEIVED,
+    DEPOSIT_ARRIVED
 } from "./constants";
 import { LOCATION_CHANGE } from "react-router-redux";
 import axios from "axios";
@@ -60,11 +63,12 @@ import {
     sleep,
     setTimeoutGenerator,
     cut,
-    isArrayEmpty
+    isArrayEmpty,
+    include
 } from "utils/general";
 import { isTokenExpired } from "utils/jwt";
 import autobahn from "autobahn";
-import BigNumber from "bignumber.js"
+import BigNumber from "bignumber.js";
 
 // All sagas to be loaded
 export default [
@@ -77,6 +81,7 @@ export function* defaultSaga() {
 
     // Be careful the order of services is matter!
     yield [
+        DepositService.setup(),
         MarketInfoService.setup(),
         HistoryService.setup(),
         RouteService.setup(),
@@ -231,7 +236,20 @@ class AccountsService {
     static * handleWithdrawalCreated(action) {
         let currency = action.withdrawal.currency;
 
-        AccountsService.accounts[currency].amount -= action.withdrawal.amount;
+        let amount = AccountsService.accounts[currency].amount;
+        amount = amount.minus(action.withdrawal.amount);
+        AccountsService.accounts[currency].amount = amount;
+
+        yield put(accountUpdated(AccountsService.accounts[currency]));
+    }
+
+    static * handlerDepositArrived(action) {
+        let currency = action.deposit.currency;
+
+        let amount = AccountsService.accounts[currency].amount;
+        amount = amount.plus(action.deposit.amount);
+        AccountsService.accounts[currency].amount = amount;
+
         yield put(accountUpdated(AccountsService.accounts[currency]));
     }
 
@@ -270,7 +288,8 @@ class AccountsService {
             takeEvery(MARKET_CHANGED, AccountsService.handlerMarketChanged),
             takeEvery(EXCHANGE_CREATED, AccountsService.handleExchangeCreated),
             takeEvery(WITHDRAWAL_CREATED, AccountsService.handleWithdrawalCreated),
-            takeEvery(ACCOUNTS_EMPTY, AccountsService.get)
+            takeEvery(ACCOUNTS_EMPTY, AccountsService.get),
+            takeEvery(DEPOSIT_ARRIVED, AccountsService.handlerDepositArrived),
         ]
     }
 }
@@ -646,6 +665,78 @@ class WithdrawalService {
     static * setup() {
         yield [
             takeLatest(SEND_WITHDRAWAL, WithdrawalService.handlerSendWithdrawal)
+        ]
+    }
+}
+
+class DepositService {
+    static accounts = {};
+    static isAuthenticated = false;
+
+    static * get(pk) {
+        try {
+            const url = "/api/accounts/" + pk + "/deposits/";
+            const response = yield call(axios.get, url);
+            return response.data
+
+        } catch (response) {
+            if (response instanceof Error) {
+                let err = response;
+                throw err
+            }
+        }
+    }
+
+    static * handlerLoggedIn() {
+        DepositService.isAuthenticated = true;
+    }
+
+    static * handlerLoggedOut() {
+        DepositService.isAuthenticated = false;
+    }
+
+    static * handlerAccountReceived(action) {
+        let account = action.account;
+
+        try {
+            let data = yield* DepositService.get(account.pk);
+            let deposits = data.map(function (deposit, index) {
+                return deposit.pk
+            });
+
+            while (DepositService.isAuthenticated) {
+                try {
+                    for (let deposit of yield* DepositService.get(account.pk)) {
+                        if (!include(deposits, deposit.pk)) {
+                            toastr.success("Deposit", "New deposit arrived!");
+                            deposits.push(deposit.pk);
+
+                            deposit.currency = account.currency;
+
+                            yield put(depositArrived(deposit));
+
+                        }
+                    }
+                } catch (e) {
+                    // In case of LOGGED_OUT happened after while condition.
+                }
+
+                yield sleep(5000);
+            }
+        } catch (response) {
+            if (response instanceof Error) {
+                let err = response;
+                throw err
+            }
+        }
+
+    }
+
+    static * setup() {
+        yield [
+            takeEvery(ACCOUNT_RECEIVED, DepositService.handlerAccountReceived),
+            takeEvery(LOGGED_OUT, DepositService.handlerLoggedOut),
+            takeEvery(LOGGED_IN, DepositService.handlerLoggedIn)
         ]
     }
 }
