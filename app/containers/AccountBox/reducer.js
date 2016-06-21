@@ -11,9 +11,7 @@ import {
     ACCOUNT_UPDATED,
     MARKET_CHANGED
 } from "containers/App/constants";
-import {
-    normalize
-} from "utils/general";
+import { normalize } from "utils/general";
 import update from "react/lib/update";
 
 const initialState = {
@@ -33,7 +31,7 @@ function accountBoxReducer(state = initialState, action) {
         {
             const substate = {
                 isAccountLoaded: !!action.account,
-                isAccountExist: !!action.account && Object.keys(action.account).length>0,
+                isAccountExist: !!action.account && Object.keys(action.account).length > 0
             };
 
             if (substate.isAccountExist) {

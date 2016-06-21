@@ -13,6 +13,8 @@ import WithdrawalDialog from "containers/WithdrawalDialog";
 import AccountBox from "containers/AccountBox";
 import ExchangeListBox from "containers/ExchangeListBox";
 import styles from "./styles.css";
+import { createSelector } from "reselect";
+import { selectAccountBoxDomain } from "containers/AccountBox/selectors";
 
 export class ExchangePage extends React.Component {
     render() {
@@ -22,10 +24,10 @@ export class ExchangePage extends React.Component {
                     <div className={styles.dashboardComponent}>
                         <ExchangeBox />
                     </div>
-                    {this.props.accountBox &&
-                        <div className={styles.dashboardComponent}>
-                            <AccountBox />
-                        </div>
+                    {this.props.isAccountLoaded &&
+                    <div className={styles.dashboardComponent}>
+                        <AccountBox />
+                    </div>
                     }
                     <div className={styles.dashboardComponent}>
                         <MarketInfo />
@@ -47,11 +49,11 @@ export class ExchangePage extends React.Component {
 
 function mapDispatchToProps(dispatch) {
     return {
-        dispatch,
+        dispatch
     };
 }
 
-export default connect(
-  state => ({ accountBox: state.accountBox}),
-  mapDispatchToProps
-)(ExchangePage);
+export default connect(createSelector(
+    selectAccountBoxDomain(),
+    (isAccountLoaded) => ({ isAccountLoaded })
+), mapDispatchToProps)(ExchangePage);
