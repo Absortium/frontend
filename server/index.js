@@ -16,11 +16,11 @@ const webpackConfig = isDev
     ? require('../internals/webpack/webpack.dev.babel')
     : require('../internals/webpack/webpack.prod.babel');
 
-app.use(['/api', '/notifications'], proxy({target: 'http://docker.backend:3001', changeOrigin: true}));
+app.use(['/api', '/notifications'], proxy({target: 'http://docker.backend:3000', changeOrigin: true}));
 app.use(frontend(webpackConfig));
 
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 80;
 
 // Start your app.
 app.listen(port, (err) => {
