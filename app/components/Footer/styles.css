@@ -1,3 +1,11 @@
+.toolbarBox {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
 .toolbar {
     margin: auto;
+}
+.separator {
+    margin-left: 0;
 }

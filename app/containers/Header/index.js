@@ -19,25 +19,21 @@ import {
     logOut
 } from "containers/App/actions";
 import Avatar from "material-ui/Avatar";
+import classStyles from "./styles.css";
 
 const styles = {
     avatar: {
         marginLeft: "0.9em",
         marginTop: "0.45em"
     },
-
-
-    toolbar: {
-        margin: "auto"
-    }
 };
 
 export default class Header extends React.Component {
 
     render() {
         return (
-            <Toolbar>
-                <ToolbarGroup style={styles.toolbar}>
+            <Toolbar className={classStyles.toolbarBox}>
+                <ToolbarGroup className={classStyles.toolbar}>
                     <FlatButton label="EXCHANGE"/>
                     <ToolbarSeparator/>
 
