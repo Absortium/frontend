@@ -12,7 +12,6 @@ import {
 } from "../constants";
 import {
     ERROR_FIELD_IS_REQUIRED,
-    ERROR_FIELD_NOT_VALID,
     ERROR_FIELD_LT_ZERO
 } from "containers/App/constants";
 import {
@@ -21,39 +20,36 @@ import {
     marketChanged,
     marketInfoReceived
 } from "containers/App/actions";
-
 import {
     changeFromAmount,
     changeToAmount,
     changeRate
 } from "../actions";
-
 import {
     genParam,
-    copy,
-    pprint
+    copy
 } from "utils/general";
 import exchageBoxReducer from "../reducer";
-import _ from "lodash";
+import BigNumber from "bignumber.js";
+import { pprint } from "../../../utils/general";
 
 var account = {
     address: "wxaH5tcgFYLYwJiyPmMNFgSLFyKKMP",
-    amount: 4 * Math.pow(10, 8),
+    amount: 4,
     currency: "btc",
     pk: 2
 };
 
 var marketInfo = {
-    eth: {
-        btc: {
-            rate: "1.000000",
+    btc: {
+        eth: {
+            rate: "1.00000000",
             rate_24h_max: "0.00000000",
             rate_24h_min: "0.00000000",
             volume_24h: 0
         }
     }
 };
-import BigNumber from "bignumber.js"
 
 describe("ExchangeBoxReducer", () => {
     let state;
@@ -281,6 +277,19 @@ describe("ExchangeBoxReducer", () => {
 
         expect(state).to.deep.equal(expected);
     });
+
+    it("calculation #21", () => {
+        [state, expected] = preinit(state, expected);
+
+        state = exchageBoxReducer(state, changeRate("14"));
+        state = exchageBoxReducer(state, changeToAmount("1"));
+
+        expected["from_amount"] = genParam("0.07142857142857142857", null);
+        expected["rate"] = genParam("14", null);
+        expected["to_amount"] = genParam("1", null);
+        
+        expect(state).to.deep.equal(expected);
+    });
 });
 
 function testChangeMarket(state, expected) {
@@ -304,7 +313,7 @@ function testAuthentication(state, expected) {
 
 function testAccountLoaded(state, expected, isFirst = true) {
     state = exchageBoxReducer(state, accountReceived(account));
-    expected["balance"] = 4;
+    expected["balance"] = new BigNumber(4);
     expected["isAccountLoaded"] = true;
     expected["isAccountExist"] = true;
 
@@ -318,9 +327,9 @@ function testAccountLoaded(state, expected, isFirst = true) {
 }
 
 function testMarketInfoReceived(state, expected, isFirst = true) {
-    state = exchageBoxReducer(state, marketInfoReceived(copy(marketInfo)));
+    state = exchageBoxReducer(state, marketInfoReceived(marketInfo));
     expected["isRateLoaded"] = true;
-    expected["market_rate"] =  new BigNumber("1");
+    expected["market_rate"] = new BigNumber("1");
 
     if (isFirst) {
         expected["rate"] = genParam("1", null);

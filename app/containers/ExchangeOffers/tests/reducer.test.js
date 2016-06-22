@@ -3,26 +3,28 @@ import {
     shallow,
     mount
 } from "enzyme";
-import {pprint} from "utils/general"
-import React from "react";
-import { offerReceived, offersChanged } from "containers/App/actions";
 import { copy } from "utils/general";
+import React from "react";
+import {
+    offerReceived,
+    offersChanged
+} from "containers/App/actions";
 import exchangeOffersReducer from "../reducer";
 
 let offers = [
-    { price: "1.00", amount: 2 * Math.pow(10, 8) },
-    { price: "2.00", amount: 2 * Math.pow(10, 8) }
+    { price: 1, amount: 2 },
+    { price: 2, amount: 2 }
 ];
 
 
 let update = [
-    { price: "1.00", amount: 3 * Math.pow(10, 8) }
+    { price: 1, amount: 3 }
 ];
 
 function checkPurity() {
     for (let offer of offers) {
         expect(offer).to.have.property("price");
-        expect(offer).to.have.property("amount").and.equal(2 * Math.pow(10, 8));
+        expect(offer).to.have.property("amount").and.equal(2);
     }
 }
 
@@ -44,7 +46,7 @@ describe("ExchangeOffersReducer", () => {
 
         for (let price in state.offers) {
             let amount = state.offers[price];
-            expect(amount).equal("2.0000000");
+            expect(amount).equal(2);
         }
 
         checkPurity();
@@ -60,10 +62,10 @@ describe("ExchangeOffersReducer", () => {
         for (let price in state.offers) {
             let amount = state.offers[price];
 
-            if (price == "1.0000000") {
-                expect(amount).equal("3.0000000");
+            if (price == 1) {
+                expect(amount).equal(3);
             } else {
-                expect(amount).equal("2.0000000");
+                expect(amount).equal(2);
             }
         }
     });
