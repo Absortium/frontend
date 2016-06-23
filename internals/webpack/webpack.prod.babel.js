@@ -40,7 +40,6 @@ module.exports = require('./webpack.base.babel')({
     }),
   ],
   plugins: [
-
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor',
       children: true,
@@ -96,9 +95,8 @@ module.exports = require('./webpack.base.babel')({
         // All chunks marked as `additional`, loaded after main section
         // and do not prevent SW to install. Change to `optional` if
         // do not want them to be preloaded at all (cached only when first loaded)
-        additional: ['*.chunk.js']
+        additional: ['*.chunk.js'],
       },
-
 
       // Removes warning for about `additional` section usage
       safeToUseOptionalCaches: true,
@@ -106,8 +104,8 @@ module.exports = require('./webpack.base.babel')({
       AppCache: {
         // Starting from offline-plugin:v3, AppCache by default caches only
         // `main` section. This lets it use `additional` section too
-        caches: ['main', 'additional']
-      }
-    })
-  ]
+        caches: ['main', 'additional'],
+      },
+    }),
+  ],
 });

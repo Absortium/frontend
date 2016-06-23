@@ -46,7 +46,7 @@ const store = configureStore(initialState, browserHistory);
 // Inject sagas of App component
 import {getHooks} from "./utils/hooks"
 import AppSagas from "containers/App/sagas"
-const {injectReducer, injectSagas} = getHooks(store);
+const {injectSagas} = getHooks(store);
 injectSagas(AppSagas);
     
 // If you use Redux devTools extension, since v2.0.1, they added an
