@@ -31,6 +31,9 @@ module.exports = require('./webpack.base.babel')({
     library: '[name]',
   },
 
+  // Load the CSS in a style tag in development
+  cssLoaders: 'style-loader!css-loader?localIdentName=[local]__[path][name]__[hash:base64:5]&modules&importLoaders=1&sourceMap!postcss-loader',
+
   plugins: [
     new ExtractTextPlugin("styles.css"),
     new webpack.DllPlugin({ name: '[name]', path: join(outputPath, '[name].json') }), // eslint-disable-line no-new
