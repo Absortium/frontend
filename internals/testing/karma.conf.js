@@ -1,72 +1,61 @@
 const webpackConfig = require('../webpack/webpack.test.babel');
+const argv = require('minimist')(process.argv.slice(2));
 const path = require('path');
 
 module.exports = (config) => {
-    config.set({
-        frameworks: ['mocha'],
-        reporters: ['coverage', 'mocha'],
+  config.set({
+    frameworks: ['mocha'],
+    reporters: ['coverage', 'mocha'],
+    browsers: process.env.TRAVIS // eslint-disable-line no-nested-ternary
+      ? ['ChromeTravis']
+      : process.env.APPVEYOR
+        ? ['IE'] : ['Chrome'],
 
-        mochaReporter: {
-            showDiff: true
-        },
+    autoWatch: false,
+    singleRun: true,
 
-        browsers: ['PhantomJS'],
+    client: {
+      mocha: {
+        grep: argv.grep,
+      },
+    },
 
-        // you can define custom flags
-        customLaunchers: {
-            'PhantomJS_custom': {
-                base: 'PhantomJS',
-                options: {
-                    windowName: 'my-window',
-                    settings: {
-                        webSecurityEnabled: false
-                    },
-                },
-                flags: ['--load-images=true'],
-                debug: true
-            }
-        },
+    files: [
+      {
+        pattern: './test-bundler.js',
+        watched: false,
+        served: true,
+        included: true,
+      },
+    ],
 
-        phantomjsLauncher: {
-            // Have phantomjs exit if a ResourceError is encountered (useful if karma exits without killing phantom)
-            exitOnResourceError: true
-        },
+    preprocessors: {
+      ['./test-bundler.js']: ['webpack', 'sourcemap'], // eslint-disable-line no-useless-computed-key
+    },
 
-        autoWatch: false,
-        singleRun: true,
+    webpack: webpackConfig,
 
-        files: [
-            {
-                pattern: './test-bundler.js',
-                watched: false,
-                served: true,
-                included: true,
-            },
-        ],
+    // make Webpack bundle generation quiet
+    webpackMiddleware: {
+      noInfo: true,
+      stats: 'errors-only',
+    },
 
-        preprocessors: {
-            ['./test-bundler.js']: ['webpack', 'sourcemap'], // eslint-disable-line  no-useless-computed-key
-        },
+    customLaunchers: {
+      ChromeTravis: {
+        base: 'Chrome',
+        flags: ['--no-sandbox'],
+      },
+    },
 
-        webpack: webpackConfig,
+    coverageReporter: {
+      dir: path.join(process.cwd(), 'coverage'),
+      reporters: [
+        { type: 'lcov', subdir: 'lcov' },
+        { type: 'html', subdir: 'html' },
+        { type: 'text-summary' },
+      ],
+    },
 
-        // make Webpack bundle generation quiet
-        webpackMiddleware: {
-            noInfo: true,
-            watchOptions: {
-                aggregateTimeout: 100,
-                poll: true
-            },
-        },
-
-        coverageReporter: {
-            dir: path.join(process.cwd(), 'coverage'),
-            reporters: [
-                { type: 'lcov', subdir: 'lcov' },
-                { type: 'html', subdir: 'html' },
-                { type: 'text-summary' },
-            ],
-        },
-
-    });
+  });
 };

@@ -29,8 +29,8 @@ some examples! (read [this comparison](https://stackoverflow.com/questions/34930
 ## Usage
 
 Sagas are associated with a container, just like actions, constants, selectors
-and reducers. If your container already has a `sagas.jsx` file, simply add your
-saga to that. If your container does not yet have a `sagas.jsx` file, add one with
+and reducers. If your container already has a `sagas.js` file, simply add your
+saga to that. If your container does not yet have a `sagas.js` file, add one with
 this boilerplate structure:
 
 ```JS
@@ -70,7 +70,7 @@ getComponent(nextState, cb) {
 },
 ```
 
-Now add as many sagas to your `sagas.jsx` file as you want!
+Now add as many sagas to your `sagas.js` file as you want!
 
 ---
 

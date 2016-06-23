@@ -3,11 +3,13 @@
 ## Table of Contents
 
 - [General](general)
-  - [**Commands**](general/commands.md)
-  - [Files](general/files.md)
+  - [**CLI Commands**](general/commands.md)
+  - [Tool Configuration](general/files.md)
   - [Server Configurations](general/server-configs.md)
+  - [Deployment](general/deployment.md) *(currently Heroku specific)*
   - [FAQ](general/faq.md)
   - [Gotchas](general/gotchas.md)
+  - [Remove](general/remove.md)
 - [Testing](testing)
   - [Unit Testing](testing/unit-testing.md)
   - [Component Testing](testing/component-testing.md)
@@ -38,7 +40,7 @@
 
     - Add a Github username to see Redux and Redux Sagas in action: effortless
       async state updates and side effects are now yours :)
-    - Edit the file at `./app/containers/HomePage/index.jsx` so that the text of
+    - Edit the file at `./app/containers/HomePage/index.js` so that the text of
       the `<Button>` component reads "Features!!!"... Hot Module Reloading gives
       you a feedback loop with your UI so smooth it's almost conversational!
     - Click your (newly emphatic) Features button to see React Router in action...
@@ -105,13 +107,13 @@ For a thorough explanation of the testing procedure, see the
 
 #### Performance testing
 
-With the production server running (i.e. while `$ npm run serve` is running in
+With the production server running (i.e. while `$ npm run start:production` is running in
 another tab), enter `$ npm run pagespeed` to run Google PageSpeed Insights and
 get a performance check right in your terminal!
 
 #### Browser testing
 
-`$ npm run serve` makes your locally-running app globally available on the web
+`$ npm run start:tunnel` makes your locally-running app globally available on the web
 via a temporary URL: great for testing on different devices, client demos, etc!
 
 #### Unit testing

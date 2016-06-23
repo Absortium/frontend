@@ -1,8 +1,14 @@
-/.idea
-/node_modules
 /dist
 /.tmp
 /.sass-cache
-/bower_components
-npm-debug.log
+
+# Don't check auto-generated stuff into git
 coverage
+build
+node_modules
+stats.json
+
+# Cruft
+.DS_Store
+npm-debug.log
+.idea

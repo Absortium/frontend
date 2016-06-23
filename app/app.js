@@ -10,14 +10,14 @@ import 'babel-polyfill';
 
 // Load the favicon, the manifest.json file and the .htaccess file
 import 'file?name=[name].[ext]!./favicon.ico';
-import 'file?name=[name].[ext]!./manifest.json';
+import '!file?name=[name].[ext]!./manifest.json';
 import 'file?name=[name].[ext]!./.htaccess';
 
 // Import all the third party stuff
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { applyRouterMiddleware, Router, Redirect, IndexRedirect, DefaultRoute, browserHistory } from 'react-router';
+import { applyRouterMiddleware, Router, browserHistory } from 'react-router';
 import { syncHistoryWithStore } from 'react-router-redux';
 import FontFaceObserver from 'fontfaceobserver';
 import useScroll from 'react-router-scroll';
@@ -48,16 +48,23 @@ import {getHooks} from "./utils/hooks"
 import AppSagas from "containers/App/sagas"
 const {injectReducer, injectSagas} = getHooks(store);
 injectSagas(AppSagas);
+    
+// If you use Redux devTools extension, since v2.0.1, they added an
+// `updateStore`, so any enhancers that change the store object
+// could be used with the devTools' store.
+// As this boilerplate uses Redux & Redux-Saga, the `updateStore` is needed
+// if you want to `take` actions in your Sagas, dispatched from devTools.
+if (window.devToolsExtension) {
+  window.devToolsExtension.updateStore(store);
+}
 
 // Sync history and store, as the react-router-redux reducer
 // is under the non-default key ("routing"), selectLocationState
 // must be provided for resolving how to retrieve the "route" in the state
 import { selectLocationState } from 'containers/App/selectors';
 const history = syncHistoryWithStore(browserHistory, store, {
-  selectLocationState: selectLocationState()
+  selectLocationState: selectLocationState(),
 });
-
-
 
 // Set up the router, wrapping all Routes in the App component
 import App from 'containers/App';
@@ -71,34 +78,19 @@ const rootRoute = {
 
 ReactDOM.render(
   <Provider store={store}>
-      <div>
-          <ReduxToastr
-              timeOut={4000}
-              newestOnTop={false}
-              position="top-right"/>
-          <Router
-              history={history}
-              routes={rootRoute}
-              render={
-                // Scroll to top when going to a new page, imitating default browser
-                // behaviour
-                applyRouterMiddleware(
-                  useScroll(
-                    (prevProps, props) => {
-                      if (!prevProps || !props) {
-                        return true;
-                      }
-            
-                      if (prevProps.location.pathname !== props.location.pathname) {
-                        return [0, 0];
-                      }
-            
-                      return true;
-                    }
-                  )
-                )
-              }/>
-      </div>
+    <div>
+      <ReduxToastr
+        timeOut={4000}
+        newestOnTop={false}
+        position="top-right"/>
+    <Router history={history}
+      routes={rootRoute}
+      render={
+        // Scroll to top when going to a new page, imitating default browser
+        // behaviour
+        applyRouterMiddleware(useScroll())
+      }/>
+    </div>
   </Provider>,
   document.getElementById('app')
 );

@@ -35,7 +35,7 @@ NavBar                   # Wrapping folder
 ├── NavBar.react.js      # Actual component
 ├── NavBar.actions.js    # Actions
 ├── NavBar.constants.js  # Constants
-├── NavBar.reducer.jsx    # Reducer
+├── NavBar.reducer.js    # Reducer
 └── test                        # Folder of tests
     ├── NavBar.actions.test.js  # Actions tests
     └── NavBar.reducer.test.js  # Reducer tests
@@ -208,7 +208,7 @@ export function toggleNav() {
 with this reducer:
 
 ```javascript
-// NavBar.reducer.jsx
+// NavBar.reducer.js
 
 import { TOGGLE_NAV } from './NavBar.constants.js';
 
