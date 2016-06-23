@@ -6,10 +6,27 @@ module.exports = (config) => {
   config.set({
     frameworks: ['mocha'],
     reporters: ['coverage', 'mocha'],
-    browsers: process.env.TRAVIS // eslint-disable-line no-nested-ternary
-      ? ['ChromeTravis']
-      : process.env.APPVEYOR
-        ? ['IE'] : ['Chrome'],
+    browsers: ['PhantomJS'],
+
+    // you can define custom flags
+    customLaunchers: {
+      'PhantomJS_custom': {
+        base: 'PhantomJS',
+        options: {
+          windowName: 'my-window',
+          settings: {
+            webSecurityEnabled: false
+          },
+        },
+        flags: ['--load-images=true'],
+        debug: true
+      }
+    },
+
+    phantomjsLauncher: {
+      // Have phantomjs exit if a ResourceError is encountered (useful if karma exits without killing phantom)
+      exitOnResourceError: true
+    },
 
     autoWatch: false,
     singleRun: true,
@@ -39,13 +56,10 @@ module.exports = (config) => {
     webpackMiddleware: {
       noInfo: true,
       stats: 'errors-only',
-    },
-
-    customLaunchers: {
-      ChromeTravis: {
-        base: 'Chrome',
-        flags: ['--no-sandbox'],
-      },
+      watchOptions: {
+        aggregateTimeout: 100,
+        poll: true
+      }
     },
 
     coverageReporter: {

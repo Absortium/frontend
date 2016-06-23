@@ -113,7 +113,7 @@ function dependencyHandlers() {
       new webpack.DllReferencePlugin({
         context: process.cwd(),
         manifest: require(manifestPath), // eslint-disable-line global-require
-      }),
+      })
     ];
   }
 
