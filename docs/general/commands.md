@@ -13,6 +13,14 @@ git history, installs the dependencies and initializes a new repository.
 gone forever. This is for your own safety, so you can't delete your project's
 history irreversibly by accident.
 
+## Development
+
+```Shell
+$ npm run start
+```
+
+Starts the development server running on `http://localhost:3000`
+
 ## Cleaning
 
 ```Shell
@@ -60,9 +68,9 @@ minified and served gzipped.
 
 ### Port
 
-To change the port the app is accessible at pass the `-p` option to the command
+To change the port the app is accessible at pass the `--port` option to the command
 with `--`. E.g. to make the app visible at `localhost:5000`, run the following:
-`$ npm start -- -p 5000`
+`$ npm start -- --port 5000`
 
 ## Building
 
@@ -87,6 +95,13 @@ $ npm run test
 
 Tests your application with the unit tests specified in the `*test.js` files
 throughout the application.
+All the `test` commands allow an optional `-- --grep string` argument to filter
+the tests ran by Karma. Useful if you need to run a specific test only.
+
+```Shell
+# Run only the Button component tests
+$ npm run test:watch -- --grep Button
+```
 
 ### Browsers
 
@@ -129,15 +144,13 @@ $ npm run start:tunnel
 Starts the development server and tunnels it with `ngrok`, making the website
 available on the entire world. Useful for testing on different devices in different locations!
 
-> Note: `$ npm start` aliases to this command.
-
 ### Performance testing
 
 ```Shell
 $ npm run pagespeed
 ```
 
-With the remote server running (i.e. while `$ npm run serve` is running in
+With the remote server running (i.e. while `$ npm run start:prod` is running in
 another terminal session), enter this command to run Google PageSpeed Insights
 and get a performance check right in your terminal!
 

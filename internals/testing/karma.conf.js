@@ -1,72 +1,75 @@
 const webpackConfig = require('../webpack/webpack.test.babel');
+const argv = require('minimist')(process.argv.slice(2));
 const path = require('path');
 
 module.exports = (config) => {
-    config.set({
-        frameworks: ['mocha'],
-        reporters: ['coverage', 'mocha'],
+  config.set({
+    frameworks: ['mocha'],
+    reporters: ['coverage', 'mocha'],
+    browsers: ['PhantomJS'],
 
-        mochaReporter: {
-            showDiff: true
+    // you can define custom flags
+    customLaunchers: {
+      'PhantomJS_custom': {
+        base: 'PhantomJS',
+        options: {
+          windowName: 'my-window',
+          settings: {
+            webSecurityEnabled: false
+          },
         },
+        flags: ['--load-images=true'],
+        debug: true
+      }
+    },
 
-        browsers: ['PhantomJS'],
+    phantomjsLauncher: {
+      // Have phantomjs exit if a ResourceError is encountered (useful if karma exits without killing phantom)
+      exitOnResourceError: true
+    },
 
-        // you can define custom flags
-        customLaunchers: {
-            'PhantomJS_custom': {
-                base: 'PhantomJS',
-                options: {
-                    windowName: 'my-window',
-                    settings: {
-                        webSecurityEnabled: false
-                    },
-                },
-                flags: ['--load-images=true'],
-                debug: true
-            }
-        },
+    autoWatch: false,
+    singleRun: true,
 
-        phantomjsLauncher: {
-            // Have phantomjs exit if a ResourceError is encountered (useful if karma exits without killing phantom)
-            exitOnResourceError: true
-        },
+    client: {
+      mocha: {
+        grep: argv.grep,
+      },
+    },
 
-        autoWatch: false,
-        singleRun: true,
+    files: [
+      {
+        pattern: './test-bundler.js',
+        watched: false,
+        served: true,
+        included: true,
+      },
+    ],
 
-        files: [
-            {
-                pattern: './test-bundler.js',
-                watched: false,
-                served: true,
-                included: true,
-            },
-        ],
+    preprocessors: {
+      ['./test-bundler.js']: ['webpack', 'sourcemap'], // eslint-disable-line no-useless-computed-key
+    },
 
-        preprocessors: {
-            ['./test-bundler.js']: ['webpack', 'sourcemap'], // eslint-disable-line  no-useless-computed-key
-        },
+    webpack: webpackConfig,
 
-        webpack: webpackConfig,
+    // make Webpack bundle generation quiet
+    webpackMiddleware: {
+      noInfo: true,
+      stats: 'errors-only',
+      watchOptions: {
+        aggregateTimeout: 100,
+        poll: true
+      }
+    },
 
-        // make Webpack bundle generation quiet
-        webpackMiddleware: {
-            noInfo: true,
-            watchOptions: {
-                aggregateTimeout: 100,
-                poll: true
-            },
-        },
+    coverageReporter: {
+      dir: path.join(process.cwd(), 'coverage'),
+      reporters: [
+        { type: 'lcov', subdir: 'lcov' },
+        { type: 'html', subdir: 'html' },
+        { type: 'text-summary' },
+      ],
+    },
 
-        coverageReporter: {
-            dir: path.join(process.cwd(), 'coverage'),
-            reporters: [
-                { type: 'lcov', subdir: 'lcov' },
-                { type: 'html', subdir: 'html' },
-                { type: 'text-summary' },
-            ],
-        },
-
-    });
+  });
 };

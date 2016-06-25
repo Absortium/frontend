@@ -12,6 +12,7 @@ efficient tooling and cleanest project structure.
 - [**CLI Commands**](commands.md)
 - [Tool Configuration](files.md)
 - [Server Configurations](server-configs.md)
+- [Deployment](deployment.md) *(currently Heroku specific)*
 - [FAQ](faq.md)
 - [Gotchas](gotchas.md)
 
@@ -99,7 +100,7 @@ these fonts are downloaded. That means a lot of waiting time in which users
 could already read the content.
 
 [FontFaceObserver](https://github.com/bramstein/fontfaceobserver) adds a class
-to the `body` when the fonts have loaded. (see [`app.js`](../../app/app.js#L29-L39)
+to the `body` when the fonts have loaded. (see [`app.js`](../../app/app.js#L26-L36)
 and [`App/styles.css`](../../app/containers/App/styles.css))
 
 ### Adding a new font
@@ -113,3 +114,12 @@ with only web-save fonts. In the `body.jsFontLoaded` tag, specify your
 `font-family` stack with your web font.
 
 3. In `app.js` add a `<fontName>Observer` for your font.
+
+## Image optimization
+
+Images often represent the majority of bytes downloaded on a web page, so image
+optimization can often be a notable performance improvement. Thanks to Webpack's
+[`image-loader`](https://github.com/tcoopman/image-webpack-loader), every PNG, JPEG, GIF and SVG images
+is optimized.
+
+See [`image-loader`](https://github.com/tcoopman/image-webpack-loader) to customize optimizations options.
