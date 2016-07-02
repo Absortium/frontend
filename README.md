@@ -1,7 +1,7 @@
 Name  | Version
 ------------- | -------------
-Docker-Compose | 1.6.0
-Docker | 1.10.2
+Docker-Compose | 1.6.2
+Docker | 1.10.3
 
 ## Getting started contributing
 * First of all clone repository.  
@@ -78,9 +78,9 @@ Docker | 1.10.2
    
 * `dc(b| build) <service>` - build service.
 * `dc(r| run) <service>` - run service.
+* `dc(l| logs) <service>` - output service logs.
 * `drmc <regex>` - delete containers that much regex expression.
 * `drmi <regex>` - delete images that much regex expression.
-* `dc(l| logs) <service>` - output service logs.
+* `drmd <regex>` - delete volume that much regex expression.
 * `di` - list all images.
 * `dps` - list all working containers.
-* `ideluge` - init sensitive information that is needed for backend start.
