@@ -200,9 +200,7 @@ export default ExchangeBox;
 
 const mapStateToProps = selectExchangeBox();
 
-function
-
-mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch) {
     return {
         handlerFromAmount: (event) => dispatch(changeFromAmount(event.target.value)),
         handlerToAmount: (event) => dispatch(changeToAmount(event.target.value)),

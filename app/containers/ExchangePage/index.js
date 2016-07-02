@@ -18,18 +18,17 @@ import { selectAccountBoxDomain } from "containers/AccountBox/selectors";
 
 export class ExchangePage extends React.Component {
     render() {
+        console.log(this.props);
         return (
             <main className={styles.main}>
                 <div className={styles.block}>
                     <div className={styles.dashboardComponent}>
                         <ExchangeBox />
                     </div>
-                    {this.props.isAccountLoaded &&
                     <div className={styles.dashboardComponent}>
-                        <AccountBox />
-                    </div>
-                    }
-                    <div className={styles.dashboardComponent}>
+                        {this.props.isAccountLoaded &&
+                            <AccountBox />
+                        }
                         <MarketInfo />
                     </div>
                 </div>
@@ -49,11 +48,11 @@ export class ExchangePage extends React.Component {
 
 function mapDispatchToProps(dispatch) {
     return {
-        dispatch
+        dispatch,
     };
 }
 
 export default connect(createSelector(
     selectAccountBoxDomain(),
-    (isAccountLoaded) => ({ isAccountLoaded })
+    (account) => ({ isAccountLoaded: account.isAccountLoaded })
 ), mapDispatchToProps)(ExchangePage);
