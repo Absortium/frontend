@@ -22,22 +22,23 @@ Docker | 1.10.2
    * If you run docker containers on the `docker-machine`, than check your `docker-machine` ip and pass it to the `/etc/hosts`
    ```bash
    $ docker-machine ip
-   $ sudo bash -c `echo "absortium.com <ip>" >> /etc/hosts`
+   $ sudo bash -c `echo "dev.absortium.com <ip>" >> /etc/hosts`
    ```
    * Otherwise set localhost
    ```bash
-   $ sudo bash -c `echo "absortium.com localhost" >> /etc/hosts`
+   $ sudo bash -c `echo "dev.absortium.com localhost" >> /etc/hosts`
    ```
-   
-* Open new terminal and go into docker `dev` directory, if there is no such alias than you should check - `Are aliases were preloaded?`
-  ```bash
-  $ godd
-  ```
 
 * Run `postgres` service which serve as database.
   ```bash
   $ dc up -d postgres
   ```
+
+* Build `backend` service.
+  ```bash
+  $ dcb backend
+  ```  
+
 * Migrate database.
   ```bash
   $ dc run m-backend migrate
@@ -48,7 +49,7 @@ Docker | 1.10.2
   $ dc up frontend
   ```
 
-* Go to the `absortium.com`
+* Go to the `dev.absortium.com:3000`
     
 ## Tips
 * If you use `docker-machine` than you must download project only in user directory.
