@@ -1,55 +1,63 @@
-Name  | Version
-------------- | -------------
-Docker-Compose | 1.6.2
-Docker | 1.10.3
 
-## Getting started contributing
-* First of all clone repository.  
+## Getting started
+#### Prerequisites
+  
+    Name  | Version 
+  --------| -------
+  docker-compose | 1.6
+  docker | 1.11
+  docker-machine | 0.6
+  
+  **Step №1**: Clone repository.  
   ```bash
   $ git clone --recursive https://github.com/absortium/deluge.git
   ```
 
-* Add env variables and aliases from `useful` directory, for that copy this in the `.bashrc` or `.zshrc`
+  **Step №2**: For simplicity I prefer use [aliases](#alias-info) which I developed for this project, on first sign it might look overwhelming, but I think it may significantly help you for developing, so add env variables and aliases from `useful` directory - copy this in the `.bashrc` or `.zshrc` (this code install project aliases every time when you instantiate terminal window):
   ```bash
     export DELUGE_PATH="YOUR_WORK_DIRECTORY_PATH"
     export DEFAULT_MODE="frontend"
     for f in $DELUGE_PATH/useful/aliases/*; do
-      . "$f"
+      source "$f"
     done  
   ```
-
-* Add entry to the `/etc/hosts`
-   * If you run docker containers on the `docker-machine`, than check your `docker-machine` ip and pass it to the `/etc/hosts`
-   ```bash
-   $ docker-machine ip
-   $ sudo bash -c `echo "dev.absortium.com <ip>" >> /etc/hosts`
-   ```
-   * Otherwise set localhost
-   ```bash
-   $ sudo bash -c `echo "dev.absortium.com localhost" >> /etc/hosts`
-   ```
-
-* Run `postgres` service which serve as database.
+  
+  **Step №3**: Install docker on your machine, for that go to the docker [website](https://www.docker.com). If you working on OS X do not forget that now we use old docker toolbox with docker machine.
+  
+  **Step №4**: Ask mainteiner to give you `.sensetive` file.
+  
+  **Step №5**: Install and run `postgres` service.
   ```bash
   $ dc up -d postgres
   ```
 
-* Build `backend` service.
+  **Step №6**: Build `backend` service.
   ```bash
   $ dcb backend
   ```  
 
-* Migrate database.
+**Step №7**: Migrate database.
   ```bash
   $ dc run m-backend migrate
   ```
   
-* Run `frontend` and make sure that service runs without errors.
+**Step №8**: Install and run `frontend`, wait for frontend to build.
   ```bash
   $ dc up frontend
   ```
 
-* Go to the `dev.absortium.com:3000`
+**Step №9**: Add entry to the `/etc/hosts`, otherwise you will not be able to authenticate properly.
+ * If you run docker containers on the `docker-machine` (OS X), than check your `docker-machine` ip and pass it to the `/etc/hosts`
+ ```bash
+ $ docker-machine ip
+ $ sudo bash -c `echo "<ip> dev.absortium.com" >> /etc/hosts`
+ ```
+ * Otherwise set `127.0.0.1`
+ ```bash
+ $ sudo bash -c `echo "127.0.0.1 dev.absortium.com " >> /etc/hosts`
+ ```
+   
+**Step №10**: Go to the `dev.absortium.com:3000`
     
 ## Tips
 * If you use `docker-machine` than you must download project only in user directory.
