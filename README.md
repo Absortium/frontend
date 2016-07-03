@@ -86,6 +86,8 @@
         * celery workers are working and celery tasks are executing like in real system.
         * Service `notifier` is working and emulating money notification from `coinbase` and `ethwallet`.
     * (for more information please read `README.md` in the `docker` directory)         
+
+* `dc` - alias for `docker-compose -f $DELUGE_PATH/docker/images/dev.yml -f $DELUGE_PATH/docker/composes/frontend.yml`.
 * `dc(b| build) <service>` - build service.
 * `dc(r| run) <service>` - run service.
 * `dc(u| up) <service>` - up service.
