@@ -76,10 +76,8 @@
 * `godd` - go to the `docker` directory.
 * `gods` - go to the `services` directory.
 * `gods <backend|frontend|ethwallet|routerethnode>` - go to the `service` project directory.
-
 * `di` - list all images.
 * `dps` - list all working containers.
-
 * `dcinit <unit|integration|frontend|testnet>` - init start mode, default mode is `DEFAULT_MODE` .
     * `frontend`
         * external systems like `coinbase` and `ethwallet` are mocked.
@@ -87,11 +85,9 @@
         * celery workers are working and celery tasks are executing like in real system.
         * (NOT EXIST YET) special service `walletnotifier` is working and emulating money notification from `coinbase` and `ethwallet` 
     * (for more information please read `README.md` in the `docker` directory)         
-
 * `dc(b| build) <service>` - build service.
 * `dc(r| run) <service>` - run service.
 * `dc(l| logs) <service>` - output service logs.
-
 * `drmc <regex>` - delete containers that much regex expression.
 * `drmi <regex>` - delete images that much regex expression.
 * `drmd <regex>` - delete volumes that much regex expression.
