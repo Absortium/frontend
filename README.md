@@ -22,7 +22,7 @@
     done  
   ```
   
-  **Step №3**: Install docker on your machine, for that go to the docker [website](https://www.docker.com). If you working on OS X do not forget that now we use old docker toolbox with docker machine.
+  **Step №3**: Install docker on your machine, for that go to the docker [website](https://www.docker.com). If you working on OS X do not forget that now we use old docker toolbox with docker machine. Also do not forget, that you should create `default` machine and initialize.
   
   **Step №4**: Ask mainteiner to give you `.sensetive` file.
   
@@ -49,13 +49,13 @@
 **Step №9**: Add entry to the `/etc/hosts`, otherwise you will not be able to authenticate properly. If you run docker containers on the `docker-machine` (OS X), than check your `docker-machine` ip and pass it to the `/etc/hosts`:
  ```bash
  $ docker-machine ip
- $ sudo bash -c `echo "<ip> dev.absortium.com" >> /etc/hosts`
+ $ sudo bash -c 'echo "<ip> dev.absortium.com" >> /etc/hosts'
  ```
  
  * Otherwise set `127.0.0.1`:
  
  ```bash
- $ sudo bash -c `echo "127.0.0.1 dev.absortium.com " >> /etc/hosts`
+ $ sudo bash -c 'echo "127.0.0.1 dev.absortium.com " >> /etc/hosts'
  ```
    
 **Step №10**: Go to the `dev.absortium.com:3000`
