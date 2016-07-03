@@ -46,13 +46,14 @@
   $ dcu frontend
   ```
 
-**Step №9**: Add entry to the `/etc/hosts`, otherwise you will not be able to authenticate properly.
- * If you run docker containers on the `docker-machine` (OS X), than check your `docker-machine` ip and pass it to the `/etc/hosts`
+**Step №9**: Add entry to the `/etc/hosts`, otherwise you will not be able to authenticate properly. If you run docker containers on the `docker-machine` (OS X), than check your `docker-machine` ip and pass it to the `/etc/hosts`:
  ```bash
  $ docker-machine ip
  $ sudo bash -c `echo "<ip> dev.absortium.com" >> /etc/hosts`
  ```
- * Otherwise set `127.0.0.1`
+ 
+ * Otherwise set `127.0.0.1`:
+ 
  ```bash
  $ sudo bash -c `echo "127.0.0.1 dev.absortium.com " >> /etc/hosts`
  ```
@@ -60,7 +61,7 @@
 **Step №10**: Go to the `dev.absortium.com:3000`
     
 ## Tips
-* If you use `docker-machine` than you must download project only in user directory.
+* If you use `docker-machine` than you must download project only under `/Users/` directory.
  
 ## Services
 * `m-backend` - main backend service.
@@ -75,7 +76,7 @@
 * `god` - go to the `DELUGE_PATH` directory.
 * `godd` - go to the `docker` directory.
 * `gods` - go to the `services` directory.
-* `gods <backend|frontend|ethwallet|routerethnode>` - go to the `service` project directory.
+* `gods <backend|frontend|ethwallet|router|ethnode>` - go to the `service` project directory.
 * `di` - list all images.
 * `dps` - list all working containers.
 * `dcinit <unit|integration|frontend|testnet>` - init start mode, default mode is `DEFAULT_MODE` .
@@ -83,7 +84,7 @@
         * external systems like `coinbase` and `ethwallet` are mocked.
         * `postgres`, `rabbitmq`, `celery`, `router` services are required to be up in order to celery task work.
         * celery workers are working and celery tasks are executing like in real system.
-        * (NOT EXIST YET) special service `walletnotifier` is working and emulating money notification from `coinbase` and `ethwallet` 
+        * Service `notifier` is working and emulating money notification from `coinbase` and `ethwallet`.
     * (for more information please read `README.md` in the `docker` directory)         
 * `dc(b| build) <service>` - build service.
 * `dc(r| run) <service>` - run service.
