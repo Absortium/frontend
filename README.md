@@ -28,7 +28,7 @@
   
   **Step №5**: Install and run `postgres` service.
   ```bash
-  $ dc up -d postgres
+  $ dcu -d postgres
   ```
 
   **Step №6**: Build `backend` service.
@@ -38,12 +38,12 @@
 
 **Step №7**: Migrate database.
   ```bash
-  $ dc run m-backend migrate
+  $ dcr m-backend migrate
   ```
   
 **Step №8**: Install and run `frontend`, wait for frontend to build.
   ```bash
-  $ dc up frontend
+  $ dcu frontend
   ```
 
 **Step №9**: Add entry to the `/etc/hosts`, otherwise you will not be able to authenticate properly.
@@ -87,6 +87,7 @@
     * (for more information please read `README.md` in the `docker` directory)         
 * `dc(b| build) <service>` - build service.
 * `dc(r| run) <service>` - run service.
+* `dc(u| up) <service>` - up service.
 * `dc(l| logs) <service>` - output service logs.
 * `drmc <regex>` - delete containers that much regex expression.
 * `drmi <regex>` - delete images that much regex expression.
