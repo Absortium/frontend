@@ -24,7 +24,7 @@
   
   **Step №3**: Install docker on your machine, for that go to the docker [website](https://www.docker.com). If you working on OS X do not forget that now we use old docker toolbox with docker machine. Also do not forget, that you should create `default` machine and initialize it, all information you may find on docker website.
   
-  **Step №4**: Ask mainteiner to give you `.sensetive` file.
+  **Step №4**: Ask maintainer to give you `.sensetive` file.
   
   **Step №5**: Install and run `postgres` service.
   ```bash
