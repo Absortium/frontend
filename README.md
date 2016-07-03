@@ -41,7 +41,7 @@
   $ dcr m-backend migrate
   ```
   
-**Step №8**: Install and run `frontend`, wait for frontend to build.
+**Step №8**: Install and run `frontend`.
   ```bash
   $ dcu frontend
   ```
