@@ -1,57 +1,67 @@
-Name  | Version
-------------- | -------------
-Docker-Compose | 1.6.0
-Docker | 1.10.2
 
-## Getting started contributing
-* First of all clone repository.  
+## Getting started
+#### Prerequisites
+  
+    Name  | Version 
+  --------| -------
+  docker-compose | 1.6
+  docker | 1.11
+  docker-machine | 0.6
+  
+  **Step №1**: Clone repository.  
   ```bash
   $ git clone --recursive https://github.com/absortium/deluge.git
   ```
 
-* Add env variables and aliases from `useful` directory, for that copy this in the `.bashrc` or `.zshrc`
+  **Step №2**: For simplicity I prefer use [aliases](#alias-info) which I developed for this project, on first sign it might look overwhelming, but I think it may significantly help you for developing, so add env variables and aliases from `useful` directory - copy this in the `.bashrc` or `.zshrc` (this code install project aliases every time when you instantiate terminal window):
   ```bash
     export DELUGE_PATH="YOUR_WORK_DIRECTORY_PATH"
     export DEFAULT_MODE="frontend"
     for f in $DELUGE_PATH/useful/aliases/*; do
-      . "$f"
+      source "$f"
     done  
   ```
-
-* Add entry to the `/etc/hosts`
-   * If you run docker containers on the `docker-machine`, than check your `docker-machine` ip and pass it to the `/etc/hosts`
-   ```bash
-   $ docker-machine ip
-   $ sudo bash -c `echo "absortium.com <ip>" >> /etc/hosts`
-   ```
-   * Otherwise set localhost
-   ```bash
-   $ sudo bash -c `echo "absortium.com localhost" >> /etc/hosts`
-   ```
-   
-* Open new terminal and go into docker `dev` directory, if there is no such alias than you should check - `Are aliases were preloaded?`
+  
+  **Step №3**: Install docker on your machine, for that go to the docker [website](https://www.docker.com). If you working on OS X do not forget that now we use old docker toolbox with docker machine. Also do not forget, that you should create `default` machine and initialize it, all information you may find on docker website.
+  
+  **Step №4**: Ask maintainer to give you `.sensetive` file.
+  
+  **Step №5**: Install and run `postgres` service.
   ```bash
-  $ godd
+  $ dcu -d postgres
   ```
 
-* Run `postgres` service which serve as database.
+  **Step №6**: Build `backend` service.
   ```bash
-  $ dc up -d postgres
-  ```
-* Migrate database.
+  $ dcb backend
+  ```  
+
+**Step №7**: Migrate database.
   ```bash
-  $ dc run m-backend migrate
+  $ dcr m-backend migrate
   ```
   
-* Run `frontend` and make sure that service runs without errors.
+**Step №8**: Install and run `frontend`.
   ```bash
-  $ dc up frontend
+  $ dcu frontend
   ```
 
-* Go to the `absortium.com`
+**Step №9**: Add entry to the `/etc/hosts`, otherwise you will not be able to authenticate properly. If you run docker containers on the `docker-machine` (OS X), than check your `docker-machine` ip and pass it to the `/etc/hosts`:
+ ```bash
+ $ docker-machine ip
+ $ sudo bash -c 'echo "<ip> dev.absortium.com" >> /etc/hosts'
+ ```
+ 
+ * Otherwise set `127.0.0.1`:
+ 
+ ```bash
+ $ sudo bash -c 'echo "127.0.0.1 dev.absortium.com " >> /etc/hosts'
+ ```
+   
+**Step №10**: Go to the `dev.absortium.com:3000`
     
 ## Tips
-* If you use `docker-machine` than you must download project only in user directory.
+* If you use `docker-machine` than you must download project only under `/Users/` directory.
  
 ## Services
 * `m-backend` - main backend service.
@@ -64,22 +74,24 @@ Docker | 1.10.2
 
 ## Alias info
 * `god` - go to the `DELUGE_PATH` directory.
-* `godd` - go to the `docker` dev directory (in order to run docker service)
+* `godd` - go to the `docker` directory.
 * `gods` - go to the `services` directory.
-* `gods <service>` - go to the `<service>` project directory.
-* `dcinit <mode>` - init start mode, default mode is `DEFAULT_MODE` .
+* `gods <backend|frontend|ethwallet|router|ethnode>` - go to the `service` project directory.
+* `di` - list all images.
+* `dps` - list all working containers.
+* `dcinit <unit|integration|frontend|testnet>` - init start mode, default mode is `DEFAULT_MODE` .
     * `frontend`
         * external systems like `coinbase` and `ethwallet` are mocked.
         * `postgres`, `rabbitmq`, `celery`, `router` services are required to be up in order to celery task work.
         * celery workers are working and celery tasks are executing like in real system.
-        * (NOT EXIST YET) special service `walletnotifier` is working and emulating money notification from `coinbase` and `ethwallet` 
+        * Service `notifier` is working and emulating money notification from `coinbase` and `ethwallet`.
     * (for more information please read `README.md` in the `docker` directory)         
-   
+
+* `dc` - alias for `docker-compose -f $DELUGE_PATH/docker/images/dev.yml -f $DELUGE_PATH/docker/composes/frontend.yml`.
 * `dc(b| build) <service>` - build service.
 * `dc(r| run) <service>` - run service.
+* `dc(u| up) <service>` - up service.
+* `dc(l| logs) <service>` - output service logs.
 * `drmc <regex>` - delete containers that much regex expression.
 * `drmi <regex>` - delete images that much regex expression.
-* `dc(l| logs) <service>` - output service logs.
-* `di` - list all images.
-* `dps` - list all working containers.
-* `ideluge` - init sensitive information that is needed for backend start.
+* `drmd <regex>` - delete volumes that much regex expression.
