@@ -25,14 +25,15 @@ export default function configureStore(initialState = {}, history) {
     routerMiddleware(history),
   ];
 
+  if (isDev) {
+    middlewares.push(logger);
+  }
+
   const enhancers = [
     applyMiddleware(...middlewares),
     devtools(),
   ];
 
-  if (isDev) {
-    middlewares.push(logger);
-  }
   const store = createStore(
     createReducer(),
     fromJS(initialState),

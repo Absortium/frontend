@@ -69,6 +69,8 @@ import {
 import { isTokenExpired } from "utils/jwt";
 import autobahn from "autobahn";
 import BigNumber from "bignumber.js";
+import Config from "conf";
+const conf = new Config();
 
 // All sagas to be loaded
 export default [
@@ -492,7 +494,7 @@ class AutobahnService {
     }
 
     static * setup() {
-        var wsuri = "ws://absortium.com:8080/ws";
+        var wsuri = "ws://" + conf.url + ":8080/ws";
         var connection = new autobahn.Connection({
             url: wsuri,
             realm: "realm1"
