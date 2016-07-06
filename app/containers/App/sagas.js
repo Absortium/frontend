@@ -222,7 +222,7 @@ class AccountsService {
         let amount = AccountsService.accounts[currency].amount;
 
         for (let exchange of action.exchanges) {
-            amount = amount.minus(exchange.amount);
+            amount = amount.minus(exchange.from_amount);
 
             if (exchange.status == EXCHANGE_STATUS_INIT || exchange.status == EXCHANGE_STATUS_PENDING) {
                 shouldCheck = true;
@@ -561,9 +561,13 @@ class ExchangeService {
         let data = {
             from_currency: action.from_currency,
             to_currency: action.to_currency,
-            amount: cut(action.amount, true),
             price: cut(action.price, true)
         };
+
+        if (action.from_amount)
+          data["from_amount"] = action.from_amount;
+        else if (action.to_amount)
+          data["to_amount"] = action.to_amount;
 
         try {
             const response = yield call(axios.post, "/api/exchanges/", data);

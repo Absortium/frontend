@@ -48,23 +48,24 @@ const initialState = {
     balance: null,
     address: null,
     market_rate: null,
-
+    
+    last_changed: null,
     rate: {
         value: null,
-        error: ERROR_FIELD_IS_REQUIRED
+        error: null
     },
     from_amount: {
         value: null,
-        error: ERROR_FIELD_IS_REQUIRED
+        error: null
     },
     to_amount: {
         value: null,
-        error: ERROR_FIELD_IS_REQUIRED
+        error: null
     },
 
     from_currency: null,
     to_currency: null,
-    disabled: false
+    disabled: true
 };
 
 

@@ -1,9 +1,12 @@
 import React from "react";
 import {
-    accountsReceived,
     sendExchange,
     logIn
 } from "containers/App/actions";
+import {
+  FROM_AMOUNT,
+  TO_AMOUNT
+} from "containers/ExchangeBox/constants";
 import {
     substituteRate,
     substituteFromAmount,
@@ -73,10 +76,12 @@ class ExchangeBox extends React.Component {
         let from_currency = this.props.from_currency;
         let to_currency = this.props.to_currency;
 
-        let amount = this.props.from_amount.value;
+        let from_amount = this.props.last_changed ==  FROM_AMOUNT ? this.props.from_amount.value: null;
+        let to_amount = this.props.last_changed ==  TO_AMOUNT  ? this.props.to_amount.value: null;
+
         let price = this.props.rate.value;
 
-        this.props.sendExchange(from_currency, to_currency, amount, price);
+        this.props.sendExchange(from_currency, to_currency, from_amount, to_amount, price);
     };
 
     substituteRate = () => {
@@ -210,7 +215,11 @@ mapDispatchToProps(dispatch) {
         handlerFromAmount: (event) => dispatch(changeFromAmount(event.target.value)),
         handlerToAmount: (event) => dispatch(changeToAmount(event.target.value)),
         handlerRate: (event) => dispatch(changeRate(event.target.value)),
-        sendExchange: (from_currency, to_currency, amount, price) => dispatch(sendExchange(from_currency, to_currency, amount, price)),
+        sendExchange: (from_currency,
+                       to_currency,
+                       from_amount,
+                       to_amount,
+                       price) => dispatch(sendExchange(from_currency, to_currency, from_amount, to_amount, price)),
         changeMarket: (from_currency, to_currency) => dispatch(replace("/exchange/" + from_currency + "-" + to_currency)),
         substituteRate: () => dispatch(substituteRate()),
         substituteFromAmount: () => dispatch(substituteFromAmount()),

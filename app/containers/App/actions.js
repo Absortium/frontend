@@ -156,12 +156,13 @@ export function topicUpdate(topic, data) {
     };
 }
 
-export function sendExchange(from_currency, to_currency, amount, price) {
+export function sendExchange(from_currency, to_currency, from_amount, to_amount, price) {
     return {
         type: SEND_EXCHANGE,
         from_currency,
         to_currency,
-        amount,
+        from_amount,
+        to_amount,
         price
     };
 }

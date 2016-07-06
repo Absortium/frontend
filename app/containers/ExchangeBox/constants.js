@@ -13,4 +13,5 @@ export const RATE_MAX = 500;
 export const RATE_MIN = 0.0000001;
 export const TO_AMOUNT_MIN = 0.001;
 
-
+export const FROM_AMOUNT = 'from_amount';
+export const TO_AMOUNT = 'to_amount';

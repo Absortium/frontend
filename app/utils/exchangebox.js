@@ -6,7 +6,9 @@ import {
     ERROR_TO_AMOUNT_LT_MIN,
     RATE_MAX,
     RATE_MIN,
-    TO_AMOUNT_MIN
+    TO_AMOUNT_MIN,
+    FROM_AMOUNT,
+    TO_AMOUNT
 } from "containers/ExchangeBox/constants";
 import {
     errExist,
@@ -43,6 +45,7 @@ export function setToAmount(to_amount, state, substate) {
     }
 
     substate.disabled = false;
+    substate.last_changed = TO_AMOUNT;
     return [error, substate]
 }
 export function setFromAmount(from_amount, state, substate) {
@@ -77,6 +80,7 @@ export function setFromAmount(from_amount, state, substate) {
     }
 
     substate.disabled = false;
+    substate.last_changed = FROM_AMOUNT;
     return [error, substate]
 }
 export function setRate(rate, state, substate) {

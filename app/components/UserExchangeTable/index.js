@@ -48,14 +48,11 @@ class UserExchangeTable extends React.Component {
                     showRowHover={true}
                     stripedRows={false}>
                     {exchanges.map((row, index) => {
-                        let price = new BigNumber(row.price);
-                        let amount = new BigNumber(row.amount);
-
                         return (
                             <TableRow key={row.pk}>
-                                <TableRowColumn>{normalize(amount)}</TableRowColumn>
-                                <TableRowColumn>{normalize(price)}</TableRowColumn>
-                                <TableRowColumn>{normalize(amount.times(price))}</TableRowColumn>
+                                <TableRowColumn>{normalize(row.from_amount)}</TableRowColumn>
+                                <TableRowColumn>{normalize(row.price)}</TableRowColumn>
+                                <TableRowColumn>{normalize(row.to_amount)}</TableRowColumn>
                                 <TableRowColumn>
                                     <StatusIcon status={row.status}/>
                                 </TableRowColumn>
