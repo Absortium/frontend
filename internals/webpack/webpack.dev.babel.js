@@ -4,6 +4,7 @@
 
 const path = require('path');
 const fs = require('fs');
+const process = require('process');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const logger = require('../../server/logger');

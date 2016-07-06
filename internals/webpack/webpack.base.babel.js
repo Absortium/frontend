@@ -4,7 +4,26 @@
 
 const path = require('path');
 const webpack = require('webpack');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+
+const autoBahnLoaders = () => {
+  return [
+    {
+      // Fix issue with autobahn https://github.com/crossbario/autobahn-js/issues/128
+      test: /autobahn\/package.json$/,
+      loader: 'raw-loader'
+    },
+    {
+      test: /node_modules[\\\/]auth0-lock[\\\/].*\.js$/,
+      loaders: [
+        'transform-loader/cacheable?brfs',
+        'transform-loader/cacheable?packageify'
+      ]
+    }, {
+      test: /node_modules[\\\/]auth0-lock[\\\/].*\.ejs$/,
+      loader: 'transform-loader/cacheable?ejsify'
+    }
+  ];
+};
 
 module.exports = (options) => ({
   entry: options.entry,
@@ -15,11 +34,8 @@ module.exports = (options) => ({
 
   module: {
     loaders: [
-      {
-        // Fix issue with autobahn https://github.com/crossbario/autobahn-js/issues/128
-        test: /autobahn\/package.json$/,
-        loader: 'raw-loader'
-      },
+      autoBahnLoaders(),
+
       {
         test: /\.js$/, // Transform all .js files required somewhere with Babel
         loader: 'babel',
@@ -40,75 +56,26 @@ module.exports = (options) => ({
         // So, no need for ExtractTextPlugin here.
         test: /\.css$/,
         include: /node_modules/,
-        loaders: ['style-loader', 'css-loader'],
-        exclude: /flexboxgrid/
+        loaders: options.cssLoaders
       },
 
-      {
-        test: /(\.css)$/,
-        loader: options.cssLoaders,
-        include: /flexboxgrid/
-      },
+      { test: /\.json$/, loader: 'json-loader' },
+      { test: /\.less$/, loader: "style!css!less"},
 
-      {
-        test: /node_modules[\\\/]auth0-lock[\\\/].*\.js$/,
-        loaders: [
-          'transform-loader/cacheable?brfs',
-          'transform-loader/cacheable?packageify'
-        ]
-      }, {
-        test: /node_modules[\\\/]auth0-lock[\\\/].*\.ejs$/,
-        loader: 'transform-loader/cacheable?ejsify'
-      },
+      { test: /\.(eot|svg|ttf|woff|woff2)$/, loader: 'file-loader' },
 
-      {
-        test: /\.(eot|svg|ttf|woff|woff2)$/,
-        loader: 'file-loader'
-      },
-
-      {
-        test: /\.(jpg|png|gif)$/,
-        loaders: [
+      { test: /\.(jpg|png|gif)$/, loaders: [
           'file-loader',
           'image-webpack?{progressive:true, optimizationLevel: 7, interlaced: false, pngquant:{quality: "65-90", speed: 4}}'
         ]
       },
+      { test: /\.jpe?g$|\.gif$|\.png$/i, loader: 'null-loader'},
 
-      {
-        test: /\.jpe?g$|\.gif$|\.png$|\.svg$/i,
-        loader: 'url-loader?limit=10000'
-      },
-      {
-        test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'file?name=fonts/[name].[hash].[ext]&mimetype=application/font-woff'
-      },
-      {
-        test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'file?name=fonts/[name].[hash].[ext]&mimetype=application/font-woff'
-      },
-      {
-        test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'file?name=fonts/[name].[hash].[ext]&mimetype=application/octet-stream'
-      },
-      {
-        test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'file?name=fonts/[name].[hash].[ext]'
-      },
-      {
-        test: /\.html$/,
-        loader: 'html-loader'
-      },
-      {
-        test: /\.json$/,
-        loader: 'json-loader'
-      },
-      {
-        test: /\.less$/,
-        loader: "style!css!less"
-      },
-      {
-        test: /\.(mp4|webm)$/,
-        loader: 'url-loader?limit=10000'
+      // sinon.js--aliased for enzyme--expects/requires global vars.
+      // imports-loader allows for global vars to be injected into the module.
+      // See https://github.com/webpack/webpack/issues/304
+      { test: /sinon(\\|\/)pkg(\\|\/)sinon\.js/,
+        loader: 'imports?define=>false,require=>false',
       }
 
     ],
@@ -118,8 +85,6 @@ module.exports = (options) => ({
   externals: ['ws'],
 
   plugins: options.plugins.concat([
-    new ExtractTextPlugin("styles.css"),
-    
     new webpack.ProvidePlugin({
       // make fetch available
       fetch: 'exports?self.fetch!whatwg-fetch',

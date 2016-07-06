@@ -4,6 +4,7 @@
 
 const path = require('path');
 const webpack = require('webpack');
+const process = require('process');
 const modules = [
   'app',
   'node_modules',
@@ -34,8 +35,12 @@ module.exports = {
       },
     ],
     loaders: [
-      { test: /\.json$/, loader: 'json-loader' },
-      { test: /\.css$/, loader: 'null-loader' },
+      {
+        // ================================================================================================
+        // Fix issue with autobahn https://github.com/crossbario/autobahn-js/issues/128
+        test: /autobahn\/package.json$/,
+        loader: 'raw-loader'
+      },
       {
         test: /node_modules[\\\/]auth0-lock[\\\/].*\.js$/,
         loaders: [
@@ -46,32 +51,29 @@ module.exports = {
         test: /node_modules[\\\/]auth0-lock[\\\/].*\.ejs$/,
         loader: 'transform-loader/cacheable?ejsify'
       },
-      {
-        test: /\.jpe?g$|\.gif$|\.png$|\.svg$/i,
-        loader: 'url-loader?limit=10000',
-      },
-      {
-        test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'file?name=fonts/[name].[hash].[ext]&mimetype=application/font-woff',
-      },
-      {
-        test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'file?name=fonts/[name].[hash].[ext]&mimetype=application/font-woff',
-      },
-      {
-        test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'file?name=fonts/[name].[hash].[ext]&mimetype=application/octet-stream',
-      },
-      {
-        test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'file?name=fonts/[name].[hash].[ext]',
-      },
+      // ================================================================================================
+
+      { test: /\.json$/, loader: 'json-loader' },
+      { test: /\.css$/, loader: 'null-loader' },
+      { test: /\.less$/, loader: "style!css!less" },
+      { test: /\.jpe?g$|\.gif$|\.png$|\.svg$/i, loader: 'url-loader?limit=10000' },
+
+      { test: /\.woff(\?v=\d+\.\d+\.\d+)?$/, loader: 'file?name=fonts/[name].[hash].[ext]&mimetype=application/font-woff' },
+      { test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/, loader: 'file?name=fonts/[name].[hash].[ext]&mimetype=application/font-woff' },
+      { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: 'file?name=fonts/[name].[hash].[ext]&mimetype=application/octet-stream' },
+      { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: 'file?name=fonts/[name].[hash].[ext]'},
+
       // sinon.js--aliased for enzyme--expects/requires global vars.
       // imports-loader allows for global vars to be injected into the module.
       // See https://github.com/webpack/webpack/issues/304
       {
         test: /sinon(\\|\/)pkg(\\|\/)sinon\.js/,
         loader: 'imports?define=>false,require=>false',
+      },
+      {
+        test: /\.js$/, // Transform all .js files required somewhere with Babel
+        loader: 'babel',
+        
       },
       {
         test: /\.js$/,
@@ -81,9 +83,8 @@ module.exports = {
       {
         test: /\.jpe?g$|\.gif$|\.png$/i,
         loader: 'null-loader',
-      },
-      { test: /\.less$/, loader: "style!css!less" },
-    ],
+      }
+    ]
   },
 
   plugins: [

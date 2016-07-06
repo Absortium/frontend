@@ -1,9 +1,9 @@
 // Important modules this config uses
 const path = require('path');
 const webpack = require('webpack');
+const process = require('process');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const OfflinePlugin = require('offline-plugin');
 
 // PostCSS plugins
 const cssnext = require('postcss-cssnext');
