@@ -62,7 +62,6 @@ import {
     extractCurrencies,
     sleep,
     setTimeoutGenerator,
-    cut,
     isArrayEmpty,
     include
 } from "utils/general";
@@ -561,7 +560,7 @@ class ExchangeService {
         let data = {
             from_currency: action.from_currency,
             to_currency: action.to_currency,
-            price: cut(action.price, true)
+            price: action.price
         };
 
         if (action.from_amount)

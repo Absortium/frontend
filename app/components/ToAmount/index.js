@@ -35,7 +35,7 @@ const styles = {
 class ToAmount extends React.Component {
     render() {
         let errorText = getErrorText(this.props.error);
-        let amount = !isEmpty(this.props.amount) ? this.props.amount : "";
+        let amount = !isEmpty(this.props.amount) ? representation(this.props.amount) : "";
 
         return (
             <div style={styles.div}>

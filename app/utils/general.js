@@ -25,7 +25,6 @@ import {
 import Q from "q";
 import BigNumber from "bignumber.js";
 
-const precision = 12;
 const visible = 8;
 
 export function isEmpty(value) {
@@ -40,17 +39,9 @@ export function isDirty(value) {
     return value != null
 }
 
-export function normalize(value, ceil = false) {
+export function normalize(value) {
     if (typeof value == "string") value = parseFloat(value);
-
-    if (ceil) {
-        return cutUp(value, visible).toFixed(visible);
-    }
-    else {
-        return value.toFixed(visible);
-    }
-
-
+    return value.toFixed(visible);
 }
 
 export function isValid(value) {
@@ -69,20 +60,9 @@ export function num2str(value) {
     return value + ''
 }
 
-export function cutUp(value, n) {
-    return Math.ceil(value * Math.pow(10, n)) / Math.pow(10, n);
-
-}
-export function cut(value, backend = false) {
-
-    if (backend) {
-        // cut all numbers after 10th.
-        value = cutUp(value, precision)
-    } else {
-        // cut all numbers after 8th.
-        value = value.toFixed(visible)
-    }
-
+export function cut(value) {
+    // cut all numbers after 8th.
+    value = value.toFixed(visible)
 
     // make from this string and cut the zeros
     value = parseFloat(value);
