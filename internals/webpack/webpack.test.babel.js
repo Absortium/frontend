@@ -10,6 +10,8 @@ const modules = [
   'node_modules',
 ];
 
+const fixes = require('./fixes');
+
 module.exports = {
   devtool: 'inline-source-map',
   isparta: {
@@ -35,55 +37,26 @@ module.exports = {
       },
     ],
     loaders: [
-      {
-        // ================================================================================================
-        // Fix issue with autobahn https://github.com/crossbario/autobahn-js/issues/128
-        test: /autobahn\/package.json$/,
-        loader: 'raw-loader'
-      },
-      {
-        test: /node_modules[\\\/]auth0-lock[\\\/].*\.js$/,
-        loaders: [
-          'transform-loader/cacheable?brfs',
-          'transform-loader/cacheable?packageify'
-        ]
-      }, {
-        test: /node_modules[\\\/]auth0-lock[\\\/].*\.ejs$/,
-        loader: 'transform-loader/cacheable?ejsify'
-      },
-      // ================================================================================================
+      ...fixes.autoBahnFix(),
+      ...fixes.authLockFix(),
 
       { test: /\.json$/, loader: 'json-loader' },
       { test: /\.css$/, loader: 'null-loader' },
-      { test: /\.less$/, loader: "style!css!less" },
-      { test: /\.jpe?g$|\.gif$|\.png$|\.svg$/i, loader: 'url-loader?limit=10000' },
-
-      { test: /\.woff(\?v=\d+\.\d+\.\d+)?$/, loader: 'file?name=fonts/[name].[hash].[ext]&mimetype=application/font-woff' },
-      { test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/, loader: 'file?name=fonts/[name].[hash].[ext]&mimetype=application/font-woff' },
-      { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: 'file?name=fonts/[name].[hash].[ext]&mimetype=application/octet-stream' },
-      { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: 'file?name=fonts/[name].[hash].[ext]'},
+      { test: /\.less$/, loader: "null-loader"},
 
       // sinon.js--aliased for enzyme--expects/requires global vars.
       // imports-loader allows for global vars to be injected into the module.
       // See https://github.com/webpack/webpack/issues/304
-      {
-        test: /sinon(\\|\/)pkg(\\|\/)sinon\.js/,
+      { test: /sinon(\\|\/)pkg(\\|\/)sinon\.js/,
         loader: 'imports?define=>false,require=>false',
       },
-      {
-        test: /\.js$/, // Transform all .js files required somewhere with Babel
-        loader: 'babel',
-        
-      },
-      {
-        test: /\.js$/,
+      { test: /\.js$/,
         loader: 'babel',
         exclude: [/node_modules/],
       },
-      {
-        test: /\.jpe?g$|\.gif$|\.png$/i,
+      { test: /\.jpe?g$|\.gif$|\.png$/i,
         loader: 'null-loader',
-      }
+      },
     ]
   },
 

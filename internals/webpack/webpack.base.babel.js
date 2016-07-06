@@ -4,26 +4,8 @@
 
 const path = require('path');
 const webpack = require('webpack');
+const fixes = require('./fixes');
 
-const autoBahnLoaders = () => {
-  return [
-    {
-      // Fix issue with autobahn https://github.com/crossbario/autobahn-js/issues/128
-      test: /autobahn\/package.json$/,
-      loader: 'raw-loader'
-    },
-    {
-      test: /node_modules[\\\/]auth0-lock[\\\/].*\.js$/,
-      loaders: [
-        'transform-loader/cacheable?brfs',
-        'transform-loader/cacheable?packageify'
-      ]
-    }, {
-      test: /node_modules[\\\/]auth0-lock[\\\/].*\.ejs$/,
-      loader: 'transform-loader/cacheable?ejsify'
-    }
-  ];
-};
 
 module.exports = (options) => ({
   entry: options.entry,
@@ -34,7 +16,8 @@ module.exports = (options) => ({
 
   module: {
     loaders: [
-      autoBahnLoaders(),
+      ...fixes.autoBahnFix(),
+      ...fixes.authLockFix(),
 
       {
         test: /\.js$/, // Transform all .js files required somewhere with Babel
