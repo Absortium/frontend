@@ -11,10 +11,10 @@ import {
     MARKET_INFO_RECEIVED,
     MARKET_CHANGED,
     MARKET_INFO_CHANGED,
-    EXCHANGE_CREATED,
     ERROR_FIELD_IS_REQUIRED,
     ERROR_FIELD_NOT_VALID,
     LOGGED_OUT,
+    EXCHANGE_CREATED,
     SEND_EXCHANGE
 } from "containers/App/constants";
 import {
@@ -22,6 +22,7 @@ import {
     CHANGE_RATE,
     CHANGE_TO_AMOUNT,
     ERROR_FROM_AMOUNT_GT_BALANCE,
+    ERROR_NOT_TOUCHED, 
     SUBSTITUTE_FROM_AMOUNT,
     SUBSTITUTE_RATE
 } from "./constants";
@@ -48,24 +49,25 @@ const initialState = {
     balance: null,
     address: null,
     market_rate: null,
-    
     last_changed: null,
+
     rate: {
         value: null,
-        error: null
+        error: ERROR_NOT_TOUCHED
     },
     from_amount: {
         value: null,
-        error: null
+        error: ERROR_NOT_TOUCHED
     },
     to_amount: {
         value: null,
-        error: null
+        error: ERROR_NOT_TOUCHED
     },
 
     from_currency: null,
     to_currency: null,
-    disabled: true
+
+    disabled: false
 };
 
 
@@ -206,36 +208,44 @@ function exchangeBoxReducer(state = initialState, action) {
                 balance: null,
                 address: null,
                 market_rate: null,
+                last_changed: null,
 
                 rate: {
                     value: null,
-                    error: ERROR_FIELD_IS_REQUIRED
+                    error: ERROR_NOT_TOUCHED
                 },
                 from_amount: {
                     value: null,
-                    error: ERROR_FIELD_IS_REQUIRED
+                    error: ERROR_NOT_TOUCHED
                 },
                 to_amount: {
                     value: null,
-                    error: ERROR_FIELD_IS_REQUIRED
+                    error: ERROR_NOT_TOUCHED
                 },
 
                 from_currency: action.from_currency,
-                to_currency: action.to_currency
+                to_currency: action.to_currency,
+
+                disabled: false
             });
         }
            
         case SEND_EXCHANGE:
             return updateState(state, {
-                from_amount: {
-                    value: "",
-                    error: null
-                },
-                to_amount: {
-                    value: "",
-                    error: null
-                },
                 disabled: true
+            });
+
+      case EXCHANGE_CREATED:
+            return updateState(state, {
+              from_amount: {
+                value: null,
+                error: ERROR_NOT_TOUCHED
+              },
+              to_amount: {
+                value: null,
+                error: ERROR_NOT_TOUCHED
+              },
+              disabled: false
             });
 
         case LOGGED_OUT:

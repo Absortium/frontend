@@ -9,6 +9,8 @@ export const ERROR_RATE_GT_MAX = 'app/ExchangeBox/ERROR_RATE_GT_MAX';
 export const ERROR_FROM_AMOUNT_GT_BALANCE = 'app/ExchangeBox/ERROR_FROM_AMOUNT_GT_BALANCE';
 export const ERROR_TO_AMOUNT_LT_MIN = 'app/ExchangeBox/ERROR_TO_AMOUNT_LT_MIN';
 
+export const ERROR_NOT_TOUCHED = 'app/ExchangeBox/ERROR_NOT_TOUCHED';
+
 export const RATE_MAX = 500;
 export const RATE_MIN = 0.0000001;
 export const TO_AMOUNT_MIN = 0.001;
