@@ -50,6 +50,10 @@ module.exports = (config) => {
       ['./test-bundler.js']: ['webpack', 'sourcemap'], // eslint-disable-line no-useless-computed-key
     },
 
+    mochaReporter: {
+      showDiff: true
+    },
+
     webpack: webpackConfig,
 
     // make Webpack bundle generation quiet
