@@ -273,8 +273,8 @@ function exchangeBoxReducer(state = initialState, action) {
         {
             let substate = {};
             let error = null;
-            let price = new BigNumber(1).dividedBy(parseFloat(action.price));
-            let amount = new BigNumber(action.amount);
+            let price = action.price;
+            let amount = action.amount;
             let newState = state;
 
             [error, substate] = setRate(price, newState, substate);

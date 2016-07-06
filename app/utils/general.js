@@ -62,7 +62,7 @@ export function num2str(value) {
 
 export function cut(value) {
     // cut all numbers after 8th.
-    value = value.toFixed(visible)
+    value = value.toFixed(visible);
 
     // make from this string and cut the zeros
     value = parseFloat(value);

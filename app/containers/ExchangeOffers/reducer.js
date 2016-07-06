@@ -9,10 +9,8 @@ import {
     MARKET_CHANGED,
     OFFERS_CHANGED
 } from "containers/App/constants";
-import {
-    normalize
-} from "utils/general";
 import update from "react-addons-update";
+import BigNumber from "bignumber.js"
 
 const initialState = {
     offers: {},
@@ -24,8 +22,11 @@ const initialState = {
 function transform(offers) {
     let data = {};
     for (let offer of offers) {
-        let price = offer.price;
-        data[price] = offer.amount;
+        let price = new BigNumber(1).dividedBy(parseFloat(offer.price));
+        data[price] = {
+          "from_amount" : offer.amount,
+          "to_amount" : new BigNumber(offer.amount).dividedBy(price)
+        }
     }
 
     return data;

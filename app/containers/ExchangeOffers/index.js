@@ -53,7 +53,7 @@ class ExchangeOffers extends React.Component {
 
 
             let price = Object.keys(this.props.offers)[id];
-            let amount = this.props.offers[price];
+            let amount = this.props.offers[price].from_amount;
 
             this.props.substituteOffer(amount, price)
         }
@@ -61,8 +61,8 @@ class ExchangeOffers extends React.Component {
 
     render() {
         let subHeader = "Opposite Exchanges";
-        let priceHeader = this.props.to_currency.toUpperCase() + " Price (" + this.props.from_currency.toUpperCase() + ")";
         let fromAmountHeader = "Give (" + this.props.to_currency.toUpperCase() + ")";
+        let priceHeader = this.props.from_currency.toUpperCase() + " Price (" + this.props.to_currency.toUpperCase()+ ")";
         let toAmountHeader = "Get (" + this.props.from_currency.toUpperCase() + ")";
 
         return (
@@ -89,7 +89,6 @@ class ExchangeOffers extends React.Component {
                                         <TableHeaderColumn>{fromAmountHeader}</TableHeaderColumn>
                                         <TableHeaderColumn>{priceHeader}</TableHeaderColumn>
                                         <TableHeaderColumn>{toAmountHeader}</TableHeaderColumn>
-
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody
@@ -98,15 +97,15 @@ class ExchangeOffers extends React.Component {
                                     showRowHover={true}
                                     stripedRows={false}>
                                     { Object.keys(this.props.offers).map(function (price) {
-                                        let amount = this.props.offers[price];
+                                        let from_amount = this.props.offers[price].from_amount;
+                                        let to_amount = this.props.offers[price].to_amount;
+
                                         return (
                                             <TableRow hoverable={true}
                                                       key={price}>
-                                                <TableRowColumn>{normalize(amount)}</TableRowColumn>
+                                                <TableRowColumn>{normalize(from_amount)}</TableRowColumn>
                                                 <TableRowColumn>{normalize(price)}</TableRowColumn>
-                                                <TableRowColumn>{normalize(amount * price)}</TableRowColumn>
-
-
+                                                <TableRowColumn>{normalize(to_amount)}</TableRowColumn>
                                             </TableRow>
                                         )
                                     }, this)}
