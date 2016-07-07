@@ -1,76 +1,116 @@
 import { expect } from "chai";
-import {
-    shallow,
-    mount
-} from "enzyme";
 import { copy } from "utils/general";
 import React from "react";
 import {
-    offerReceived,
-    offersChanged
+  offerReceived,
+  offersChanged
 } from "containers/App/actions";
 import exchangeOffersReducer from "../reducer";
+import { pprint } from "../../../utils/general";
 
-let offers = [
-    { price: 1, amount: 2 },
-    { price: 2, amount: 2 }
-];
-
-
-let update = [
-    { price: 1, amount: 3 }
-];
-
-function checkPurity() {
-    for (let offer of offers) {
-        expect(offer).to.have.property("price");
-        expect(offer).to.have.property("amount").and.equal(2);
-    }
+function transform(offer) {
+    let data = {};
+    for (let key in offer) data[key] = parseFloat(offer[key] + "")
+    return data
 }
 
 describe("ExchangeOffersReducer", () => {
-    let state;
-    let expected;
+  let state;
+  let expected;
 
-    beforeEach(() => {
-        state = copy(getInitState());
-        expected = copy(getInitState());
+  beforeEach(() => {
+    state = copy(getInitState());
+    expected = copy(getInitState());
+  });
+
+  it("check action OFFERS_RECEIVED", () => {
+    const offers = [{ price: 1, amount: 2 }];
+
+    state = exchangeOffersReducer(state, offerReceived(offers));
+
+    expect(state).to.have.property("offers").and.not.equal(null);
+    expect(state).to.have.property("offersLoaded").and.equal(true);
+    expect(transform(state.offers[0])).to.deep.equal({
+        price: 1,
+        from_amount: 2,
+        to_amount: 2
+    });
+  });
+
+  it("check action OFFERS_CHANGED", () => {
+    const offers = [{ price: 1, amount: 2 }];
+    const update = [{ price: 1, amount: 3 }];
+
+    state = exchangeOffersReducer(state, offerReceived(offers));
+    state = exchangeOffersReducer(state, offersChanged(update));
+
+    expect(state).to.have.property("offers").and.not.equal(null);
+    expect(state).to.have.property("offersLoaded").and.equal(true);
+
+    expect(transform(state.offers[0])).to.deep.equal({
+      price: 1,
+      from_amount: 3,
+      to_amount: 3
+    });
+  });
+
+  it("check add new offer", () => {
+    const offers = [{ price: 1, amount: 2 }];
+    const update = [{ price: 2, amount: 2 }];
+
+    state = exchangeOffersReducer(state, offerReceived(offers));
+    state = exchangeOffersReducer(state, offersChanged(update));
+
+    expect(state).to.have.property("offers").and.not.equal(null);
+    expect(state).to.have.property("offersLoaded").and.equal(true);
+
+    expect(transform(state.offers[0])).to.deep.equal({
+      price: 1,
+      from_amount: 2,
+      to_amount: 2
     });
 
-    it("OFFERS_RECEIVED", () => {
-        state = exchangeOffersReducer(state, offerReceived(offers));
-
-        expect(state).to.have.property("offers").and.not.equal(null);
-        expect(state).to.have.property("offersLoaded").and.equal(true);
-
-
-        for (let price in state.offers) {
-            let amount = state.offers[price];
-            expect(amount).equal(2);
-        }
-
-        checkPurity();
+    expect(transform(state.offers[1])).to.deep.equal({
+      price: 0.5,
+      from_amount: 2,
+      to_amount: 4
     });
+  });
 
-    it("OFFERS_CHANGED", () => {
-        state = exchangeOffersReducer(state, offerReceived(offers));
-        state = exchangeOffersReducer(state, offersChanged(update));
+  it("check offer sorting", () => {
+    const offers = [{ price: 1, amount: 2 }];
+    const update = [
+      { price: 2, amount: 2 },
+      { price: 4, amount: 2 }
+    ];
 
-        expect(state).to.have.property("offers").and.not.equal(null);
-        expect(state).to.have.property("offersLoaded").and.equal(true);
 
-        for (let price in state.offers) {
-            let amount = state.offers[price];
+    state = exchangeOffersReducer(state, offerReceived(offers));
+    state = exchangeOffersReducer(state, offersChanged(update));
 
-            if (price == 1) {
-                expect(amount).equal(3);
-            } else {
-                expect(amount).equal(2);
-            }
-        }
-    });
+    expect(state).to.have.property("offers").and.not.equal(null);
+    expect(state).to.have.property("offersLoaded").and.equal(true);
+
+    expect(transform(state.offers[0]).price).and.equal(1);
+    expect(transform(state.offers[1]).price).and.equal(0.5);
+    expect(transform(state.offers[2]).price).and.equal(0.25);
+  });
+
+  it("check delete offer", () => {
+    const offers = [{ price: 1, amount: 2 }];
+    const update = [{ price: 1, amount: 0 }];
+
+
+    state = exchangeOffersReducer(state, offerReceived(offers));
+    state = exchangeOffersReducer(state, offersChanged(update));
+
+    expect(state).to.have.property("offers").and.not.equal(null);
+    expect(state).to.have.property("offersLoaded").and.equal(true);
+
+    expect(state.offers).and.deep.equal([]);
+  });
 });
 
 function getInitState() {
-    return exchangeOffersReducer(undefined, {})
+  return exchangeOffersReducer(undefined, {})
 }
