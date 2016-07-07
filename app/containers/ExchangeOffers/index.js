@@ -96,16 +96,13 @@ class ExchangeOffers extends React.Component {
                                     deselectOnClickaway={true}
                                     showRowHover={true}
                                     stripedRows={false}>
-                                    { Object.keys(this.props.offers).map(function (price) {
-                                        let from_amount = this.props.offers[price].from_amount;
-                                        let to_amount = this.props.offers[price].to_amount;
-
+                                    { this.props.offers.map(function (offer) {
                                         return (
                                             <TableRow hoverable={true}
-                                                      key={price}>
-                                                <TableRowColumn>{normalize(from_amount)}</TableRowColumn>
-                                                <TableRowColumn>{normalize(price)}</TableRowColumn>
-                                                <TableRowColumn>{normalize(to_amount)}</TableRowColumn>
+                                                      key={offer.price}>
+                                                <TableRowColumn>{normalize(offer.from_amount)}</TableRowColumn>
+                                                <TableRowColumn>{normalize(offer.price)}</TableRowColumn>
+                                                <TableRowColumn>{normalize(offer.to_amount)}</TableRowColumn>
                                             </TableRow>
                                         )
                                     }, this)}
