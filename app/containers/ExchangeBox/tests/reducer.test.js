@@ -84,8 +84,8 @@ describe("ExchangeBoxReducer", () => {
     [state, expected] = preinit(state, expected);
 
     state = exchageBoxReducer(state, changeFromAmount("0"));
-    expected["from_amount"] = genParam("0", null);
-    expected["to_amount"] = genParam("0", ERROR_TO_AMOUNT_LT_MIN);
+    expected["amount"] = genParam("0", null);
+    expected["total"] = genParam("0", ERROR_TO_AMOUNT_LT_MIN);
   });
 
   it("calculation #2", () => {
@@ -93,7 +93,7 @@ describe("ExchangeBoxReducer", () => {
 
     state = exchageBoxReducer(state, changeRate(""));
     expected["rate"] = genParam("", ERROR_FIELD_IS_REQUIRED);
-    expected["to_amount"] = genParam("", ERROR_FIELD_IS_REQUIRED);
+    expected["total"] = genParam("", ERROR_FIELD_IS_REQUIRED);
   });
 
   it("calculation #3", () => {
@@ -103,7 +103,7 @@ describe("ExchangeBoxReducer", () => {
     state = exchageBoxReducer(state, changeRate("0"));
 
     expected["rate"] = genParam("0", ERROR_RATE_LT_MIN);
-    expected["to_amount"] = genParam("", ERROR_FIELD_IS_REQUIRED);
+    expected["total"] = genParam("", ERROR_FIELD_IS_REQUIRED);
   });
 
   it("calculation #7", () => {
@@ -114,7 +114,7 @@ describe("ExchangeBoxReducer", () => {
     state = exchageBoxReducer(state, changeRate("0."));
 
     expected["rate"] = genParam("0.", ERROR_RATE_LT_MIN);
-    expected["to_amount"] = genParam("", ERROR_FIELD_IS_REQUIRED);
+    expected["total"] = genParam("", ERROR_FIELD_IS_REQUIRED);
   });
 
   it("calculation #8", () => {
@@ -126,7 +126,7 @@ describe("ExchangeBoxReducer", () => {
     state = exchageBoxReducer(state, changeRate("0.0"));
 
     expected["rate"] = genParam("0.0", ERROR_RATE_LT_MIN);
-    expected["to_amount"] = genParam("", ERROR_FIELD_IS_REQUIRED);
+    expected["total"] = genParam("", ERROR_FIELD_IS_REQUIRED);
   });
 
   it("calculation #9", () => {
@@ -138,7 +138,7 @@ describe("ExchangeBoxReducer", () => {
     state = exchageBoxReducer(state, changeRate("0.1"));
 
     expected["rate"] = genParam("0.1", null);
-    expected["to_amount"] = genParam("0.4", null);
+    expected["total"] = genParam("0.4", null);
   });
 
   it("calculation #10", () => {
@@ -164,8 +164,8 @@ describe("ExchangeBoxReducer", () => {
 
     state = exchageBoxReducer(state, changeToAmount(""));
 
-    expected["to_amount"] = genParam("", ERROR_FIELD_IS_REQUIRED);
-    expected["from_amount"] = genParam("", ERROR_FIELD_IS_REQUIRED);
+    expected["total"] = genParam("", ERROR_FIELD_IS_REQUIRED);
+    expected["amount"] = genParam("", ERROR_FIELD_IS_REQUIRED);
   });
 
   it("calculation #14", () => {
@@ -173,8 +173,8 @@ describe("ExchangeBoxReducer", () => {
 
     state = exchageBoxReducer(state, changeFromAmount(""));
 
-    expected["from_amount"] = genParam("", ERROR_FIELD_IS_REQUIRED);
-    expected["to_amount"] = genParam("", ERROR_FIELD_IS_REQUIRED);
+    expected["amount"] = genParam("", ERROR_FIELD_IS_REQUIRED);
+    expected["total"] = genParam("", ERROR_FIELD_IS_REQUIRED);
   });
 
   it("calculation #15", () => {
@@ -187,7 +187,7 @@ describe("ExchangeBoxReducer", () => {
     state = exchageBoxReducer(state, changeRate("11111"));
 
     expected["rate"] = genParam("11111", ERROR_RATE_GT_MAX);
-    expected["to_amount"] = genParam("444", null);
+    expected["total"] = genParam("444", null);
   });
 
   it("calculation #16", () => {
@@ -201,7 +201,7 @@ describe("ExchangeBoxReducer", () => {
     state = exchageBoxReducer(state, changeRate("0.0001"));
 
     expected["rate"] = genParam("0.0001", null);
-    expected["to_amount"] = genParam("0.0004", ERROR_TO_AMOUNT_LT_MIN);
+    expected["total"] = genParam("0.0004", ERROR_TO_AMOUNT_LT_MIN);
   });
 
   it("calculation #17", () => {
@@ -210,11 +210,11 @@ describe("ExchangeBoxReducer", () => {
     state = exchageBoxReducer(state, changeToAmount(""));
     state = exchageBoxReducer(state, changeToAmount("1"));
     state = exchageBoxReducer(state, changeToAmount("10"));
-    expected["last_changed"] = "to_amount";
+    expected["last_changed"] = "total";
 
 
-    expected["to_amount"] = genParam("10", null);
-    expected["from_amount"] = genParam("10", ERROR_FROM_AMOUNT_GT_BALANCE);
+    expected["total"] = genParam("10", null);
+    expected["amount"] = genParam("10", ERROR_FROM_AMOUNT_GT_BALANCE);
   });
 
   it("calculation #18", () => {
@@ -222,10 +222,10 @@ describe("ExchangeBoxReducer", () => {
 
     state = exchageBoxReducer(state, changeToAmount(""));
     state = exchageBoxReducer(state, changeToAmount("1"));
-    expected["last_changed"] = "to_amount";
+    expected["last_changed"] = "total";
 
-    expected["to_amount"] = genParam("1", null);
-    expected["from_amount"] = genParam("1", null);
+    expected["total"] = genParam("1", null);
+    expected["amount"] = genParam("1", null);
   });
 
   it("calculation #19", () => {
@@ -233,7 +233,7 @@ describe("ExchangeBoxReducer", () => {
 
     state = exchageBoxReducer(state, changeToAmount(""));
     state = exchageBoxReducer(state, changeToAmount("4"));
-    expected["last_changed"] = "to_amount";
+    expected["last_changed"] = "total";
   });
 
   it("calculation #20", () => {
@@ -242,10 +242,10 @@ describe("ExchangeBoxReducer", () => {
     state = exchageBoxReducer(state, changeFromAmount(""));
     state = exchageBoxReducer(state, changeFromAmount("-"));
     state = exchageBoxReducer(state, changeFromAmount("-4"));
-    expected["last_changed"] = "from_amount";
+    expected["last_changed"] = "amount";
 
-    expected["from_amount"] = genParam("-4", ERROR_FIELD_LT_ZERO);
-    expected["to_amount"] = genParam("", ERROR_FIELD_IS_REQUIRED);
+    expected["amount"] = genParam("-4", ERROR_FIELD_LT_ZERO);
+    expected["total"] = genParam("", ERROR_FIELD_IS_REQUIRED);
   });
 
   it("calculation #21", () => {
@@ -253,11 +253,11 @@ describe("ExchangeBoxReducer", () => {
 
     state = exchageBoxReducer(state, changeRate("14"));
     state = exchageBoxReducer(state, changeToAmount("1"));
-    expected["last_changed"] = "to_amount";
+    expected["last_changed"] = "total";
 
-    expected["from_amount"] = genParam("0.07142857142857142857", null);
+    expected["amount"] = genParam("0.07142857142857142857", null);
     expected["rate"] = genParam("14", null);
-    expected["to_amount"] = genParam("1", null);
+    expected["total"] = genParam("1", null);
   });
 });
 
@@ -283,8 +283,8 @@ function testAccountLoaded(state, expected, isFirst = true) {
   expected["isAccountExist"] = true;
 
   if (isFirst) {
-    expected["from_amount"] = genParam("4", null);
-    expected["last_changed"] = "from_amount";
+    expected["amount"] = genParam("4", null);
+    expected["last_changed"] = "amount";
   }
 
   return [state, expected]
@@ -299,7 +299,7 @@ function testMarketInfoReceived(state, expected, isFirst = true) {
     expected["rate"] = genParam("1", null);
 
     if (expected["isAccountLoaded"]) {
-      expected["to_amount"] = genParam("4", null);
+      expected["total"] = genParam("4", null);
     }
   }
 

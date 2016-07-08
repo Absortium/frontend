@@ -88,7 +88,7 @@ const mapStateToProps = selectMarketInfo();
 
 function mapDispatchToProps(dispatch) {
     return {
-        changeMarket: (from_currency, to_currency) => dispatch(replace("/exchange/" + from_currency + "-" + to_currency)),
+        changeMarket: (from_currency, to_currency) => dispatch(replace("/order/" + from_currency + "-" + to_currency)),
         dispatch,
     };
 }

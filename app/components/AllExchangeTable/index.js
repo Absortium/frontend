@@ -47,9 +47,9 @@ class AllExchangeTable extends React.Component {
                     {exchanges.map((row, index) => {
                             return (
                                 <TableRow key={row.pk}>
-                                    <TableRowColumn>{normalize(row.from_amount)}</TableRowColumn>
+                                    <TableRowColumn>{normalize(row.amount)}</TableRowColumn>
                                     <TableRowColumn>{normalize(row.price)}</TableRowColumn>
-                                    <TableRowColumn>{normalize(row.to_amount)}</TableRowColumn>
+                                    <TableRowColumn>{normalize(row.total)}</TableRowColumn>
                                 </TableRow>
                             )
                         }

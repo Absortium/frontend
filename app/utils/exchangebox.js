@@ -29,48 +29,47 @@ export function setToAmount(to_amount, state, substate) {
 
             rate = new BigNumber(rate);
 
-            let from_amount = to_amount.dividedBy(rate);
-            let notEnoughMoney = isAccountExist && from_amount.greaterThan(state.balance);
+            let amount = to_amount.dividedBy(rate);
+            let notEnoughMoney = isAccountExist && amount.greaterThan(state.balance);
 
             if (notEnoughMoney) {
                 error = ERROR_FROM_AMOUNT_GT_BALANCE;
-            } else if (from_amount.lessThan(0)) {
+            } else if (amount.lessThan(0)) {
                 error = ERROR_FIELD_LT_ZERO;
             }
 
-            substate.from_amount = genParam(from_amount, error);
+            substate.amount = genParam(amount, error);
         }
     } else {
         error = ERROR_TO_AMOUNT_LT_MIN;
     }
-
-    substate.disabled = false;
+  
     substate.last_changed = TO_AMOUNT;
     return [error, substate]
 }
-export function setFromAmount(from_amount, state, substate) {
+export function setFromAmount(amount, state, substate) {
 
     let error = null;
     let rate = state.rate.value;
 
-    from_amount = new BigNumber(from_amount);
+    amount = new BigNumber(amount);
 
-    if (from_amount.greaterThanOrEqualTo(0)) {
+    if (amount.greaterThanOrEqualTo(0)) {
 
-        let enoughMoney = !(state.isAccountExist && from_amount.greaterThan(state.balance));
+        let enoughMoney = !(state.isAccountExist && amount.greaterThan(state.balance));
 
         if (enoughMoney) {
             if (!errExist(state.rate.error)) {
                 let error = null;
                 rate = new BigNumber(rate);
 
-                let to_amount = from_amount.times(rate);
+                let to_amount = amount.times(rate);
 
                 if (to_amount.lessThan(TO_AMOUNT_MIN)) {
                     error = ERROR_TO_AMOUNT_LT_MIN
                 }
 
-                substate.to_amount = genParam(to_amount, error);
+                substate.total = genParam(to_amount, error);
             }
         } else {
             error = ERROR_FROM_AMOUNT_GT_BALANCE
@@ -78,15 +77,14 @@ export function setFromAmount(from_amount, state, substate) {
     } else {
         error = ERROR_FIELD_LT_ZERO
     }
-
-    substate.disabled = false;
+  
     substate.last_changed = FROM_AMOUNT;
     return [error, substate]
 }
 export function setRate(rate, state, substate) {
     let error = null;
-    let to_amount = state.to_amount.value;
-    let from_amount = state.from_amount.value;
+    let to_amount = state.total.value;
+    let amount = state.amount.value;
     let isAccountExist = state.isAccountExist;
 
     rate = new BigNumber(rate);
@@ -95,33 +93,33 @@ export function setRate(rate, state, substate) {
 
         if (rate.greaterThanOrEqualTo(RATE_MIN)) {
 
-            if (!errExist(state.from_amount.error)) {
+            if (!errExist(state.amount.error)) {
                 let error = null;
 
-                from_amount = new BigNumber(from_amount);
-                to_amount = rate.times(from_amount);
+                amount = new BigNumber(amount);
+                to_amount = rate.times(amount);
 
                 if (to_amount.lessThan(TO_AMOUNT_MIN)) {
                     error = ERROR_TO_AMOUNT_LT_MIN;
                 }
 
-                substate.to_amount = genParam(to_amount, error);
+                substate.total = genParam(to_amount, error);
 
-            } else if (!errExist(state.to_amount.error)) {
+            } else if (!errExist(state.total.error)) {
                 let error = null;
 
                 to_amount = new BigNumber(to_amount);
-                from_amount = to_amount.divideBy(rate);
+                amount = to_amount.divideBy(rate);
 
-                let enoughMoney = !(isAccountExist && from_amount.greaterThan(state.balance));
+                let enoughMoney = !(isAccountExist && amount.greaterThan(state.balance));
 
                 if (!enoughMoney) {
                     error = ERROR_FROM_AMOUNT_GT_BALANCE;
-                } else if (from_amount.lessthan(0)) {
+                } else if (amount.lessThan(0)) {
                     error = ERROR_FIELD_LT_ZERO;
                 }
 
-                substate.from_amount = genParam(from_amount, error);
+                substate.amount = genParam(amount, error);
             }
         } else {
             error = ERROR_RATE_LT_MIN
@@ -129,7 +127,6 @@ export function setRate(rate, state, substate) {
     } else {
         error = ERROR_RATE_GT_MAX
     }
-
-    substate.disabled = false;
+  
     return [error, substate]
 }

@@ -14,8 +14,8 @@ describe("general", () => {
             expect(extractCurrencies(s), null);
         });
 
-        it("s => '/exchange/btc-eth'", () => {
-            let s = "/exchange/btc-eth";
+        it("s => '/order/btc-eth'", () => {
+            let s = "/order/btc-eth";
             expect(extractCurrencies(s)[1], 'btc');
             expect(extractCurrencies(s)[2], 'eth');
         });

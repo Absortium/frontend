@@ -15,7 +15,7 @@ export default function createRoutes(store) {
     
     return [
         {
-            path: '/exchange/:from_currency-:to_currency',
+            path: '/order/:from_currency-:to_currency',
             name: 'exchange',
             getComponent(nextState, cb) {
                 const importModules = Promise.all([

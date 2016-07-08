@@ -28,7 +28,7 @@ function clean(offers) {
   for (var i = 0, len = offers.length; i < len; i++) {
     let offer = offers[i];
 
-    if (offer.from_amount.isZero()) {
+    if (offer.amount.isZero()) {
       offers.splice(i, 1);
     }
   }
@@ -53,13 +53,13 @@ function transform(offers) {
   let data = [];
 
   for (let offer of offers) {
-    let price = new BigNumber(1).dividedBy(parseFloat(offer.price));
-    let from_amount = new BigNumber(offer.amount);
-    let to_amount = from_amount.dividedBy(price);
+    let price = new BigNumber(offer.price);
+    let amount = new BigNumber(offer.amount);
+    let to_amount = amount.times(price);
 
     data.push({
       price: price,
-      from_amount: from_amount,
+      amount: amount,
       to_amount: to_amount
     });
   }

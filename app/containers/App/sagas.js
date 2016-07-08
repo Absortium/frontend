@@ -1,69 +1,69 @@
 import {
-    take,
-    call,
-    put,
-    select,
-    cps,
-    fork
+  take,
+  call,
+  put,
+  select,
+  cps,
+  fork
 } from "redux-saga/effects";
 import {
-    takeEvery,
-    takeLatest
+  takeEvery,
+  takeLatest
 } from "redux-saga";
 import {
-    loggedOut,
-    loggedIn,
-    logOut,
-    accountReceived,
-    accountsEmpty,
-    accountUpdated,
-    marketInfoReceived,
-    marketChanged,
-    offerReceived,
-    offersChanged,
-    subscribeOnTopic,
-    unsubscribeFromTopic,
-    subscribeSuccess,
-    subscribeFailed,
-    topicUpdate,
-    marketInfoChanged,
-    exchangeCreated,
-    withdrawalCreated,
-    userExchangesHistoryReceived,
-    exchangesHistoryReceived,
-    exchangesHistoryChanged,
-    depositArrived
+  loggedOut,
+  loggedIn,
+  logOut,
+  accountReceived,
+  accountsEmpty,
+  accountUpdated,
+  marketInfoReceived,
+  marketChanged,
+  offerReceived,
+  offersChanged,
+  subscribeOnTopic,
+  unsubscribeFromTopic,
+  subscribeSuccess,
+  subscribeFailed,
+  topicUpdate,
+  marketInfoChanged,
+  exchangeCreated,
+  withdrawalCreated,
+  userExchangesHistoryReceived,
+  exchangesHistoryReceived,
+  exchangesHistoryChanged,
+  depositArrived
 } from "./actions";
 import {
-    LOG_IN,
-    LOG_OUT,
-    LOGGED_IN,
-    LOGGED_OUT,
-    MARKET_CHANGED,
-    TOPIC_SUBSCRIBE,
-    TOPIC_UNSUBSCRIBE,
-    TOPIC_SUBSCRIBE_FAILED,
-    TOPIC_UPDATE,
-    EXCHANGE_CREATED,
-    EXCHANGE_STATUS_INIT,
-    EXCHANGE_STATUS_PENDING,
-    WITHDRAWAL_CREATED,
-    SEND_EXCHANGE,
-    SEND_WITHDRAWAL,
-    ACCOUNTS_EMPTY,
-    ACCOUNT_RECEIVED,
-    DEPOSIT_ARRIVED
+  LOG_IN,
+  LOG_OUT,
+  LOGGED_IN,
+  LOGGED_OUT,
+  MARKET_CHANGED,
+  TOPIC_SUBSCRIBE,
+  TOPIC_UNSUBSCRIBE,
+  TOPIC_SUBSCRIBE_FAILED,
+  TOPIC_UPDATE,
+  EXCHANGE_CREATED,
+  EXCHANGE_STATUS_INIT,
+  EXCHANGE_STATUS_PENDING,
+  WITHDRAWAL_CREATED,
+  SEND_EXCHANGE,
+  SEND_WITHDRAWAL,
+  ACCOUNTS_EMPTY,
+  ACCOUNT_RECEIVED,
+  DEPOSIT_ARRIVED
 } from "./constants";
 import { LOCATION_CHANGE } from "react-router-redux";
 import axios from "axios";
 import { toastr } from "react-redux-toastr";
 import Auth0Lock from "auth0-lock";
 import {
-    extractCurrencies,
-    sleep,
-    setTimeoutGenerator,
-    isArrayEmpty,
-    include
+  extractCurrencies,
+  sleep,
+  setTimeoutGenerator,
+  isArrayEmpty,
+  include
 } from "utils/general";
 import { isTokenExpired } from "utils/jwt";
 import autobahn from "autobahn";
@@ -73,26 +73,26 @@ const conf = new Config();
 
 // All sagas to be loaded
 export default [
-    defaultSaga
+  defaultSaga
 ];
 
 
 // Individual exports for testing
 export function* defaultSaga() {
 
-    // Be careful the order of services is matter!
-    yield [
-        DepositService.setup(),
-        MarketInfoService.setup(),
-        HistoryService.setup(),
-        RouteService.setup(),
-        OfferService.setup(),
-        AutobahnService.setup(),
-        ExchangeService.setup(),
-        WithdrawalService.setup(),
-        AccountsService.setup(),
-        AuthService.setup()
-    ]
+  // Be careful the order of services is matter!
+  yield [
+    DepositService.setup(),
+    MarketInfoService.setup(),
+    HistoryService.setup(),
+    RouteService.setup(),
+    OfferService.setup(),
+    AutobahnService.setup(),
+    ExchangeService.setup(),
+    WithdrawalService.setup(),
+    AccountsService.setup(),
+    AuthService.setup()
+  ]
 }
 
 /*
@@ -107,639 +107,638 @@ export function* defaultSaga() {
  - LOGGED_OUT
  */
 class AuthService {
-    static lock = null;
-    static interceptor = null;
+  static lock = null;
+  static interceptor = null;
 
-    static * checkToken() {
-        let token = AuthService.getToken();
+  static * checkToken() {
+    let token = AuthService.getToken();
 
-        if (token != null) {
-            if (isTokenExpired(token)) {
-                yield put(logOut());
-            } else {
-                AuthService.setupIntercept(token);
-                let profile = AuthService.getProfile();
-                yield put(loggedIn(token, profile));
+    if (token != null) {
+      if (isTokenExpired(token)) {
+        yield put(logOut());
+      } else {
+        AuthService.setupIntercept(token);
+        let profile = AuthService.getProfile();
+        yield put(loggedIn(token, profile));
 
-                setTimeoutGenerator(AuthService.checkToken, 1000 * 60);
-            }
-        }
-
-        return true
+        setTimeoutGenerator(AuthService.checkToken, 1000 * 60);
+      }
     }
 
-    /*
-     This method was designed because we encounter the problem of yield in callback,
-     so I wrapped lock show method in promise and use it with "call" method.
-     */
-    static show(...args) {
-        return new Promise((resolve, reject) => {
-            AuthService.lock.show(...args, (err, profile, token) => err ? reject(err) : resolve([profile, token]));
-        })
+    return true
+  }
+
+  /*
+   This method was designed because we encounter the problem of yield in callback,
+   so I wrapped lock show method in promise and use it with "call" method.
+   */
+  static show(...args) {
+    return new Promise((resolve, reject) => {
+      AuthService.lock.show(...args, (err, profile, token) => err ? reject(err) : resolve([profile, token]));
+    })
+  }
+
+  static getToken() {
+    return localStorage.getItem("token");
+  }
+
+  static getProfile() {
+    return JSON.parse(localStorage.getItem("profile"));
+  }
+
+
+  static setupIntercept(token) {
+    AuthService.interceptor = axios.interceptors.request.use(function (config) {
+      config.headers.Authorization = "JWT " + token;
+      return config;
+    });
+  }
+
+  static *handlerLogIn() {
+    var options = {
+      authParams: {
+        scope: "openid email",
+        icon: "https://www.graphicsprings.com/filestorage/stencils/697fc3874552b02da120eed6119e4b98.svg"
+      }
+    };
+    try {
+      const [profile, token] = yield call(AuthService.show, options);
+      AuthService.setupIntercept(token);
+      localStorage.setItem("token", token);
+      localStorage.setItem("profile", JSON.stringify(profile));
+      yield put(loggedIn(token, profile));
+    } catch (e) {
+      console.log("Error signing in", e);
     }
+  }
 
-    static getToken() {
-        return localStorage.getItem("token");
-    }
+  static *handlerLogOut() {
+    axios.interceptors.request.eject(AuthService.interceptor);
+    localStorage.removeItem("token");
+    localStorage.removeItem("profile");
+    yield put(loggedOut());
+  }
 
-    static getProfile() {
-        return JSON.parse(localStorage.getItem("profile"));
-    }
+  static *setup() {
+    AuthService.lock = new Auth0Lock("JmIrPzSo0nixk13ohk8KeQC2OZ7LByRI", "absortium.auth0.com");
 
+    yield AuthService.checkToken();
 
-    static setupIntercept(token) {
-        AuthService.interceptor = axios.interceptors.request.use(function (config) {
-            config.headers.Authorization = "JWT " + token;
-            return config;
-        });
-    }
-
-    static *handlerLogIn() {
-        var options = {
-            authParams: {
-                scope: "openid email",
-                icon: "https://www.graphicsprings.com/filestorage/stencils/697fc3874552b02da120eed6119e4b98.svg"
-            }
-        };
-        try {
-            const [profile, token] = yield call(AuthService.show, options);
-            AuthService.setupIntercept(token);
-            localStorage.setItem("token", token);
-            localStorage.setItem("profile", JSON.stringify(profile));
-            yield put(loggedIn(token, profile));
-        } catch (e) {
-            console.log("Error signing in", e);
-        }
-    }
-
-    static *handlerLogOut() {
-        axios.interceptors.request.eject(AuthService.interceptor);
-        localStorage.removeItem("token");
-        localStorage.removeItem("profile");
-        yield put(loggedOut());
-    }
-
-    static *setup() {
-        AuthService.lock = new Auth0Lock("JmIrPzSo0nixk13ohk8KeQC2OZ7LByRI", "absortium.auth0.com");
-
-        yield AuthService.checkToken();
-
-        yield [
-            takeEvery(LOG_OUT, AuthService.handlerLogOut),
-            takeEvery(LOG_IN, AuthService.handlerLogIn)
-        ]
-    }
+    yield [
+      takeEvery(LOG_OUT, AuthService.handlerLogOut),
+      takeEvery(LOG_IN, AuthService.handlerLogIn)
+    ]
+  }
 }
 
 class AccountsService {
-    static isAuthenticated = false;
-    static isMarketInit = false;
-    static currency = null;
-    static accounts = null;
+  static isAuthenticated = false;
+  static isMarketInit = false;
+  static currency = null;
+  static accounts = null;
 
-    static *handlerLoggedIn() {
-        AccountsService.isAuthenticated = true;
-        yield* AccountsService.get();
+  static *handlerLoggedIn() {
+    AccountsService.isAuthenticated = true;
+    yield* AccountsService.get();
+  }
+
+  static *handlerLoggedOut() {
+    AccountsService.isAuthenticated = false;
+    AccountsService.accounts = null;
+  }
+
+  static *handlerMarketChanged(action) {
+    AccountsService.isMarketInit = true;
+    AccountsService.currency = action.from_currency;
+    AccountsService.accounts = null;
+    yield* AccountsService.get();
+  }
+
+  static * handleExchangeCreated(action) {
+    let shouldCheck = false;
+    let currency = AccountsService.currency;
+
+    let amount = AccountsService.accounts[currency].amount;
+
+    for (let exchange of action.exchanges) {
+      amount = amount.minus(exchange.amount);
+
+      if (exchange.status == EXCHANGE_STATUS_INIT || exchange.status == EXCHANGE_STATUS_PENDING) {
+        shouldCheck = true;
+      }
     }
 
-    static *handlerLoggedOut() {
-        AccountsService.isAuthenticated = false;
-        AccountsService.accounts = null;
-    }
+    AccountsService.accounts[currency].amount = amount;
+    yield put(accountUpdated(AccountsService.accounts[currency]));
+  }
 
-    static *handlerMarketChanged(action) {
-        AccountsService.isMarketInit = true;
-        AccountsService.currency = action.from_currency;
-        AccountsService.accounts = null;
-        yield* AccountsService.get();
-    }
+  static * handleWithdrawalCreated(action) {
+    let currency = action.withdrawal.currency;
 
-    static * handleExchangeCreated(action) {
-        let shouldCheck = false;
-        let currency = AccountsService.currency;
+    let amount = AccountsService.accounts[currency].amount;
+    amount = amount.minus(action.withdrawal.amount);
+    AccountsService.accounts[currency].amount = amount;
 
-        let amount = AccountsService.accounts[currency].amount;
+    yield put(accountUpdated(AccountsService.accounts[currency]));
+  }
 
-        for (let exchange of action.exchanges) {
-            amount = amount.minus(exchange.from_amount);
+  static * handlerDepositArrived(action) {
+    let currency = action.deposit.currency;
 
-            if (exchange.status == EXCHANGE_STATUS_INIT || exchange.status == EXCHANGE_STATUS_PENDING) {
-                shouldCheck = true;
-            }
+    let amount = AccountsService.accounts[currency].amount;
+    amount = amount.plus(action.deposit.amount);
+    AccountsService.accounts[currency].amount = amount;
+
+    yield put(accountUpdated(AccountsService.accounts[currency]));
+  }
+
+  static *get() {
+    if (AccountsService.isAuthenticated && AccountsService.isMarketInit) {
+      try {
+        const response = yield call(axios.get, "/api/accounts/");
+        let accounts = response["data"];
+
+        if (isArrayEmpty(accounts)) {
+          sleep(1);
+          yield put(accountsEmpty());
         }
 
-        AccountsService.accounts[currency].amount = amount;
-        yield put(accountUpdated(AccountsService.accounts[currency]));
-    }
+        AccountsService.accounts = {};
 
-    static * handleWithdrawalCreated(action) {
-        let currency = action.withdrawal.currency;
-
-        let amount = AccountsService.accounts[currency].amount;
-        amount = amount.minus(action.withdrawal.amount);
-        AccountsService.accounts[currency].amount = amount;
-
-        yield put(accountUpdated(AccountsService.accounts[currency]));
-    }
-
-    static * handlerDepositArrived(action) {
-        let currency = action.deposit.currency;
-
-        let amount = AccountsService.accounts[currency].amount;
-        amount = amount.plus(action.deposit.amount);
-        AccountsService.accounts[currency].amount = amount;
-
-        yield put(accountUpdated(AccountsService.accounts[currency]));
-    }
-
-    static *get() {
-        if (AccountsService.isAuthenticated && AccountsService.isMarketInit) {
-            try {
-                const response = yield call(axios.get, "/api/accounts/");
-                let accounts = response["data"];
-
-                if (isArrayEmpty(accounts)) {
-                    sleep(1);
-                    yield put(accountsEmpty());
-                }
-
-                AccountsService.accounts = {};
-
-                for (let account of accounts) {
-                    account.amount = new BigNumber(account.amount);
-                    AccountsService.accounts[account.currency] = account;
-                    yield put(accountReceived(account));
-                }
-            } catch (e) {
-                if (e instanceof Error) {
-                    throw e
-                } else {
-                    yield call(toastr.error, "Account", "You credentials aren't valid");
-                }
-            }
+        for (let account of accounts) {
+          account.amount = new BigNumber(account.amount);
+          AccountsService.accounts[account.currency] = account;
+          yield put(accountReceived(account));
         }
+      } catch (e) {
+        if (e instanceof Error) {
+          throw e
+        } else {
+          yield call(toastr.error, "Account", "You credentials aren't valid");
+        }
+      }
     }
+  }
 
-    static *setup() {
-        yield [
-            takeEvery(LOGGED_IN, AccountsService.handlerLoggedIn),
-            takeEvery(LOGGED_OUT, AccountsService.handlerLoggedOut),
-            takeEvery(MARKET_CHANGED, AccountsService.handlerMarketChanged),
-            takeEvery(EXCHANGE_CREATED, AccountsService.handleExchangeCreated),
-            takeEvery(WITHDRAWAL_CREATED, AccountsService.handleWithdrawalCreated),
-            takeEvery(ACCOUNTS_EMPTY, AccountsService.get),
-            takeEvery(DEPOSIT_ARRIVED, AccountsService.handlerDepositArrived),
-        ]
-    }
+  static *setup() {
+    yield [
+      takeEvery(LOGGED_IN, AccountsService.handlerLoggedIn),
+      takeEvery(LOGGED_OUT, AccountsService.handlerLoggedOut),
+      takeEvery(MARKET_CHANGED, AccountsService.handlerMarketChanged),
+      takeEvery(EXCHANGE_CREATED, AccountsService.handleExchangeCreated),
+      takeEvery(WITHDRAWAL_CREATED, AccountsService.handleWithdrawalCreated),
+      takeEvery(ACCOUNTS_EMPTY, AccountsService.get),
+      takeEvery(DEPOSIT_ARRIVED, AccountsService.handlerDepositArrived),
+    ]
+  }
 }
 
 class RouteService {
 
-    //TODO: Why is router is not working properly?
-    // Why we should intercept LOCATION_CHANGED, analyze it and throw MARKET_CHANGED!?
-    static * analyze(action) {
-        let s = action.payload.pathname;
-        let currencies = extractCurrencies(s);
+  //TODO: Why is router is not working properly?
+  // Why we should intercept LOCATION_CHANGED, analyze it and throw MARKET_CHANGED!?
+  static * analyze(action) {
+    let s = action.payload.pathname;
+    let currencies = extractCurrencies(s);
 
-        if (currencies != null) {
-            yield put(marketChanged(currencies[1], currencies[2]));
-        }
-    };
-
-    static *setup() {
-        yield* takeEvery(LOCATION_CHANGE, RouteService.analyze)
+    if (currencies != null) {
+      yield put(marketChanged(currencies[1], currencies[2]));
     }
+  };
+
+  static *setup() {
+    yield* takeEvery(LOCATION_CHANGE, RouteService.analyze)
+  }
 
 }
 
 class MarketInfoService {
-    static topic = "marketinfo";
+  static topic = "marketinfo";
 
-    static * get(action) {
+  static * get(action) {
 
-        //var from_currency = action.from_currency;
-        //var to_currency = action.to_currency;
-        let from_currency = null;
-        let to_currency = null;
+    //var from_currency = action.from_currency;
+    //var to_currency = action.to_currency;
+    let from_currency = null;
+    let to_currency = null;
 
-        let q = "";
-        if (from_currency != null) {
-            q += "?";
-            q += "from_currency=" + from_currency;
+    let q = "";
+    if (from_currency != null) {
+      q += "?";
+      q += "from_currency=" + from_currency;
 
-            if (to_currency != null) {
-                q += "&to_currency=" + to_currency;
-            }
-        }
-
-        const response = yield call(axios.get, "/api/marketinfo/" + q);
-        let result = response["data"];
-
-        let marketInfo = {};
-        for (let info of result) {
-            let fc = info["from_currency"];
-            delete info["from_currency"];
-
-            let tc = info["to_currency"];
-            delete info["to_currency"];
-
-            if (marketInfo[fc] === undefined) {
-                marketInfo[fc] = {}
-            }
-
-            if (marketInfo[fc][tc] === undefined) {
-                marketInfo[fc][tc] = {}
-            }
-
-            marketInfo[fc][tc] = info
-        }
-
-        yield put(marketInfoReceived(marketInfo));
-    };
-
-    static * handlerUpdate(action) {
-        if (MarketInfoService.topic == action.topic) {
-            let update = action.data;
-
-            let info = {};
-            info[update.from_currency] = {};
-            info[update.from_currency][update.to_currency] = update;
-
-            yield put(marketInfoChanged(info))
-        }
+      if (to_currency != null) {
+        q += "&to_currency=" + to_currency;
+      }
     }
 
-    static * connect() {
-        yield put(subscribeOnTopic(MarketInfoService.topic));
+    const response = yield call(axios.get, "/api/marketinfo/" + q);
+    let result = response["data"];
+
+    let marketInfo = {};
+    for (let info of result) {
+      let fc = info["from_currency"];
+      delete info["from_currency"];
+
+      let tc = info["to_currency"];
+      delete info["to_currency"];
+
+      if (marketInfo[fc] === undefined) {
+        marketInfo[fc] = {}
+      }
+
+      if (marketInfo[fc][tc] === undefined) {
+        marketInfo[fc][tc] = {}
+      }
+
+      marketInfo[fc][tc] = info
     }
 
-    static *setup() {
-        yield [
-            takeEvery(MARKET_CHANGED, MarketInfoService.get),
-            takeEvery(MARKET_CHANGED, MarketInfoService.connect),
-            takeEvery(TOPIC_UPDATE, MarketInfoService.handlerUpdate)
-        ]
+    yield put(marketInfoReceived(marketInfo));
+  };
 
+  static * handlerUpdate(action) {
+    if (MarketInfoService.topic == action.topic) {
+      let update = action.data;
+
+      let info = {};
+      info[update.from_currency] = {};
+      info[update.from_currency][update.to_currency] = update;
+
+      yield put(marketInfoChanged(info))
     }
+  }
+
+  static * connect() {
+    yield put(subscribeOnTopic(MarketInfoService.topic));
+  }
+
+  static *setup() {
+    yield [
+      takeEvery(MARKET_CHANGED, MarketInfoService.get),
+      takeEvery(MARKET_CHANGED, MarketInfoService.connect),
+      takeEvery(TOPIC_UPDATE, MarketInfoService.handlerUpdate)
+    ]
+
+  }
 }
 
 class OfferService {
-    static topic = null;
+  static topic = null;
 
-    static * get(action) {
+  static * get(action) {
 
-        let from_currency = action.from_currency;
-        let to_currency = action.to_currency;
+    let from_currency = action.from_currency;
+    let to_currency = action.to_currency;
 
-        let q = "?";
-        q += "from_currency=" + to_currency;
-        q += "&to_currency=" + from_currency;
+    let q = "?";
+    q += "from_currency=" + to_currency;
+    q += "&to_currency=" + from_currency;
 
-        const response = yield call(axios.get, "/api/offers/" + q);
-        let offers = response["data"];
+    const response = yield call(axios.get, "/api/offers/" + q);
+    let offers = response["data"];
 
-        yield put(offerReceived(offers));
-    };
+    yield put(offerReceived(offers));
+  };
 
-    static * handlerUpdate(action) {
-        if (OfferService.topic == action.topic) {
-            let offer = action.data;
-            yield put(offersChanged([offer]))
-        }
+  static * handlerUpdate(action) {
+    if (OfferService.topic == action.topic) {
+      let offer = action.data;
+      yield put(offersChanged([offer]))
+    }
+  }
+
+  static * connect(action) {
+    let from_currency = action.from_currency;
+    let to_currency = action.to_currency;
+    let topic = "offers_" + to_currency + "_" + from_currency;
+
+    if (OfferService.topic != topic) {
+      yield put(unsubscribeFromTopic(OfferService.topic));
     }
 
-    static * connect(action) {
-        let from_currency = action.from_currency;
-        let to_currency = action.to_currency;
-        let topic = "offers_" + to_currency + "_" + from_currency;
+    OfferService.topic = topic;
+    yield put(subscribeOnTopic(topic));
+  }
 
-        if (OfferService.topic != topic) {
-            yield put(unsubscribeFromTopic(OfferService.topic));
-        }
+  static *setup() {
 
-        OfferService.topic = topic;
-        yield put(subscribeOnTopic(topic));
-    }
-
-    static *setup() {
-
-        yield [
-            takeEvery(MARKET_CHANGED, OfferService.get),
-            takeEvery(MARKET_CHANGED, OfferService.connect),
-            takeEvery(TOPIC_UPDATE, OfferService.handlerUpdate)
-        ]
-    }
+    yield [
+      takeEvery(MARKET_CHANGED, OfferService.get),
+      takeEvery(MARKET_CHANGED, OfferService.connect),
+      takeEvery(TOPIC_UPDATE, OfferService.handlerUpdate)
+    ]
+  }
 }
 
 class AutobahnService {
-    // Additional info about this service https://github.com/yelouafi/redux-saga/issues/51
+  // Additional info about this service https://github.com/yelouafi/redux-saga/issues/51
 
-    static session = null;
-    static subscriptions = {};
+  static session = null;
+  static subscriptions = {};
 
-    static * listner(topic) {
-        let deferred;
+  static * listner(topic) {
+    let deferred;
 
-        let onevent = function (args, data) {
-            if (deferred) {
-                deferred.resolve(data);
-                deferred = null
-            }
-        };
+    let onevent = function (args, data) {
+      if (deferred) {
+        deferred.resolve(data);
+        deferred = null
+      }
+    };
 
-        AutobahnService.subscriptions[topic] = yield AutobahnService.session.subscribe(topic, onevent);
+    AutobahnService.subscriptions[topic] = yield AutobahnService.session.subscribe(topic, onevent);
 
-        return {
-            callback() {
-                if (!deferred) {
-                    deferred = {};
-                    deferred.promise = new Promise(resolve => deferred.resolve = resolve)
-                }
-                return deferred.promise
-            }
+    return {
+      callback() {
+        if (!deferred) {
+          deferred = {};
+          deferred.promise = new Promise(resolve => deferred.resolve = resolve)
         }
+        return deferred.promise
+      }
     }
+  }
 
-    static * listen(topic) {
-        const { callback } = yield call(AutobahnService.listner, topic);
-        yield put(subscribeSuccess(topic));
+  static * listen(topic) {
+    const { callback } = yield call(AutobahnService.listner, topic);
+    yield put(subscribeSuccess(topic));
 
-        while (true) {
-            const data = yield call(callback);
-            yield put(topicUpdate(topic, data));
-        }
+    while (true) {
+      const data = yield call(callback);
+      yield put(topicUpdate(topic, data));
     }
+  }
 
-    static * handlerUnsubscribe(action) {
-        let topic = action.topic;
+  static * handlerUnsubscribe(action) {
+    let topic = action.topic;
 
-        if (AutobahnService.session != null) {
-            let subscription = AutobahnService.subscriptions[topic];
-            if (subscription) {
-                AutobahnService.session.unsubscribe(subscription);
-            }
-        }
+    if (AutobahnService.session != null) {
+      let subscription = AutobahnService.subscriptions[topic];
+      if (subscription) {
+        AutobahnService.session.unsubscribe(subscription);
+      }
     }
+  }
 
-    static * handlerSubscribe(action) {
-        let topic = action.topic;
+  static * handlerSubscribe(action) {
+    let topic = action.topic;
 
-        if (AutobahnService.session != null) {
-            yield fork(AutobahnService.listen, topic)
-        } else {
-            yield sleep(1000);
-            yield put(subscribeFailed(topic, "Session is not initialized yet"));
-        }
+    if (AutobahnService.session != null) {
+      yield fork(AutobahnService.listen, topic)
+    } else {
+      yield sleep(1000);
+      yield put(subscribeFailed(topic, "Session is not initialized yet"));
     }
+  }
 
-    static * setup() {
-        var wsuri = "ws://" + conf.url + ":8080/ws";
-        var connection = new autobahn.Connection({
-            url: wsuri,
-            realm: "realm1"
-        });
+  static * setup() {
+    var wsuri = "ws://" + conf.url + ":8080/ws";
+    var connection = new autobahn.Connection({
+      url: wsuri,
+      realm: "realm1"
+    });
 
-        connection.onopen = function (session, details) {
-            console.log("Connection opened");
-            AutobahnService.session = session;
-        };
+    connection.onopen = function (session, details) {
+      console.log("Connection opened");
+      AutobahnService.session = session;
+    };
 
-        connection.onclose = function (reason, details) {
-            console.log("Connection lost: " + reason);
-            AutobahnService.session = null;
-        };
+    connection.onclose = function (reason, details) {
+      console.log("Connection lost: " + reason);
+      AutobahnService.session = null;
+    };
 
-        connection.open();
+    connection.open();
 
-        yield [
-            takeEvery(TOPIC_SUBSCRIBE, AutobahnService.handlerSubscribe),
-            takeEvery(TOPIC_UNSUBSCRIBE, AutobahnService.handlerUnsubscribe),
-            takeEvery(TOPIC_SUBSCRIBE_FAILED, AutobahnService.handlerSubscribe)
-        ]
+    yield [
+      takeEvery(TOPIC_SUBSCRIBE, AutobahnService.handlerSubscribe),
+      takeEvery(TOPIC_UNSUBSCRIBE, AutobahnService.handlerUnsubscribe),
+      takeEvery(TOPIC_SUBSCRIBE_FAILED, AutobahnService.handlerSubscribe)
+    ]
 
-    }
+  }
 }
 
 class ExchangeService {
-    static isAuthenticated = false;
-    static isMarketInit = false;
-    static from_currency = null;
-    static to_currency = null;
+  static isAuthenticated = false;
+  static isMarketInit = false;
+  static from_currency = null;
+  static to_currency = null;
 
-    static *handlerLoggedIn() {
-        ExchangeService.isAuthenticated = true;
-        yield* ExchangeService.getUserExchanges();
+  static *handlerLoggedIn() {
+    ExchangeService.isAuthenticated = true;
+    yield* ExchangeService.getUserExchanges();
+  }
+
+  static *handlerLoggedOut() {
+    ExchangeService.isAuthenticated = false;
+  }
+
+  static *handlerMarketChanged(action) {
+    ExchangeService.isMarketInit = true;
+    ExchangeService.from_currency = action.from_currency;
+    ExchangeService.to_currency = action.to_currency;
+    yield* ExchangeService.getUserExchanges();
+  }
+
+  static *getUserExchanges() {
+    if (ExchangeService.isMarketInit && ExchangeService.isAuthenticated) {
+      let from_currency = ExchangeService.from_currency;
+      let to_currency = ExchangeService.to_currency;
+
+      let q = "?";
+      q += "from_currency=" + from_currency;
+      q += "&to_currency=" + to_currency;
+
+      const response = yield call(axios.get, "/api/exchanges/" + q);
+      yield put(userExchangesHistoryReceived(response.data));
     }
+  }
 
-    static *handlerLoggedOut() {
-        ExchangeService.isAuthenticated = false;
+  static * handlerSendExchange(action) {
+    let data = {
+      from_currency: action.from_currency,
+      to_currency: action.to_currency
+    };
+
+    if (action.amount)
+      data["amount"] = action.amount;
+    else if (action.total)
+      data["total"] = action.total;
+
+    try {
+      const response = yield call(axios.post, "/api/exchanges/", data);
+      let exchanges = response.data;
+
+      yield put(exchangeCreated(exchanges));
+      toastr.success("Order", "Created successfully");
+
+    } catch (response) {
+      if (response instanceof Error) {
+        let err = response;
+        throw err
+      }
+
+      toastr.error("Order", JSON.parse(response.request.response)[0]);
     }
+  }
 
-    static *handlerMarketChanged(action) {
-        ExchangeService.isMarketInit = true;
-        ExchangeService.from_currency = action.from_currency;
-        ExchangeService.to_currency = action.to_currency;
-        yield* ExchangeService.getUserExchanges();
-    }
-
-    static *getUserExchanges() {
-        if (ExchangeService.isMarketInit && ExchangeService.isAuthenticated) {
-            let from_currency = ExchangeService.from_currency;
-            let to_currency = ExchangeService.to_currency;
-
-            let q = "?";
-            q += "from_currency=" + from_currency;
-            q += "&to_currency=" + to_currency;
-
-            const response = yield call(axios.get, "/api/exchanges/" + q);
-            yield put(userExchangesHistoryReceived(response.data));
-        }
-    }
-
-    static * handlerSendExchange(action) {
-        let data = {
-            from_currency: action.from_currency,
-            to_currency: action.to_currency,
-            price: action.price
-        };
-
-        if (action.from_amount)
-          data["from_amount"] = action.from_amount;
-        else if (action.to_amount)
-          data["to_amount"] = action.to_amount;
-
-        try {
-            const response = yield call(axios.post, "/api/exchanges/", data);
-            let exchanges = response.data;
-
-            yield put(exchangeCreated(exchanges));
-            toastr.success("Exchange", "Created successfully");
-
-        } catch (response) {
-            if (response instanceof Error) {
-                let err = response;
-                throw err
-            }
-
-            toastr.error("Exchange", JSON.parse(response.request.response)[0]);
-        }
-    }
-
-    static * setup() {
-        yield [
-            takeEvery(LOGGED_IN, ExchangeService.handlerLoggedIn),
-            takeEvery(LOGGED_OUT, ExchangeService.handlerLoggedOut),
-            takeEvery(MARKET_CHANGED, ExchangeService.handlerMarketChanged),
-            takeLatest(SEND_EXCHANGE, ExchangeService.handlerSendExchange)
-        ]
-    }
+  static * setup() {
+    yield [
+      takeEvery(LOGGED_IN, ExchangeService.handlerLoggedIn),
+      takeEvery(LOGGED_OUT, ExchangeService.handlerLoggedOut),
+      takeEvery(MARKET_CHANGED, ExchangeService.handlerMarketChanged),
+      takeLatest(SEND_EXCHANGE, ExchangeService.handlerSendExchange)
+    ]
+  }
 }
 
 class HistoryService {
-    static topic = null;
+  static topic = null;
 
-    static * handlerUpdate(action) {
-        if (HistoryService.topic == action.topic) {
-            let exchange = action.data;
-            yield put(exchangesHistoryChanged([exchange]))
-        }
+  static * handlerUpdate(action) {
+    if (HistoryService.topic == action.topic) {
+      let exchange = action.data;
+      yield put(exchangesHistoryChanged([exchange]))
+    }
+  }
+
+  static * connect(action) {
+    let from_currency = action.from_currency;
+    let to_currency = action.to_currency;
+    let topic = "history_" + from_currency + "_" + to_currency;
+
+    if (HistoryService.topic != topic) {
+      yield put(unsubscribeFromTopic(HistoryService.topic));
     }
 
-    static * connect(action) {
-        let from_currency = action.from_currency;
-        let to_currency = action.to_currency;
-        let topic = "history_" + from_currency + "_" + to_currency;
+    HistoryService.topic = topic;
+    yield put(subscribeOnTopic(topic));
+  }
 
-        if (HistoryService.topic != topic) {
-            yield put(unsubscribeFromTopic(HistoryService.topic));
-        }
+  static * getAllExchanges(action) {
+    let q = "?";
+    q += "from_currency=" + action.from_currency;
+    q += "&to_currency=" + action.to_currency;
 
-        HistoryService.topic = topic;
-        yield put(subscribeOnTopic(topic));
-    }
+    const response = yield call(axios.get, "/api/history/" + q);
+    yield put(exchangesHistoryReceived(response.data));
+  }
 
-    static * getAllExchanges(action) {
-        let q = "?";
-        q += "from_currency=" + action.from_currency;
-        q += "&to_currency=" + action.to_currency;
-
-        const response = yield call(axios.get, "/api/history/" + q);
-        yield put(exchangesHistoryReceived(response.data));
-    }
-
-    static * setup() {
-        yield [
-            takeEvery(MARKET_CHANGED, HistoryService.getAllExchanges),
-            takeEvery(MARKET_CHANGED, HistoryService.connect),
-            takeEvery(TOPIC_UPDATE, HistoryService.handlerUpdate)
-        ]
-    }
+  static * setup() {
+    yield [
+      takeEvery(MARKET_CHANGED, HistoryService.getAllExchanges),
+      takeEvery(MARKET_CHANGED, HistoryService.connect),
+      takeEvery(TOPIC_UPDATE, HistoryService.handlerUpdate)
+    ]
+  }
 }
 
 class WithdrawalService {
-    static * handlerSendWithdrawal(action) {
-        let data = {
-            amount: action.amount,
-            address: action.address,
-            price: action.price
-        };
+  static * handlerSendWithdrawal(action) {
+    let data = {
+      amount: action.amount,
+      address: action.address,
+      price: action.price
+    };
 
-        try {
-            const url = "/api/accounts/" + action.pk + "/withdrawals/";
-            const response = yield call(axios.post, url, data);
-            let withdrawal = response.data;
+    try {
+      const url = "/api/accounts/" + action.pk + "/withdrawals/";
+      const response = yield call(axios.post, url, data);
+      let withdrawal = response.data;
 
-            // TODO (backend): Change /account/{pk}/withdrawals/ -> /withdrawals/
-            withdrawal.currency = action.currency;
+      // TODO (backend): Change /account/{pk}/withdrawals/ -> /withdrawals/
+      withdrawal.currency = action.currency;
 
-            yield put(withdrawalCreated(withdrawal));
-            toastr.success("Withdrawal", "Created successfully");
+      yield put(withdrawalCreated(withdrawal));
+      toastr.success("Withdrawal", "Created successfully");
 
-        } catch (response) {
-            if (response instanceof Error) {
-                let err = response;
-                throw err
-            }
+    } catch (response) {
+      if (response instanceof Error) {
+        let err = response;
+        throw err
+      }
 
-            toastr.error("Withdrawal", JSON.parse(response.request.response)[0]);
-        }
+      toastr.error("Withdrawal", JSON.parse(response.request.response)[0]);
     }
+  }
 
-    static * setup() {
-        yield [
-            takeLatest(SEND_WITHDRAWAL, WithdrawalService.handlerSendWithdrawal)
-        ]
-    }
+  static * setup() {
+    yield [
+      takeLatest(SEND_WITHDRAWAL, WithdrawalService.handlerSendWithdrawal)
+    ]
+  }
 }
 
 class DepositService {
-    static accounts = {};
-    static isAuthenticated = false;
+  static accounts = {};
+  static isAuthenticated = false;
 
-    static * get(pk) {
+  static * get(pk) {
+    try {
+      const url = "/api/accounts/" + pk + "/deposits/";
+      const response = yield call(axios.get, url);
+      return response.data
+
+    } catch (response) {
+      if (response instanceof Error) {
+        let err = response;
+        throw err
+      }
+    }
+  }
+
+  static * handlerLoggedIn() {
+    DepositService.isAuthenticated = true;
+  }
+
+  static * handlerLoggedOut() {
+    DepositService.isAuthenticated = false;
+  }
+
+  static * handlerAccountReceived(action) {
+    let account = action.account;
+
+    try {
+      let data = yield* DepositService.get(account.pk);
+      let deposits = data.map(function (deposit, index) {
+        return deposit.pk
+      });
+
+      while (DepositService.isAuthenticated) {
         try {
-            const url = "/api/accounts/" + pk + "/deposits/";
-            const response = yield call(axios.get, url);
-            return response.data
+          for (let deposit of yield* DepositService.get(account.pk)) {
+            if (!include(deposits, deposit.pk)) {
+              toastr.success("Deposit", "New deposit arrived!");
+              deposits.push(deposit.pk);
 
-        } catch (response) {
-            if (response instanceof Error) {
-                let err = response;
-                throw err
+              deposit.currency = account.currency;
+
+              yield put(depositArrived(deposit));
+
             }
-        }
-    }
-
-    static * handlerLoggedIn() {
-        DepositService.isAuthenticated = true;
-    }
-
-    static * handlerLoggedOut() {
-        DepositService.isAuthenticated = false;
-    }
-
-    static * handlerAccountReceived(action) {
-        let account = action.account;
-
-        try {
-            let data = yield* DepositService.get(account.pk);
-            let deposits = data.map(function (deposit, index) {
-                return deposit.pk
-            });
-
-            while (DepositService.isAuthenticated) {
-                try {
-                    for (let deposit of yield* DepositService.get(account.pk)) {
-                        if (!include(deposits, deposit.pk)) {
-                            toastr.success("Deposit", "New deposit arrived!");
-                            deposits.push(deposit.pk);
-
-                            deposit.currency = account.currency;
-
-                            yield put(depositArrived(deposit));
-
-                        }
-                    }
-                } catch (e) {
-                    // In case of LOGGED_OUT happened after while condition.
-                }
-
-                yield sleep(5000);
-            }
-        } catch (response) {
-            if (response instanceof Error) {
-                let err = response;
-                throw err
-            }
+          }
+        } catch (e) {
+          // In case of LOGGED_OUT happened after while condition.
         }
 
+        yield sleep(5000);
+      }
+    } catch (response) {
+      if (response instanceof Error) {
+        let err = response;
+        throw err
+      }
     }
 
-    static * setup() {
-        yield [
-            takeEvery(ACCOUNT_RECEIVED, DepositService.handlerAccountReceived),
-            takeEvery(LOGGED_OUT, DepositService.handlerLoggedOut),
-            takeEvery(LOGGED_IN, DepositService.handlerLoggedIn)
-        ]
-    }
+  }
+
+  static * setup() {
+    yield [
+      takeEvery(ACCOUNT_RECEIVED, DepositService.handlerAccountReceived),
+      takeEvery(LOGGED_OUT, DepositService.handlerLoggedOut),
+      takeEvery(LOGGED_IN, DepositService.handlerLoggedIn)
+    ]
+  }
 }

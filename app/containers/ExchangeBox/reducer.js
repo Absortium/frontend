@@ -55,7 +55,7 @@ const initialState = {
         value: null,
         error: ERROR_NOT_TOUCHED
     },
-    from_amount: {
+    amount: {
         value: null,
         error: ERROR_NOT_TOUCHED
     },
@@ -95,9 +95,9 @@ function exchangeBoxReducer(state = initialState, action) {
                     substate.balance = balance;
 
 
-                    if (!isDirty(state.from_amount.value)) {
+                    if (!isDirty(state.amount.value)) {
                         [error, substate] = setFromAmount(balance, state, substate);
-                        substate.from_amount = genParam(balance, error);
+                        substate.amount = genParam(balance, error);
                     }
                 }
 
@@ -135,13 +135,13 @@ function exchangeBoxReducer(state = initialState, action) {
 
         case CHANGE_FROM_AMOUNT:
         {
-            let from_amount = action.from_amount;
+            let amount = action.amount;
             let substate = {};
             let error = null;
 
-            if (!isEmpty(from_amount)) {
-                if (isValid(from_amount)) {
-                    [error, substate] = setFromAmount(from_amount, state, substate);
+            if (!isEmpty(amount)) {
+                if (isValid(amount)) {
+                    [error, substate] = setFromAmount(amount, state, substate);
                 } else {
                     error = ERROR_FIELD_NOT_VALID;
                 }
@@ -150,7 +150,7 @@ function exchangeBoxReducer(state = initialState, action) {
                 substate.to_amount = genParam("", ERROR_FIELD_IS_REQUIRED);
             }
 
-            substate.from_amount = genParam(action.from_amount, error);
+            substate.amount = genParam(action.amount, error);
             return updateState(state, substate);
         }
 
@@ -168,7 +168,7 @@ function exchangeBoxReducer(state = initialState, action) {
                     error = ERROR_FIELD_NOT_VALID;
                 }
             } else {
-                substate.from_amount = genParam("", ERROR_FIELD_IS_REQUIRED);
+                substate.amount = genParam("", ERROR_FIELD_IS_REQUIRED);
                 error = ERROR_FIELD_IS_REQUIRED;
             }
 
@@ -214,7 +214,7 @@ function exchangeBoxReducer(state = initialState, action) {
                     value: null,
                     error: ERROR_NOT_TOUCHED
                 },
-                from_amount: {
+                amount: {
                     value: null,
                     error: ERROR_NOT_TOUCHED
                 },
@@ -237,7 +237,7 @@ function exchangeBoxReducer(state = initialState, action) {
 
       case EXCHANGE_CREATED:
             return updateState(state, {
-              from_amount: {
+              amount: {
                 value: null,
                 error: ERROR_NOT_TOUCHED
               },
@@ -274,7 +274,7 @@ function exchangeBoxReducer(state = initialState, action) {
             let error = null;
 
             [error, substate] = setFromAmount(state.balance, state, substate);
-            substate.from_amount = genParam(state.balance, error);
+            substate.amount = genParam(state.balance, error);
 
             return updateState(state, substate)
         }
@@ -295,11 +295,11 @@ function exchangeBoxReducer(state = initialState, action) {
             substate.to_amount = genParam(amount, error);
             newState = updateState(newState, substate);
 
-            if (newState.from_amount.error == ERROR_FROM_AMOUNT_GT_BALANCE) {
+            if (newState.amount.error == ERROR_FROM_AMOUNT_GT_BALANCE) {
                 let error = null;
 
                 [error, substate] = setFromAmount(newState.balance, newState, substate);
-                substate.from_amount = genParam(newState.balance, error);
+                substate.amount = genParam(newState.balance, error);
                 newState = updateState(newState, substate);
             }
 

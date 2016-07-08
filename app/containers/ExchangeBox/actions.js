@@ -21,13 +21,13 @@ import {
     CHANGE_RATE,
     CHANGE_TO_AMOUNT,
     SUBSTITUTE_RATE,
-    SUBSTITUTE_FROM_AMOUNT
+    SUBSTITUTE_BALANCE
 } from "./constants";
 
-export function changeFromAmount(from_amount) {
+export function changeFromAmount(amount) {
     return {
         type: CHANGE_FROM_AMOUNT,
-        from_amount
+        amount
     };
 }
 
@@ -52,8 +52,8 @@ export function substituteRate() {
     };
 }
 
-export function substituteFromAmount() {
+export function substituteBalance() {
     return {
-        type: SUBSTITUTE_FROM_AMOUNT,
+        type: SUBSTITUTE_BALANCE,
     };
 }

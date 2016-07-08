@@ -53,7 +53,7 @@ class ExchangeOffers extends React.Component {
 
 
             let price = Object.keys(this.props.offers)[id];
-            let amount = this.props.offers[price].from_amount;
+            let amount = this.props.offers[price].amount;
 
             this.props.substituteOffer(amount, price)
         }
@@ -100,9 +100,9 @@ class ExchangeOffers extends React.Component {
                                         return (
                                             <TableRow hoverable={true}
                                                       key={offer.price}>
-                                                <TableRowColumn>{normalize(offer.from_amount)}</TableRowColumn>
+                                                <TableRowColumn>{normalize(offer.amount)}</TableRowColumn>
                                                 <TableRowColumn>{normalize(offer.price)}</TableRowColumn>
-                                                <TableRowColumn>{normalize(offer.to_amount)}</TableRowColumn>
+                                                <TableRowColumn>{normalize(offer.total)}</TableRowColumn>
                                             </TableRow>
                                         )
                                     }, this)}

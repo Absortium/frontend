@@ -32,8 +32,8 @@ describe("ExchangeOffersReducer", () => {
     expect(state).to.have.property("offersLoaded").and.equal(true);
     expect(transform(state.offers[0])).to.deep.equal({
         price: 1,
-        from_amount: 2,
-        to_amount: 2
+        amount: 2,
+        total: 2
     });
   });
 
@@ -49,8 +49,8 @@ describe("ExchangeOffersReducer", () => {
 
     expect(transform(state.offers[0])).to.deep.equal({
       price: 1,
-      from_amount: 3,
-      to_amount: 3
+      amount: 3,
+      total: 3
     });
   });
 
@@ -66,14 +66,14 @@ describe("ExchangeOffersReducer", () => {
 
     expect(transform(state.offers[0])).to.deep.equal({
       price: 1,
-      from_amount: 2,
-      to_amount: 2
+      amount: 2,
+      total: 2
     });
 
     expect(transform(state.offers[1])).to.deep.equal({
       price: 0.5,
-      from_amount: 2,
-      to_amount: 4
+      amount: 2,
+      total: 4
     });
   });
 
