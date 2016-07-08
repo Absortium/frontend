@@ -33,8 +33,7 @@ class MarketTabContent extends React.Component {
                 height="3em"
                 fixedHeader={true}
                 selectable={true}
-                multiSelectable={false}
-                onRowSelection={this.handleRowSelect}>
+                multiSelectable={false}>
                 <TableHeader
                     displaySelectAll={false}
                     adjustForCheckbox={false}

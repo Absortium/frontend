@@ -28,8 +28,8 @@ import { connect } from "react-redux";
 import { toastr } from "react-redux-toastr";
 import { Toolbar } from "material-ui/Toolbar";
 import {
-  isCurrencyGeneral,
-  isBuyExchange
+  getPrimaryCurrency,
+  getSecondaryCurrency
 } from "utils/general";
 
 const styles = {
@@ -70,24 +70,11 @@ const styles = {
 class ExchangeBox extends React.Component {
 
   createExchange = () => {
-    let from_currency = this.props.from_currency;
-    let to_currency = this.props.to_currency;
-    let pair = null;
-    let order_type = null;
-
-    if (isBuyExchange(this.props.from_currency, this.props.to_currency)) {
-      order_type = "buy";
-      pair = this.props.from_currency + "_" + this.props.to_currency
-    } else {
-      order_type = "sell";
-      pair = this.props.to_currency + "_" + this.props.from_currency;
-    }
-
     let amount = this.props.last_changed == AMOUNT ? this.props.amount.value : null;
     let total = this.props.last_changed == TOTAL ? this.props.total.value : null;
     let price = this.props.rate.value;
 
-    this.props.sendExchange(pair, order_type, amount, total, price);
+    this.props.sendExchange(this.props.pair, this.props.order_type, amount, total, price);
   };
 
   reverseMarket = () => {
@@ -102,31 +89,12 @@ class ExchangeBox extends React.Component {
     let main = null;
     let down = null;
 
-    let generalCurrency = null;
-    let secondaryCurrency = null;
-    let exchangeType = null;
-    let amountFieldTooltip = null;
-    let amountSubstitute = null;
-    let totalFieldTooltip = null;
-    let totalSubstitute = null;
+    let primaryCurrency = getPrimaryCurrency(this.props.pair);
+    let secondaryCurrency = getSecondaryCurrency(this.props.pair);
 
-    if (isBuyExchange(this.props.from_currency, this.props.to_currency)) {
-      generalCurrency =  this.props.from_currency;
-      secondaryCurrency = this.props.to_currency;
-      amountFieldTooltip = "substitute " + secondaryCurrency + " balance";
-      amountSubstitute = this.props.substituteBalance(AMOUNT);
-      exchangeType = "BUY";
-    } else {
-      generalCurrency =  this.props.to_currency;
-      secondaryCurrency = this.props.from_currency;
-      totalFieldTooltip = "substitute " + secondaryCurrency + " balance";
-      totalSubstitute = this.props.substituteBalance(TOTAL);
-      exchangeType = "SELL";
-    }
-    
     top = <Toolbar style={styles.toolbar}>
       <Subheader>
-        {exchangeType + " " + secondaryCurrency.toUpperCase()}
+        {this.props.order_type.toUpperCase() + " " + secondaryCurrency.toUpperCase()}
       </Subheader>
       <IconButton style={styles.reverse}
                   iconStyle={styles.reverseIcon}
@@ -142,27 +110,27 @@ class ExchangeBox extends React.Component {
       main = <div>
         <ExchangeBoxField currency={secondaryCurrency}
                           handler={this.props.handlerAmount}
-                          tooltip={amountFieldTooltip}
+                          tooltip={this.props.order_type == "buy" ? "substitute balance" : null}
                           floatingLabelText={"Amount (" + secondaryCurrency.toUpperCase() + ")"}
                           value={this.props.amount.value}
                           error={this.props.amount.error}
-                          substitute={amountSubstitute}/>
+                          substitute={this.props.order_type == "buy" ? this.props.substituteBalance(AMOUNT) : null}/>
 
-        <ExchangeBoxField currency={generalCurrency}
+        <ExchangeBoxField currency={primaryCurrency}
                           handler={this.props.handlerRate}
                           value={this.props.rate.value}
                           error={this.props.rate.error}
                           tooltip="substitute rate"
-                          floatingLabelText={secondaryCurrency.toUpperCase() + " Price (" + generalCurrency.toUpperCase() + ")"}
+                          floatingLabelText={secondaryCurrency.toUpperCase() + " Price (" + primaryCurrency.toUpperCase() + ")"}
                           substitute={this.props.substituteRate}/>
 
-        <ExchangeBoxField currency={generalCurrency}
+        <ExchangeBoxField currency={primaryCurrency}
                           handler={this.props.handlerTotal}
-                          tooltip={totalFieldTooltip}
+                          tooltip={this.props.order_type == "sell" ? "substitute balance" : null}
                           value={this.props.total.value}
                           error={this.props.total.error}
-                          floatingLabelText={"Total (" + generalCurrency.toUpperCase() + ")"}
-                          substitute={totalSubstitute}/>
+                          floatingLabelText={"Total (" + primaryCurrency.toUpperCase() + ")"}
+                          substitute={this.props.order_type == "sell" ? this.props.substituteBalance(TOTAL) : null}/>
 
       </div>
 
@@ -184,7 +152,7 @@ class ExchangeBox extends React.Component {
 
           down = (
             <div>
-              <RaisedButton label={exchangeType}
+              <RaisedButton label={this.props.order_type}
                             onMouseDown={this.createExchange}
                             disabled={isDisabled}
                             primary={true}/>

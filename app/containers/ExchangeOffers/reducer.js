@@ -13,8 +13,8 @@ import { process } from "./utils";
 const initialState = {
   offers: [],
   offersLoaded: false,
-  from_currency: null,
-  to_currency: null
+  pair: null,
+  order_type: null
 };
 
 function exchangeOffersReducer(state = initialState, action) {
@@ -34,8 +34,8 @@ function exchangeOffersReducer(state = initialState, action) {
         {
           offers: [],
           offersLoaded: false,
-          from_currency: action.from_currency,
-          to_currency: action.to_currency
+          pair: action.pair,
+          order_type: action.order_type
         });
 
     default:

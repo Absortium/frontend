@@ -68,7 +68,8 @@ class MarketInfo extends React.Component {
                                         return <Tab key={currency}
                                                     label={<MarketTabLabel currency={currency}/>}
                                                     style={styles.tab}>
-                                            <MarketTabContent currency={currency} changeMarket={this.props.changeMarket}
+                                            <MarketTabContent currency={currency} 
+                                                              changeMarket={this.props.changeMarket}
                                                               info={info}/>
                                         </Tab>
                                     }

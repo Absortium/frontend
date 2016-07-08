@@ -63,7 +63,9 @@ import {
   sleep,
   setTimeoutGenerator,
   isArrayEmpty,
-  include
+  include,
+  getType,
+  getPair
 } from "utils/general";
 import { isTokenExpired } from "utils/jwt";
 import autobahn from "autobahn";
@@ -300,9 +302,15 @@ class RouteService {
   static * analyze(action) {
     let s = action.payload.pathname;
     let currencies = extractCurrencies(s);
-
+    
     if (currencies != null) {
-      yield put(marketChanged(currencies[1], currencies[2]));
+      let from_currency = currencies[1];
+      let to_currency = currencies[2];
+
+      let order_type = getType(from_currency, to_currency);
+      let pair = getPair(from_currency, to_currency);
+      
+      yield put(marketChanged(from_currency, to_currency, pair, order_type));
     }
   };
 

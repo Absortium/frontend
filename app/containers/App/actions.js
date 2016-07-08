@@ -90,11 +90,13 @@ export function accountUpdated(account) {
   };
 }
 
-export function marketChanged(from_currency, to_currency) {
+export function marketChanged(from_currency, to_currency, pair, order_type) {
   return {
     type: MARKET_CHANGED,
     from_currency,
-    to_currency
+    to_currency,
+    pair,
+    order_type
   };
 }
 

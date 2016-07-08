@@ -196,12 +196,12 @@ export function needConvert(currency) {
 
 export function isGeneralPair(from_currency, to_currency) {
   let pair = from_currency.toLowerCase() + "_" + to_currency.toLowerCase();
-  
+
   if (include(["eth_btc"], pair)) {
     // Order ETH->BTC
     // In this case we want to sell the ethereum and buy bitcoin
     return false
-    
+
   } else if (include(["btc_eth"], pair)) {
     // Order BTC->ETH
     // In this case we want to buy the ethereum and sell the bitcoin
@@ -209,10 +209,30 @@ export function isGeneralPair(from_currency, to_currency) {
   }
 }
 
-export function isBuyExchange(from_currency, to_currency) {
-  return isGeneralPair(from_currency, to_currency)
+export function reverseOrderType(order_type) {
+  return order_type == "buy" ? "sell" : "buy"
 }
 
-export function isSellExchange(from_currency, to_currency) {
-  return !isGeneralPair(from_currency, to_currency)
+export function getPrimaryCurrency(pair) {
+  return pair.split("_")[0]
+}
+
+export function getSecondaryCurrency(pair) {
+  return pair.split("_")[1]
+}
+
+export function getPair(from_currency, to_currency) {
+  if (isGeneralPair(from_currency, to_currency)) {
+    return from_currency + "_" + to_currency
+  } else {
+    return to_currency + "_" + from_currency
+  }
+}
+
+export function getType(from_currency, to_currency) {
+  if (isGeneralPair(from_currency, to_currency)) {
+    return "buy"
+  } else {
+    return "sell"
+  }
 }

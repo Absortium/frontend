@@ -61,6 +61,8 @@ const initialState = {
     error: ERROR_NOT_TOUCHED
   },
 
+  order_type: null,
+  pair: null,
   from_currency: null,
   to_currency: null,
 
@@ -105,20 +107,25 @@ function exchangeBoxReducer(state = initialState, action) {
     case MARKET_INFO_CHANGED:
     case MARKET_INFO_RECEIVED:
     {
-      let substate = {
-        isRateLoaded: true
-      };
+      if (state.pair == action.marketInfo.pair) {
+        let substate = {
+          isRateLoaded: true
+        };
 
-      let error = null;
-      let market_rate = new BigNumber(action.marketInfo.rate);
-      substate.market_rate = market_rate;
+        let error = null;
+        let market_rate = new BigNumber(action.marketInfo.rate);
+        substate.market_rate = market_rate;
 
-      if (!isDirty(state.rate.value)) {
-        [error, substate] = setRate(market_rate, state, substate);
+        if (!isDirty(state.rate.value)) {
+          [error, substate] = setRate(market_rate, state, substate);
+        }
+
+        return updateState(state, substate);
+      } else {
+        return state;
       }
-
-      return updateState(state, substate);
     }
+
 
     case CHANGE_AMOUNT:
     {
@@ -173,6 +180,8 @@ function exchangeBoxReducer(state = initialState, action) {
           error: ERROR_NOT_TOUCHED
         },
 
+        order_type: action.order_type,
+        pair: action.pair,
         from_currency: action.from_currency,
         to_currency: action.to_currency,
 

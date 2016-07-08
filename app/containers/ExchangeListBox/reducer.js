@@ -38,7 +38,7 @@ function exchangeListBoxReducer(state = initialState, action) {
                 isUserExchangesLoaded: false,
                 user_exchanges: null
             });
-
+      
         case MARKET_CHANGED:
             return updateState(state, {
                 isUserExchangesLoaded: false,

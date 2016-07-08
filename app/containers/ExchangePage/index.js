@@ -45,10 +45,10 @@ export class ExchangePage extends React.Component {
                             </Col>
                         </Row>
                         <Row center="xs">
-                            <Col xsOffset={2} xs={4}>
+                            <Col xsOffset={1} xs={4}>
                                 <ExchangeListBox />
                             </Col>
-                            <Col xs={4}>
+                            <Col xs={3}>
                                 <ExchangeOffers />
                             </Col>
                         </Row>
