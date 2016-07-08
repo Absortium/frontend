@@ -55,12 +55,12 @@ function transform(offers) {
   for (let offer of offers) {
     let price = new BigNumber(offer.price);
     let amount = new BigNumber(offer.amount);
-    let to_amount = amount.times(price);
+    let total = amount.times(price);
 
     data.push({
       price: price,
       amount: amount,
-      to_amount: to_amount
+      total: total
     });
   }
 

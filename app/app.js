@@ -73,7 +73,7 @@ const rootRoute = {
     path: "/",
     component: App,
     childRoutes: createRoutes(store),
-    indexRoute: { onEnter: (nextState, replace) => replace('/order/btc-eth') }
+    indexRoute: { onEnter: (nextState, replace) => replace('/exchange/btc-eth') }
 };
 
 ReactDOM.render(

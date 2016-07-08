@@ -6,9 +6,9 @@
 import {
   ERROR_RATE_LT_MIN,
   ERROR_RATE_GT_MAX,
-  ERROR_FROM_AMOUNT_GT_BALANCE,
-  ERROR_TO_AMOUNT_LT_MIN,
-  TO_AMOUNT_MIN,
+  ERROR_GT_BALANCE,
+  ERROR_TOTAL_LT_MIN,
+  TOTAL_MIN,
   RATE_MIN,
   RATE_MAX,
   ERROR_NOT_TOUCHED
@@ -85,11 +85,11 @@ export function getErrorText(error) {
     case ERROR_RATE_GT_MAX:
       return "Rate is greater than " + RATE_MAX;
 
-    case ERROR_FROM_AMOUNT_GT_BALANCE:
+    case ERROR_GT_BALANCE:
       return "Not enough money";
 
-    case ERROR_TO_AMOUNT_LT_MIN:
-      return "Total amount lower than " + TO_AMOUNT_MIN;
+    case ERROR_TOTAL_LT_MIN:
+      return "Total amount lower than " + TOTAL_MIN;
 
     case ERROR_FIELD_LT_ZERO:
       return "Field is negative";

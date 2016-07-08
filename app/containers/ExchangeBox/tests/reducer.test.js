@@ -3,8 +3,8 @@ import React from "react";
 import {
   ERROR_RATE_LT_MIN,
   ERROR_RATE_GT_MAX,
-  ERROR_FROM_AMOUNT_GT_BALANCE,
-  ERROR_TO_AMOUNT_LT_MIN
+  ERROR_GT_BALANCE,
+  ERROR_TOTAL_LT_MIN
 } from "../constants";
 import {
   ERROR_FIELD_IS_REQUIRED,
@@ -85,7 +85,7 @@ describe("ExchangeBoxReducer", () => {
 
     state = exchageBoxReducer(state, changeFromAmount("0"));
     expected["amount"] = genParam("0", null);
-    expected["total"] = genParam("0", ERROR_TO_AMOUNT_LT_MIN);
+    expected["total"] = genParam("0", ERROR_TOTAL_LT_MIN);
   });
 
   it("calculation #2", () => {
@@ -201,7 +201,7 @@ describe("ExchangeBoxReducer", () => {
     state = exchageBoxReducer(state, changeRate("0.0001"));
 
     expected["rate"] = genParam("0.0001", null);
-    expected["total"] = genParam("0.0004", ERROR_TO_AMOUNT_LT_MIN);
+    expected["total"] = genParam("0.0004", ERROR_TOTAL_LT_MIN);
   });
 
   it("calculation #17", () => {
@@ -214,7 +214,7 @@ describe("ExchangeBoxReducer", () => {
 
 
     expected["total"] = genParam("10", null);
-    expected["amount"] = genParam("10", ERROR_FROM_AMOUNT_GT_BALANCE);
+    expected["amount"] = genParam("10", ERROR_GT_BALANCE);
   });
 
   it("calculation #18", () => {

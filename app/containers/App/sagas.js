@@ -316,45 +316,8 @@ class MarketInfoService {
   static topic = "marketinfo";
 
   static * get(action) {
-
-    //var from_currency = action.from_currency;
-    //var to_currency = action.to_currency;
-    let from_currency = null;
-    let to_currency = null;
-
-    let q = "";
-    if (from_currency != null) {
-      q += "?";
-      q += "from_currency=" + from_currency;
-
-      if (to_currency != null) {
-        q += "&to_currency=" + to_currency;
-      }
-    }
-
-    const response = yield call(axios.get, "/api/marketinfo/" + q);
-    let result = response["data"];
-
-    let marketInfo = {};
-    for (let info of result) {
-      let fc = info["from_currency"];
-      delete info["from_currency"];
-
-      let tc = info["to_currency"];
-      delete info["to_currency"];
-
-      if (marketInfo[fc] === undefined) {
-        marketInfo[fc] = {}
-      }
-
-      if (marketInfo[fc][tc] === undefined) {
-        marketInfo[fc][tc] = {}
-      }
-
-      marketInfo[fc][tc] = info
-    }
-
-    yield put(marketInfoReceived(marketInfo));
+    const response = yield call(axios.get, "/api/marketinfo/");
+    yield put(marketInfoReceived(response["data"][0]));
   };
 
   static * handlerUpdate(action) {
@@ -551,15 +514,16 @@ class ExchangeService {
       q += "from_currency=" + from_currency;
       q += "&to_currency=" + to_currency;
 
-      const response = yield call(axios.get, "/api/exchanges/" + q);
+      const response = yield call(axios.get, "/api/orders/" + q);
       yield put(userExchangesHistoryReceived(response.data));
     }
   }
 
   static * handlerSendExchange(action) {
     let data = {
-      from_currency: action.from_currency,
-      to_currency: action.to_currency
+      pair: action.pair,
+      type: action.order_type,
+      price: action.price
     };
 
     if (action.amount)
@@ -568,7 +532,7 @@ class ExchangeService {
       data["total"] = action.total;
 
     try {
-      const response = yield call(axios.post, "/api/exchanges/", data);
+      const response = yield call(axios.post, "/api/orders/", data);
       let exchanges = response.data;
 
       yield put(exchangeCreated(exchanges));
@@ -586,9 +550,9 @@ class ExchangeService {
 
   static * setup() {
     yield [
-      takeEvery(LOGGED_IN, ExchangeService.handlerLoggedIn),
-      takeEvery(LOGGED_OUT, ExchangeService.handlerLoggedOut),
-      takeEvery(MARKET_CHANGED, ExchangeService.handlerMarketChanged),
+      // takeEvery(LOGGED_IN, ExchangeService.handlerLoggedIn),
+      // takeEvery(LOGGED_OUT, ExchangeService.handlerLoggedOut),
+      // takeEvery(MARKET_CHANGED, ExchangeService.handlerMarketChanged),
       takeLatest(SEND_EXCHANGE, ExchangeService.handlerSendExchange)
     ]
   }

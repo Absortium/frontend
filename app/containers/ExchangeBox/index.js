@@ -4,8 +4,8 @@ import {
   logIn
 } from "containers/App/actions";
 import {
-  FROM_AMOUNT,
-  TO_AMOUNT
+  AMOUNT,
+  TOTAL
 } from "containers/ExchangeBox/constants";
 import {
   substituteRate,
@@ -72,13 +72,22 @@ class ExchangeBox extends React.Component {
   createExchange = () => {
     let from_currency = this.props.from_currency;
     let to_currency = this.props.to_currency;
+    let pair = null;
+    let order_type = null;
 
-    let amount = this.props.last_changed == FROM_AMOUNT ? this.props.amount.value : null;
-    let to_amount = this.props.last_changed == TO_AMOUNT ? this.props.total.value : null;
+    if (isBuyExchange(this.props.from_currency, this.props.to_currency)) {
+      order_type = "buy";
+      pair = this.props.from_currency + "_" + this.props.to_currency
+    } else {
+      order_type = "sell";
+      pair = this.props.to_currency + "_" + this.props.from_currency;
+    }
 
+    let amount = this.props.last_changed == AMOUNT ? this.props.amount.value : null;
+    let total = this.props.last_changed == TOTAL ? this.props.total.value : null;
     let price = this.props.rate.value;
 
-    this.props.sendExchange(from_currency, to_currency, amount, to_amount, price);
+    this.props.sendExchange(pair, order_type, amount, total, price);
   };
 
   reverseMarket = () => {
@@ -96,12 +105,25 @@ class ExchangeBox extends React.Component {
     let generalCurrency = null;
     let secondaryCurrency = null;
     let exchangeType = null;
+    let amountFieldTooltip = null;
+    let amountSubstitute = null;
+    let totalFieldTooltip = null;
+    let totalSubstitute = null;
 
-    [generalCurrency, secondaryCurrency, exchangeType] = isBuyExchange(this.props.from_currency, this.props.to_currency) ?
-      [this.props.from_currency, this.props.to_currency, "BUY"]
-      :
-      [this.props.to_currency, this.props.from_currency, "SELL"];
-
+    if (isBuyExchange(this.props.from_currency, this.props.to_currency)) {
+      generalCurrency =  this.props.from_currency;
+      secondaryCurrency = this.props.to_currency;
+      amountFieldTooltip = "substitute " + secondaryCurrency + " balance";
+      amountSubstitute = this.props.substituteBalance(AMOUNT);
+      exchangeType = "BUY";
+    } else {
+      generalCurrency =  this.props.to_currency;
+      secondaryCurrency = this.props.from_currency;
+      totalFieldTooltip = "substitute " + secondaryCurrency + " balance";
+      totalSubstitute = this.props.substituteBalance(TOTAL);
+      exchangeType = "SELL";
+    }
+    
     top = <Toolbar style={styles.toolbar}>
       <Subheader>
         {exchangeType + " " + secondaryCurrency.toUpperCase()}
@@ -116,29 +138,32 @@ class ExchangeBox extends React.Component {
       </IconButton>
     </Toolbar>;
 
-
     if (this.props.isRateLoaded) {
       main = <div>
-        <ExchangeBoxField currency={this.props.from_currency}
-                          handler={this.props.handlerFromAmount}
-                          tooltip="substitute balance"
-                          floatingLabelText={"Amount (" + this.props.from_currency.toUpperCase() + ")"}
+        <ExchangeBoxField currency={secondaryCurrency}
+                          handler={this.props.handlerAmount}
+                          tooltip={amountFieldTooltip}
+                          floatingLabelText={"Amount (" + secondaryCurrency.toUpperCase() + ")"}
                           value={this.props.amount.value}
                           error={this.props.amount.error}
-                          substitute={this.props.substituteBalance}/>
+                          substitute={amountSubstitute}/>
 
-        <ExchangeBoxField currency={this.props.to_currency}
-                          handler={this.props.handlerToAmount}
-                          value={this.props.total.value}
-                          error={this.props.total.error}
-                          floatingLabelText={"Amount (" + this.props.to_currency.toUpperCase() + ")"}/>
-        <ExchangeBoxField currency={this.props.from_currency}
+        <ExchangeBoxField currency={generalCurrency}
                           handler={this.props.handlerRate}
                           value={this.props.rate.value}
                           error={this.props.rate.error}
                           tooltip="substitute rate"
                           floatingLabelText={secondaryCurrency.toUpperCase() + " Price (" + generalCurrency.toUpperCase() + ")"}
                           substitute={this.props.substituteRate}/>
+
+        <ExchangeBoxField currency={generalCurrency}
+                          handler={this.props.handlerTotal}
+                          tooltip={totalFieldTooltip}
+                          value={this.props.total.value}
+                          error={this.props.total.error}
+                          floatingLabelText={"Total (" + generalCurrency.toUpperCase() + ")"}
+                          substitute={totalSubstitute}/>
+
       </div>
 
     } else {
@@ -211,17 +236,17 @@ function
 
 mapDispatchToProps(dispatch) {
   return {
-    handlerFromAmount: (event) => dispatch(changeFromAmount(event.target.value)),
-    handlerToAmount: (event) => dispatch(changeToAmount(event.target.value)),
+    handlerAmount: (event) => dispatch(changeFromAmount(event.target.value)),
+    handlerTotal: (event) => dispatch(changeToAmount(event.target.value)),
     handlerRate: (event) => dispatch(changeRate(event.target.value)),
-    sendExchange: (from_currency,
-                   to_currency,
+    sendExchange: (pair,
+                   order_type,
                    amount,
-                   to_amount,
-                   price) => dispatch(sendExchange(from_currency, to_currency, amount, to_amount, price)),
-    changeMarket: (from_currency, to_currency) => dispatch(replace("/order/" + from_currency + "-" + to_currency)),
+                   total,
+                   price) => dispatch(sendExchange(pair, order_type, amount, total, price)),
+    changeMarket: (from_currency, to_currency) => dispatch(replace("/exchange/" + from_currency + "-" + to_currency)),
     substituteRate: () => dispatch(substituteRate()),
-    substituteBalance: () => dispatch(substituteBalance()),
+    substituteBalance: (field) => () => dispatch(substituteBalance(field)),
     logIn: () => dispatch(logIn()),
     dispatch
   };
