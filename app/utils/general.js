@@ -26,7 +26,7 @@ import {
 import Q from "q";
 import BigNumber from "bignumber.js";
 
-const visible = 8;
+export const visible = 8;
 
 export function isEmpty(value) {
   return value == null || value === ""

@@ -11,7 +11,7 @@ function getIndex(offers, price) {
   return index
 }
 
-function merge(offers, newOffers) {
+export function merge(offers, newOffers) {
   for (let offer of newOffers) {
     let index = getIndex(offers, offer.price);
 
@@ -24,24 +24,12 @@ function merge(offers, newOffers) {
   return offers;
 }
 
-function clean(offers) {
-  for (var i = 0, len = offers.length; i < len; i++) {
-    let offer = offers[i];
-
-    if (offer.amount.isZero()) {
-      offers.splice(i, 1);
-    }
-  }
-
-  return offers;
-}
-
-function sortOffers(offers) {
+export function sortOffers(offers) {
   function compare(a, b) {
     if (a.price.lessThan(b.price))
-      return 1;
-    if (a.price.greaterThan(b.price))
       return -1;
+    if (a.price.greaterThan(b.price))
+      return 1;
     return 0;
   }
 
@@ -49,7 +37,7 @@ function sortOffers(offers) {
   return offers;
 }
 
-function transform(offers) {
+export function transform(offers) {
   let data = [];
 
   for (let offer of offers) {
@@ -67,14 +55,32 @@ function transform(offers) {
   return data;
 }
 
-export function process(_offers, _newOffers) {
-  let newOffers = Object.assign([], _newOffers);
-  let offers = Object.assign([], _offers);
+export function insertOffer(offer, offers) {
+  let index = locationOfOffer(offer, offers);
 
-  newOffers = transform(newOffers);
+  if (offers[index].amount.isZero()) {
+    offers.splice(index, 1);
+  } else {
+    offers.splice(index + 1, 0, offer);
+  }
 
-  offers = merge(offers, newOffers);
-  offers = clean(offers);
-  offers = sortOffers(offers);
-  return offers
+  return offers;
+}
+
+export function locationOfOffer(offer, offers, start, end) {
+  start = start || 0;
+  end = end || offers.length;
+
+  var pivot = parseInt(start + (end - start) / 2, 10);
+
+  if (offers[pivot].price.equals(offer.price)) return pivot;
+
+  if (end - start <= 1)
+    return offers[pivot].price.greaterThan(offer.price) ? pivot - 1 : pivot;
+
+  if (offers[pivot].price.lessThan(offer.price)) {
+    return locationOfOffer(offer, offers, pivot, end);
+  } else {
+    return locationOfOffer(offer, offers, start, pivot);
+  }
 }

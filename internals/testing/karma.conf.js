@@ -60,10 +60,6 @@ module.exports = (config) => {
     webpackMiddleware: {
       noInfo: true,
       stats: 'errors-only',
-      watchOptions: {
-        aggregateTimeout: 100,
-        poll: true
-      }
     },
 
     coverageReporter: {

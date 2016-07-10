@@ -65,7 +65,8 @@ import {
   isArrayEmpty,
   include,
   getType,
-  getPair
+  getPair,
+  reverseOrderType
 } from "utils/general";
 import { isTokenExpired } from "utils/jwt";
 import autobahn from "autobahn";
@@ -220,7 +221,7 @@ class AccountsService {
     let shouldCheck = false;
     let currency = AccountsService.currency;
 
-    let amount = AccountsService.accounts[currency].amount;
+    let amount = new BigNumber(AccountsService.accounts[currency].amount);
 
     for (let exchange of action.exchanges) {
       amount = amount.minus(exchange.amount);
@@ -230,16 +231,16 @@ class AccountsService {
       }
     }
 
-    AccountsService.accounts[currency].amount = amount;
+    AccountsService.accounts[currency].amount = amount.toString();
     yield put(accountUpdated(AccountsService.accounts[currency]));
   }
 
   static * handleWithdrawalCreated(action) {
     let currency = action.withdrawal.currency;
 
-    let amount = AccountsService.accounts[currency].amount;
+    let amount = new BigNumber(AccountsService.accounts[currency].amount);
     amount = amount.minus(action.withdrawal.amount);
-    AccountsService.accounts[currency].amount = amount;
+    AccountsService.accounts[currency].amount = amount.toString();
 
     yield put(accountUpdated(AccountsService.accounts[currency]));
   }
@@ -247,9 +248,9 @@ class AccountsService {
   static * handlerDepositArrived(action) {
     let currency = action.deposit.currency;
 
-    let amount = AccountsService.accounts[currency].amount;
+    let amount = new BigNumber(AccountsService.accounts[currency].amount);
     amount = amount.plus(action.deposit.amount);
-    AccountsService.accounts[currency].amount = amount;
+    AccountsService.accounts[currency].amount = amount.toString();
 
     yield put(accountUpdated(AccountsService.accounts[currency]));
   }
@@ -268,7 +269,6 @@ class AccountsService {
         AccountsService.accounts = {};
 
         for (let account of accounts) {
-          account.amount = new BigNumber(account.amount);
           AccountsService.accounts[account.currency] = account;
           yield put(accountReceived(account));
         }
@@ -302,14 +302,14 @@ class RouteService {
   static * analyze(action) {
     let s = action.payload.pathname;
     let currencies = extractCurrencies(s);
-    
+
     if (currencies != null) {
       let from_currency = currencies[1];
       let to_currency = currencies[2];
 
       let order_type = getType(from_currency, to_currency);
       let pair = getPair(from_currency, to_currency);
-      
+
       yield put(marketChanged(from_currency, to_currency, pair, order_type));
     }
   };
@@ -330,13 +330,7 @@ class MarketInfoService {
 
   static * handlerUpdate(action) {
     if (MarketInfoService.topic == action.topic) {
-      let update = action.data;
-
-      let info = {};
-      info[update.from_currency] = {};
-      info[update.from_currency][update.to_currency] = update;
-
-      yield put(marketInfoChanged(info))
+      yield put(marketInfoChanged(action.data))
     }
   }
 
@@ -358,16 +352,13 @@ class OfferService {
   static topic = null;
 
   static * get(action) {
-
-    let from_currency = action.from_currency;
-    let to_currency = action.to_currency;
-
     let q = "?";
-    q += "from_currency=" + to_currency;
-    q += "&to_currency=" + from_currency;
+    q += "pair=" + action.pair;
+    q += "&type=" + reverseOrderType(action.order_type);
 
     const response = yield call(axios.get, "/api/offers/" + q);
     let offers = response["data"];
+    
 
     yield put(offerReceived(offers));
   };
@@ -380,9 +371,9 @@ class OfferService {
   }
 
   static * connect(action) {
-    let from_currency = action.from_currency;
-    let to_currency = action.to_currency;
-    let topic = "offers_" + to_currency + "_" + from_currency;
+    let pair = action.pair;
+    let order_type = reverseOrderType(action.order_type);
+    let topic = "offers_" + pair + "_" + order_type;
 
     if (OfferService.topic != topic) {
       yield put(unsubscribeFromTopic(OfferService.topic));
@@ -494,8 +485,8 @@ class AutobahnService {
 class ExchangeService {
   static isAuthenticated = false;
   static isMarketInit = false;
-  static from_currency = null;
-  static to_currency = null;
+  static pair = null;
+  static order_type = null;
 
   static *handlerLoggedIn() {
     ExchangeService.isAuthenticated = true;
@@ -508,19 +499,16 @@ class ExchangeService {
 
   static *handlerMarketChanged(action) {
     ExchangeService.isMarketInit = true;
-    ExchangeService.from_currency = action.from_currency;
-    ExchangeService.to_currency = action.to_currency;
+    ExchangeService.order_type = action.order_type;
+    ExchangeService.pair = action.pair;
     yield* ExchangeService.getUserExchanges();
   }
 
   static *getUserExchanges() {
     if (ExchangeService.isMarketInit && ExchangeService.isAuthenticated) {
-      let from_currency = ExchangeService.from_currency;
-      let to_currency = ExchangeService.to_currency;
-
       let q = "?";
-      q += "from_currency=" + from_currency;
-      q += "&to_currency=" + to_currency;
+      q += "pair=" + ExchangeService.pair;
+      q += "&type=" + ExchangeService.order_type;
 
       const response = yield call(axios.get, "/api/orders/" + q);
       yield put(userExchangesHistoryReceived(response.data));
@@ -558,9 +546,9 @@ class ExchangeService {
 
   static * setup() {
     yield [
-      // takeEvery(LOGGED_IN, ExchangeService.handlerLoggedIn),
-      // takeEvery(LOGGED_OUT, ExchangeService.handlerLoggedOut),
-      // takeEvery(MARKET_CHANGED, ExchangeService.handlerMarketChanged),
+      takeEvery(LOGGED_IN, ExchangeService.handlerLoggedIn),
+      takeEvery(LOGGED_OUT, ExchangeService.handlerLoggedOut),
+      takeEvery(MARKET_CHANGED, ExchangeService.handlerMarketChanged),
       takeLatest(SEND_EXCHANGE, ExchangeService.handlerSendExchange)
     ]
   }
@@ -577,9 +565,9 @@ class HistoryService {
   }
 
   static * connect(action) {
-    let from_currency = action.from_currency;
-    let to_currency = action.to_currency;
-    let topic = "history_" + from_currency + "_" + to_currency;
+    let pair = action.pair;
+    let order_type = action.order_type;
+    let topic = "history_" + pair + "_" + order_type;
 
     if (HistoryService.topic != topic) {
       yield put(unsubscribeFromTopic(HistoryService.topic));
@@ -591,8 +579,8 @@ class HistoryService {
 
   static * getAllExchanges(action) {
     let q = "?";
-    q += "from_currency=" + action.from_currency;
-    q += "&to_currency=" + action.to_currency;
+    q += "pair=" + action.pair;
+    q += "&type=" + action.order_type;
 
     const response = yield call(axios.get, "/api/history/" + q);
     yield put(exchangesHistoryReceived(response.data));

@@ -110,11 +110,11 @@ class ExchangeBox extends React.Component {
       main = <div>
         <ExchangeBoxField currency={secondaryCurrency}
                           handler={this.props.handlerAmount}
-                          tooltip={this.props.order_type == "buy" ? "substitute balance" : null}
+                          tooltip={this.props.order_type == "sell" ? "substitute balance" : null}
                           floatingLabelText={"Amount (" + secondaryCurrency.toUpperCase() + ")"}
                           value={this.props.amount.value}
                           error={this.props.amount.error}
-                          substitute={this.props.order_type == "buy" ? this.props.substituteBalance(AMOUNT) : null}/>
+                          substitute={this.props.order_type == "sell" ? this.props.substituteBalance(AMOUNT) : null}/>
 
         <ExchangeBoxField currency={primaryCurrency}
                           handler={this.props.handlerRate}
@@ -126,11 +126,11 @@ class ExchangeBox extends React.Component {
 
         <ExchangeBoxField currency={primaryCurrency}
                           handler={this.props.handlerTotal}
-                          tooltip={this.props.order_type == "sell" ? "substitute balance" : null}
+                          tooltip={this.props.order_type == "buy" ? "substitute balance" : null}
                           value={this.props.total.value}
                           error={this.props.total.error}
                           floatingLabelText={"Total (" + primaryCurrency.toUpperCase() + ")"}
-                          substitute={this.props.order_type == "sell" ? this.props.substituteBalance(TOTAL) : null}/>
+                          substitute={this.props.order_type == "buy" ? this.props.substituteBalance(TOTAL) : null}/>
 
       </div>
 

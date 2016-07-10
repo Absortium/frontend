@@ -29,7 +29,8 @@ import {
 import { SUBSTITUTE_OFFER } from "containers/ExchangeOffers/constants";
 import {
   isDirty,
-  updateState
+  updateState,
+  representation
 } from "utils/general";
 import {
   setAmount,
@@ -90,11 +91,19 @@ function exchangeBoxReducer(state = initialState, action) {
 
         if (isAccountExist) {
           let error = null;
-          let balance = new BigNumber(action.account.amount);
-          substate.balance = balance;
+          let amount = action.account.amount;
 
-          if (!isDirty(state.amount.value)) {
-            [error, substate] = setAmount(balance, state, substate);
+          substate.balance = new BigNumber(amount);
+
+          if (state.order_type == "sell") {
+            if (!isDirty(state.amount.value)) {
+              [error, substate] = setAmount(representation(substate.balance), state, substate);
+            }
+
+          } else if (state.order_type == "buy") {
+            if (!isDirty(state.total.value)) {
+              [error, substate] = setTotal(representation(substate.balance), state, substate);
+            }
           }
         }
 
@@ -114,6 +123,7 @@ function exchangeBoxReducer(state = initialState, action) {
 
         let error = null;
         let market_rate = new BigNumber(action.marketInfo.rate);
+
         substate.market_rate = market_rate;
 
         if (!isDirty(state.rate.value)) {
@@ -258,7 +268,7 @@ function exchangeBoxReducer(state = initialState, action) {
       [error, substate] = setRate(action.price, newState, substate);
       newState = updateState(newState, substate);
 
-      [error, substate] = setTotal(action.amount, newState, substate);
+      [error, substate] = setAmount(action.amount, newState, substate);
       newState = updateState(newState, substate);
 
       if (newState.amount.error == ERROR_GT_BALANCE) {

@@ -54,12 +54,8 @@ class ExchangeOffers extends React.Component {
   handleRowSelect = (ids) => {
     if (ids.length == 1) {
       let id = ids[0];
-
-
-      let price = Object.keys(this.props.offers)[id];
-      let amount = this.props.offers[price].amount;
-
-      this.props.substituteOffer(amount, price)
+      let offer = this.props.offers[id];
+      this.props.substituteOffer(offer.amount.toString(), offer.price.toString())
     }
   };
 

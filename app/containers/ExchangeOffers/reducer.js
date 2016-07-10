@@ -9,7 +9,14 @@ import {
   MARKET_CHANGED,
   OFFERS_CHANGED
 } from "containers/App/constants";
-import { process } from "./utils";
+import {
+  transform,
+  clean,
+  merge,
+  insertOffer,
+  sortOffers
+} from "./utils";
+import { pprint } from "../../utils/general";
 const initialState = {
   offers: [],
   offersLoaded: false,
@@ -19,12 +26,34 @@ const initialState = {
 
 function exchangeOffersReducer(state = initialState, action) {
   switch (action.type) {
-    case OFFERS_CHANGED:
     case OFFERS_RECEIVED:
     {
+      let offers = Object.assign([], action.offers);
+      offers = transform(offers);
+      offers = sortOffers(offers);
+
       return Object.assign({}, state,
         {
-          offers: process(state.offers, action.offers),
+          offers: offers,
+          offersLoaded: true
+        });
+    }
+    case OFFERS_CHANGED:
+    {
+
+      let newOffers = Object.assign([], action.offers);
+      let offers = Object.assign([], state.offers);
+
+      newOffers = transform(newOffers);
+
+      for (let offer of newOffers) {
+        pprint(offer);
+        offers = insertOffer(offer, offers);
+      }
+
+      return Object.assign({}, state,
+        {
+          offers: offers,
           offersLoaded: true
         });
     }

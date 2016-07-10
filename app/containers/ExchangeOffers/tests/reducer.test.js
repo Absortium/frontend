@@ -18,6 +18,8 @@ describe("ExchangeOffersReducer", () => {
   let state;
   let expected;
 
+
+
   beforeEach(() => {
     state = copy(getInitState());
     expected = copy(getInitState());
@@ -54,6 +56,7 @@ describe("ExchangeOffersReducer", () => {
     });
   });
 
+  
   it("check add new offer", () => {
     const offers = [{ price: 1, amount: 2 }];
     const update = [{ price: 2, amount: 2 }];

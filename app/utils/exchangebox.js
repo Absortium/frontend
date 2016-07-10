@@ -18,35 +18,42 @@ import {
   errExist,
   genParam,
   isValid,
-  isEmpty
+  isEmpty,
+  visible
 } from "utils/general";
 import BigNumber from "bignumber.js";
+import { updateState } from "./general";
 
 export function setTotal(_total, state, substate) {
   let error = null;
   let rate = state.rate.value;
-  let isAccountExist = state.isAccountExist;
+
+  state = updateState(state, substate);
 
   if (!isEmpty(_total)) {
     if (isValid(_total)) {
+
       let total = new BigNumber(_total);
-
       if (total.greaterThan(TOTAL_MIN)) {
-        if (!errExist(state.rate.error)) {
-          let error = null;
 
-          rate = new BigNumber(rate);
+        if (state.order_type === "sell" || (state.isAccountExist && !total.greaterThan(state.balance))) {
 
-          let amount = total.dividedBy(rate);
-          let notEnoughMoney = isAccountExist && amount.greaterThan(state.balance);
+          if (!errExist(state.rate.error)) {
+            let error = null;
 
-          if (notEnoughMoney) {
-            error = ERROR_GT_BALANCE;
-          } else if (amount.lessThan(0)) {
-            error = ERROR_FIELD_LT_ZERO;
+            rate = new BigNumber(rate);
+            let amount = new BigNumber(total.dividedBy(rate).toPrecision(visible));
+
+            if (amount.lessThan(0)) {
+              error = ERROR_FIELD_LT_ZERO;
+            } else if (state.order_type === "sell" && amount.greaterThan(state.balance)) {
+              error = ERROR_GT_BALANCE
+            }
+            substate.amount = genParam(amount, error);
           }
 
-          substate.amount = genParam(amount, error);
+        } else {
+          error = ERROR_GT_BALANCE
         }
       } else {
         error = ERROR_TOTAL_LT_MIN;
@@ -54,7 +61,9 @@ export function setTotal(_total, state, substate) {
     } else {
       error = ERROR_FIELD_NOT_VALID;
     }
-  } else {
+  }
+
+  else {
     substate.amount = genParam("", ERROR_FIELD_IS_REQUIRED);
     error = ERROR_FIELD_IS_REQUIRED;
   }
@@ -67,23 +76,28 @@ export function setAmount(_amount, state, substate) {
   let error = null;
   let rate = state.rate.value;
 
+  state = updateState(state, substate);
+
   if (!isEmpty(_amount)) {
     if (isValid(_amount)) {
       let amount = new BigNumber(_amount);
 
       if (amount.greaterThanOrEqualTo(0)) {
-
-        let enoughMoney = !(state.isAccountExist && amount.greaterThan(state.balance));
-
-        if (enoughMoney) {
+        if (state.order_type === "buy" || state.isAccountExist && !amount.greaterThan(state.balance)) {
           if (!errExist(state.rate.error)) {
             let error = null;
             rate = new BigNumber(rate);
 
-            let total = amount.times(rate);
+            let total = new BigNumber(amount.times(rate).toFixed(visible));
+            console.log(visible);
+            console.log(total.toString());
+            console.log(state.balance.toString());
+            console.log(total.greaterThan(state.balance));
 
             if (total.lessThan(TOTAL_MIN)) {
               error = ERROR_TOTAL_LT_MIN
+            } else if (state.order_type === "buy" && total.greaterThan(state.balance)) {
+              error = ERROR_GT_BALANCE
             }
 
             substate.total = genParam(total, error);
@@ -111,6 +125,8 @@ export function setRate(_rate, state, substate) {
   let total = state.total.value;
   let amount = state.amount.value;
   let isAccountExist = state.isAccountExist;
+
+  state = updateState(state, substate);
 
   if (!isEmpty(_rate)) {
     if (isValid(_rate)) {
