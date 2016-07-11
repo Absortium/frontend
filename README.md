@@ -4,9 +4,8 @@
   
     Name  | Version 
   --------| -------
-  docker-compose | 1.6
-  docker | 1.11
-  docker-machine | 0.6
+  docker-compose | 1.8.0-rc1
+  docker | 1.12.0-rc3
   
   **Step №1**: Clone repository.  
   ```bash
@@ -22,46 +21,29 @@
     done  
   ```
   
-  **Step №3**: Install docker on your machine, for that go to the docker [website](https://www.docker.com). If you working on OS X do not forget that now we use old docker toolbox with docker machine. Also do not forget, that you should create `default` machine and initialize it, all information you may find on docker website.
+  **Step №3**: Ask maintainer to give you `.sensetive` file.
   
-  **Step №4**: Ask maintainer to give you `.sensetive` file.
-  
-  **Step №5**: Install and run `postgres` service.
+  **Step №4**: Install and run `postgres` service.
   ```bash
   $ dcu -d postgres
   ```
 
-  **Step №6**: Build `backend` service.
+  **Step №5**: Build `backend` service.
   ```bash
   $ dcb backend
   ```  
 
-**Step №7**: Migrate database.
+**Step №6**: Migrate database.
   ```bash
   $ dcr m-backend migrate
   ```
   
-**Step №8**: Install and run `frontend`.
+**Step №7**: Install and run `frontend`.
   ```bash
   $ dcu frontend
   ```
-
-**Step №9**: Add entry to the `/etc/hosts`, otherwise you will not be able to authenticate properly. If you run docker containers on the `docker-machine` (OS X), than check your `docker-machine` ip and pass it to the `/etc/hosts`:
- ```bash
- $ docker-machine ip
- $ sudo bash -c 'echo "<ip> dev.absortium.com" >> /etc/hosts'
- ```
- 
- * Otherwise set `127.0.0.1`:
- 
- ```bash
- $ sudo bash -c 'echo "127.0.0.1 dev.absortium.com " >> /etc/hosts'
- ```
    
-**Step №10**: Go to the `dev.absortium.com:3000`
-    
-## Tips
-* If you use `docker-machine` than you must download project only under `/Users/` directory.
+**Step №8**: Go to the `localhost:3000`
  
 ## Services
 * `m-backend` - main backend service.
