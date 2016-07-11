@@ -1,29 +1,5 @@
 import BigNumber from "bignumber.js";
 
-function getIndex(offers, price) {
-  let index = -1;
-  for (var i = 0, len = offers.length; i < len; i++) {
-    if (offers[i].price.equals(price)) {
-      index = i;
-      break;
-    }
-  }
-  return index
-}
-
-export function merge(offers, newOffers) {
-  for (let offer of newOffers) {
-    let index = getIndex(offers, offer.price);
-
-    if (index != -1) {
-      offers[index] = offer;
-    } else {
-      offers.push(offer);
-    }
-  }
-  return offers;
-}
-
 export function sortOffers(offers) {
   function compare(a, b) {
     if (a.price.lessThan(b.price))
