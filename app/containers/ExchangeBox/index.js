@@ -25,7 +25,6 @@ import Divider from "material-ui/Divider";
 import ExchangeBoxField from "components/ExchangeBoxField";
 import { replace } from "react-router-redux";
 import { connect } from "react-redux";
-import { toastr } from "react-redux-toastr";
 import { Toolbar } from "material-ui/Toolbar";
 import {
   getPrimaryCurrency,

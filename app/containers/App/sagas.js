@@ -358,7 +358,7 @@ class OfferService {
 
     const response = yield call(axios.get, "/api/offers/" + q);
     let offers = response["data"];
-    
+
 
     yield put(offerReceived(offers));
   };

@@ -287,6 +287,8 @@ function testAccountLoaded(state, expected, isFirst = true) {
     expected["last_changed"] = "amount";
   }
 
+
+  
   return [state, expected]
 }
 

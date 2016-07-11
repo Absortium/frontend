@@ -14,11 +14,11 @@ const fixes = require('./fixes');
 
 module.exports = {
   devtool: 'inline-source-map',
-  isparta: {
-    babel: {
-      presets: ['es2015', 'react', 'stage-0'],
-    },
-  },
+  // isparta: {
+  //   babel: {
+  //     presets: ['es2015', 'react', 'stage-0'],
+  //   },
+  // },
   module: {
     // Some libraries don't like being run through babel.
     // If they gripe, put them here.
@@ -29,25 +29,26 @@ module.exports = {
       'ws'
 
     ],
-    preLoaders: [
-      {
-        test: /\.js$/,
-        loader: 'isparta',
-        include: path.resolve('app/'),
-      },
-    ],
+    // preLoaders: [
+    //   {
+    //     test: /\.js$/,
+    //     loader: 'isparta',
+    //     include: path.resolve('app/'),
+    //   },
+    // ],
     loaders: [
       ...fixes.autoBahnFix(),
       ...fixes.authLockFix(),
 
       { test: /\.json$/, loader: 'json-loader' },
       { test: /\.css$/, loader: 'null-loader' },
-      { test: /\.less$/, loader: "null-loader"},
+      { test: /\.less$/, loader: "null-loader" },
 
       // sinon.js--aliased for enzyme--expects/requires global vars.
       // imports-loader allows for global vars to be injected into the module.
       // See https://github.com/webpack/webpack/issues/304
-      { test: /sinon(\\|\/)pkg(\\|\/)sinon\.js/,
+      {
+        test: /sinon(\\|\/)pkg(\\|\/)sinon\.js/,
         loader: 'imports?define=>false,require=>false',
       },
       { test: /\.js$/,
