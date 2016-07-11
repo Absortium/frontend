@@ -44,6 +44,12 @@
   ```
    
 **Step №8**: Go to the `localhost:3000`
+
+## Tips
+  **Test Driven Development**:
+  ```bash
+  $ dc run frontend run test:watch -- --grep='<pattern>'
+  ```
  
 ## Services
 * `m-backend` - main backend service.
