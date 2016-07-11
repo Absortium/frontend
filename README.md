@@ -25,22 +25,22 @@
   
   **Step №4**: Install and run `postgres` service.
   ```bash
-  $ dcu -d postgres
+  $ dc up -d postgres
   ```
 
   **Step №5**: Build `backend` service.
   ```bash
-  $ dcb backend
+  $ dc build backend
   ```  
 
 **Step №6**: Migrate database.
   ```bash
-  $ dcr m-backend migrate
+  $ dc run m-backend migrate
   ```
   
 **Step №7**: Install and run `frontend`.
   ```bash
-  $ dcu frontend
+  $ dc up frontend
   ```
    
 **Step №8**: Go to the `localhost:3000`
