@@ -17,8 +17,8 @@ import {
   marketInfoReceived
 } from "containers/App/actions";
 import {
-  changeFromAmount,
-  changeToAmount,
+  changeAmount,
+  changeTotal,
   changeRate
 } from "../actions";
 import {
@@ -36,17 +36,14 @@ var account = {
 };
 
 var marketInfo = {
-  btc: {
-    eth: {
-      rate: "1.00000000",
-      rate_24h_max: "0.00000000",
-      rate_24h_min: "0.00000000",
-      volume_24h: 0
-    }
-  }
+  rate: "1.00000000",
+  rate_24h_max: "0.00000000",
+  rate_24h_min: "0.00000000",
+  volume_24h: 0,
+  pair: "btc_eth"
 };
 
-describe("ExchangeBoxReducer", () => {
+describe("ExchangeBox", () => {
   let state;
   let expected;
 
@@ -55,22 +52,21 @@ describe("ExchangeBoxReducer", () => {
     expected = copy(getInitState());
   });
 
-  afterEach(() => {
-    expect(state).to.deep.equal(expected);
-  });
-
   it("MARKET_CHANGED", () => {
     [state, expected] = testChangeMarket(state, expected);
+    expect(state).to.deep.equal(expected);
   });
 
   it("LOGGED_IN", () => {
     [state, expected] = testAuthentication(state, expected);
+    expect(state).to.deep.equal(expected);
   });
 
   it("ACCOUNT_RECEIVED", () => {
     [state, expected] = testChangeMarket(state, expected);
     [state, expected] = testAuthentication(state, expected);
     [state, expected] = testAccountLoaded(state, expected);
+    expect(state).to.deep.equal(expected);
   });
 
   it("MARKET_INFO_RECEIVED", () => {
@@ -78,14 +74,16 @@ describe("ExchangeBoxReducer", () => {
     [state, expected] = testAuthentication(state, expected);
     [state, expected] = testAccountLoaded(state, expected);
     [state, expected] = testMarketInfoReceived(state, expected);
+    expect(state).to.deep.equal(expected);
   });
 
   it("calculation #1", () => {
     [state, expected] = preinit(state, expected);
 
-    state = exchageBoxReducer(state, changeFromAmount("0"));
+    state = exchageBoxReducer(state, changeAmount("0"));
     expected["amount"] = genParam("0", null);
     expected["total"] = genParam("0", ERROR_TOTAL_LT_MIN);
+    expect(state).to.deep.equal(expected);
   });
 
   it("calculation #2", () => {
@@ -94,6 +92,7 @@ describe("ExchangeBoxReducer", () => {
     state = exchageBoxReducer(state, changeRate(""));
     expected["rate"] = genParam("", ERROR_FIELD_IS_REQUIRED);
     expected["total"] = genParam("", ERROR_FIELD_IS_REQUIRED);
+    expect(state).to.deep.equal(expected);
   });
 
   it("calculation #3", () => {
@@ -104,9 +103,10 @@ describe("ExchangeBoxReducer", () => {
 
     expected["rate"] = genParam("0", ERROR_RATE_LT_MIN);
     expected["total"] = genParam("", ERROR_FIELD_IS_REQUIRED);
+    expect(state).to.deep.equal(expected);
   });
 
-  it("calculation #7", () => {
+  it("calculation #4", () => {
     [state, expected] = preinit(state, expected);
 
     state = exchageBoxReducer(state, changeRate(""));
@@ -115,9 +115,10 @@ describe("ExchangeBoxReducer", () => {
 
     expected["rate"] = genParam("0.", ERROR_RATE_LT_MIN);
     expected["total"] = genParam("", ERROR_FIELD_IS_REQUIRED);
+    expect(state).to.deep.equal(expected);
   });
 
-  it("calculation #8", () => {
+  it("calculation #5", () => {
     [state, expected] = preinit(state, expected);
 
     state = exchageBoxReducer(state, changeRate(""));
@@ -127,9 +128,10 @@ describe("ExchangeBoxReducer", () => {
 
     expected["rate"] = genParam("0.0", ERROR_RATE_LT_MIN);
     expected["total"] = genParam("", ERROR_FIELD_IS_REQUIRED);
+    expect(state).to.deep.equal(expected);
   });
 
-  it("calculation #9", () => {
+  it("calculation #6", () => {
     [state, expected] = preinit(state, expected);
 
     state = exchageBoxReducer(state, changeRate(""));
@@ -139,45 +141,50 @@ describe("ExchangeBoxReducer", () => {
 
     expected["rate"] = genParam("0.1", null);
     expected["total"] = genParam("0.4", null);
+    expect(state).to.deep.equal(expected);
   });
 
-  it("calculation #10", () => {
+  it("calculation #7", () => {
     [state, expected] = preinit(state, expected);
 
     state = exchageBoxReducer(state, changeRate("0"));
     state = exchageBoxReducer(state, changeRate("01"));
 
     expected["rate"] = genParam("01", null);
+    expect(state).to.deep.equal(expected);
   });
 
-  it("calculation #12", () => {
+  it("calculation #8", () => {
     [state, expected] = preinit(state, expected);
 
     state = exchageBoxReducer(state, changeRate("-"));
     state = exchageBoxReducer(state, changeRate("-1"));
 
     expected["rate"] = genParam("-1", ERROR_RATE_LT_MIN);
+    expect(state).to.deep.equal(expected);
   });
 
-  it("calculation #13", () => {
+  it("calculation #9", () => {
     [state, expected] = preinit(state, expected);
 
-    state = exchageBoxReducer(state, changeToAmount(""));
-
+    state = exchageBoxReducer(state, changeTotal(""));
     expected["total"] = genParam("", ERROR_FIELD_IS_REQUIRED);
     expected["amount"] = genParam("", ERROR_FIELD_IS_REQUIRED);
+    expected["last_changed"] = "total";
+    expect(state).to.deep.equal(expected);
   });
 
-  it("calculation #14", () => {
+  it("calculation #10", () => {
     [state, expected] = preinit(state, expected);
 
-    state = exchageBoxReducer(state, changeFromAmount(""));
+    state = exchageBoxReducer(state, changeAmount(""));
 
     expected["amount"] = genParam("", ERROR_FIELD_IS_REQUIRED);
     expected["total"] = genParam("", ERROR_FIELD_IS_REQUIRED);
+    expect(state).to.deep.equal(expected);
   });
 
-  it("calculation #15", () => {
+  it("calculation #11", () => {
     [state, expected] = preinit(state, expected);
 
     state = exchageBoxReducer(state, changeRate("1"));
@@ -188,9 +195,10 @@ describe("ExchangeBoxReducer", () => {
 
     expected["rate"] = genParam("11111", ERROR_RATE_GT_MAX);
     expected["total"] = genParam("444", null);
+    expect(state).to.deep.equal(expected);
   });
 
-  it("calculation #16", () => {
+  it("calculation #12", () => {
     [state, expected] = preinit(state, expected);
 
     state = exchageBoxReducer(state, changeRate(""));
@@ -202,69 +210,77 @@ describe("ExchangeBoxReducer", () => {
 
     expected["rate"] = genParam("0.0001", null);
     expected["total"] = genParam("0.0004", ERROR_TOTAL_LT_MIN);
+    expect(state).to.deep.equal(expected);
   });
 
-  it("calculation #17", () => {
+  it("calculation #13", () => {
     [state, expected] = preinit(state, expected);
 
-    state = exchageBoxReducer(state, changeToAmount(""));
-    state = exchageBoxReducer(state, changeToAmount("1"));
-    state = exchageBoxReducer(state, changeToAmount("10"));
+    state = exchageBoxReducer(state, changeTotal(""));
+    state = exchageBoxReducer(state, changeTotal("1"));
+    state = exchageBoxReducer(state, changeTotal("10"));
     expected["last_changed"] = "total";
 
 
     expected["total"] = genParam("10", null);
     expected["amount"] = genParam("10", ERROR_GT_BALANCE);
+    expect(state).to.deep.equal(expected);
   });
 
-  it("calculation #18", () => {
+  it("calculation #14", () => {
     [state, expected] = preinit(state, expected);
 
-    state = exchageBoxReducer(state, changeToAmount(""));
-    state = exchageBoxReducer(state, changeToAmount("1"));
+    state = exchageBoxReducer(state, changeTotal(""));
+    state = exchageBoxReducer(state, changeTotal("1"));
     expected["last_changed"] = "total";
 
     expected["total"] = genParam("1", null);
     expected["amount"] = genParam("1", null);
+    expect(state).to.deep.equal(expected);
   });
 
-  it("calculation #19", () => {
+  it("calculation #15", () => {
     [state, expected] = preinit(state, expected);
 
-    state = exchageBoxReducer(state, changeToAmount(""));
-    state = exchageBoxReducer(state, changeToAmount("4"));
+    state = exchageBoxReducer(state, changeTotal(""));
+    state = exchageBoxReducer(state, changeTotal("4"));
     expected["last_changed"] = "total";
+    expect(state).to.deep.equal(expected);
   });
 
-  it("calculation #20", () => {
+  it("calculation #16", () => {
     [state, expected] = preinit(state, expected);
 
-    state = exchageBoxReducer(state, changeFromAmount(""));
-    state = exchageBoxReducer(state, changeFromAmount("-"));
-    state = exchageBoxReducer(state, changeFromAmount("-4"));
+    state = exchageBoxReducer(state, changeAmount(""));
+    state = exchageBoxReducer(state, changeAmount("-"));
+    state = exchageBoxReducer(state, changeAmount("-4"));
     expected["last_changed"] = "amount";
 
     expected["amount"] = genParam("-4", ERROR_FIELD_LT_ZERO);
     expected["total"] = genParam("", ERROR_FIELD_IS_REQUIRED);
+    expect(state).to.deep.equal(expected);
   });
 
-  it("calculation #21", () => {
+  it("calculation #17", () => {
     [state, expected] = preinit(state, expected);
 
     state = exchageBoxReducer(state, changeRate("14"));
-    state = exchageBoxReducer(state, changeToAmount("1"));
+    state = exchageBoxReducer(state, changeTotal("1"));
     expected["last_changed"] = "total";
 
-    expected["amount"] = genParam("0.07142857142857142857", null);
+    expected["amount"] = genParam("0.07142857", null);
     expected["rate"] = genParam("14", null);
     expected["total"] = genParam("1", null);
+    expect(state).to.deep.equal(expected);
   });
 });
 
 function testChangeMarket(state, expected) {
-  state = exchageBoxReducer(state, marketChanged("btc", "eth"));
+  state = exchageBoxReducer(state, marketChanged("btc", "eth", "btc_eth", "sell"));
   expected["from_currency"] = "btc";
   expected["to_currency"] = "eth";
+  expected["pair"] = "btc_eth";
+  expected["order_type"] = "sell";
 
   return [state, expected]
 }
@@ -288,7 +304,6 @@ function testAccountLoaded(state, expected, isFirst = true) {
   }
 
 
-  
   return [state, expected]
 }
 

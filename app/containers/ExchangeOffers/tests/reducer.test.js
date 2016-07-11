@@ -6,18 +6,16 @@ import {
   offersChanged
 } from "containers/App/actions";
 import exchangeOffersReducer from "../reducer";
-import { pprint } from "../../../utils/general";
 
-function transform(offer) {
-    let data = {};
-    for (let key in offer) data[key] = parseFloat(offer[key] + "")
-    return data
+function makeTestable(offer) {
+  let data = {};
+  for (let key in offer) data[key] = parseFloat(offer[key] + "")
+  return data
 }
 
-describe("ExchangeOffersReducer", () => {
+describe("ExchangeOffers reducer", () => {
   let state;
   let expected;
-
 
 
   beforeEach(() => {
@@ -32,10 +30,10 @@ describe("ExchangeOffersReducer", () => {
 
     expect(state).to.have.property("offers").and.not.equal(null);
     expect(state).to.have.property("offersLoaded").and.equal(true);
-    expect(transform(state.offers[0])).to.deep.equal({
-        price: 1,
-        amount: 2,
-        total: 2
+    expect(makeTestable(state.offers[0])).to.deep.equal({
+      price: 1,
+      amount: 2,
+      total: 2
     });
   });
 
@@ -49,14 +47,14 @@ describe("ExchangeOffersReducer", () => {
     expect(state).to.have.property("offers").and.not.equal(null);
     expect(state).to.have.property("offersLoaded").and.equal(true);
 
-    expect(transform(state.offers[0])).to.deep.equal({
+    expect(makeTestable(state.offers[0])).to.deep.equal({
       price: 1,
       amount: 3,
       total: 3
     });
   });
 
-  
+
   it("check add new offer", () => {
     const offers = [{ price: 1, amount: 2 }];
     const update = [{ price: 2, amount: 2 }];
@@ -67,13 +65,13 @@ describe("ExchangeOffersReducer", () => {
     expect(state).to.have.property("offers").and.not.equal(null);
     expect(state).to.have.property("offersLoaded").and.equal(true);
 
-    expect(transform(state.offers[0])).to.deep.equal({
+    expect(makeTestable(state.offers[0])).to.deep.equal({
       price: 1,
       amount: 2,
       total: 2
     });
 
-    expect(transform(state.offers[1])).to.deep.equal({
+    expect(makeTestable(state.offers[1])).to.deep.equal({
       price: 0.5,
       amount: 2,
       total: 4
@@ -94,9 +92,9 @@ describe("ExchangeOffersReducer", () => {
     expect(state).to.have.property("offers").and.not.equal(null);
     expect(state).to.have.property("offersLoaded").and.equal(true);
 
-    expect(transform(state.offers[0]).price).and.equal(1);
-    expect(transform(state.offers[1]).price).and.equal(0.5);
-    expect(transform(state.offers[2]).price).and.equal(0.25);
+    expect(makeTestable(state.offers[0]).price).and.equal(1);
+    expect(makeTestable(state.offers[1]).price).and.equal(0.5);
+    expect(makeTestable(state.offers[2]).price).and.equal(0.25);
   });
 
   it("check delete offer", () => {

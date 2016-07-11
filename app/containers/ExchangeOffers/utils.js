@@ -56,12 +56,19 @@ export function transform(offers) {
 }
 
 export function insertOffer(offer, offers) {
-  let index = locationOfOffer(offer, offers);
+  let [index, isExist] = locationOfOffer(offer, offers);
 
-  if (offers[index].amount.isZero()) {
-    offers.splice(index, 1);
+  if (isExist) {
+    if (offer.amount.isZero()) {
+      // in case of zero amount we should delete offer
+      offers.splice(index, 1);
+    } else {
+      // in case of non zero amount we should update offer with new one
+      offers.splice(index, 1, offer);
+    }
   } else {
-    offers.splice(index + 1, 0, offer);
+    // if offer not exist just insert it into sorted array
+    offers.splice(index, 0, offer);
   }
 
   return offers;
@@ -70,17 +77,17 @@ export function insertOffer(offer, offers) {
 export function locationOfOffer(offer, offers, start, end) {
   start = start || 0;
   end = end || offers.length;
+  
+  var index = parseInt(start + (end - start) / 2, 10);
 
-  var pivot = parseInt(start + (end - start) / 2, 10);
-
-  if (offers[pivot].price.equals(offer.price)) return pivot;
+  if (offers[index].price.equals(offer.price)) return [index, true];
 
   if (end - start <= 1)
-    return offers[pivot].price.greaterThan(offer.price) ? pivot - 1 : pivot;
+    return offers[index].price.greaterThan(offer.price) ? [index, false] : [index + 1, false];
 
-  if (offers[pivot].price.lessThan(offer.price)) {
-    return locationOfOffer(offer, offers, pivot, end);
+  if (offers[index].price.lessThan(offer.price)) {
+    return locationOfOffer(offer, offers, index, end);
   } else {
-    return locationOfOffer(offer, offers, start, pivot);
+    return locationOfOffer(offer, offers, start, index);
   }
 }

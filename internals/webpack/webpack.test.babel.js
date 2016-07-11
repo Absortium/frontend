@@ -77,20 +77,20 @@ module.exports = {
   // https://webpack.github.io/docs/configuration.html#node
   // https://github.com/webpack/node-libs-browser/tree/master/mock
   // https://github.com/webpack/jade-loader/issues/8#issuecomment-55568520
-  node: {
-    fs: 'empty',
-    child_process: 'empty',
-    net: 'empty',
-    tls: 'empty',
-  },
+  // node: {
+  //   fs: 'empty',
+  //   child_process: 'empty',
+  //   net: 'empty',
+  //   tls: 'empty',
+  // },
 
   // required for enzyme to work properly
   externals: {
     'ws': true,
-    jsdom: 'window',
-    'react/addons': true,
-    'react/lib/ExecutionEnvironment': true,
-    'react/lib/ReactContext': 'window',
+    // jsdom: 'window',
+    // 'react/addons': true,
+    // 'react/lib/ExecutionEnvironment': true,
+    // 'react/lib/ReactContext': 'window',
   },
   resolve: {
     modulesDirectories: modules,

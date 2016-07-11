@@ -10,9 +10,9 @@ import {
 import {
   substituteRate,
   substituteBalance,
-  changeFromAmount,
+  changeAmount,
   changeRate,
-  changeToAmount
+  changeTotal
 } from "./actions";
 import selectExchangeBox from "./selectors";
 import Paper from "material-ui/Paper";
@@ -203,8 +203,8 @@ function
 
 mapDispatchToProps(dispatch) {
   return {
-    handlerAmount: (event) => dispatch(changeFromAmount(event.target.value)),
-    handlerTotal: (event) => dispatch(changeToAmount(event.target.value)),
+    handlerAmount: (event) => dispatch(changeAmount(event.target.value)),
+    handlerTotal: (event) => dispatch(changeTotal(event.target.value)),
     handlerRate: (event) => dispatch(changeRate(event.target.value)),
     sendExchange: (pair,
                    order_type,

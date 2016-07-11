@@ -24,14 +24,14 @@ import {
     SUBSTITUTE_BALANCE
 } from "./constants";
 
-export function changeFromAmount(amount) {
+export function changeAmount(amount) {
     return {
         type: CHANGE_AMOUNT,
         amount
     };
 }
 
-export function changeToAmount(total) {
+export function changeTotal(total) {
     return {
         type: CHANGE_TOTAL,
         total

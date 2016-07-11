@@ -36,17 +36,16 @@ export function setTotal(_total, state, substate) {
       let total = new BigNumber(_total);
       if (total.greaterThan(TOTAL_MIN)) {
 
-        if (state.order_type === "sell" || (state.isAccountExist && !total.greaterThan(state.balance))) {
-
+        if (state.order_type === "sell" || !state.isAccountExist || !total.greaterThan(state.balance)) {
           if (!errExist(state.rate.error)) {
             let error = null;
 
             rate = new BigNumber(rate);
-            let amount = new BigNumber(total.dividedBy(rate).toPrecision(visible));
+            let amount = new BigNumber(total.dividedBy(rate).toFixed(visible));
 
             if (amount.lessThan(0)) {
               error = ERROR_FIELD_LT_ZERO;
-            } else if (state.order_type === "sell" && amount.greaterThan(state.balance)) {
+            } else if (state.isAccountExist && state.order_type === "sell" && amount.greaterThan(state.balance)) {
               error = ERROR_GT_BALANCE
             }
             substate.amount = genParam(amount, error);
@@ -83,20 +82,16 @@ export function setAmount(_amount, state, substate) {
       let amount = new BigNumber(_amount);
 
       if (amount.greaterThanOrEqualTo(0)) {
-        if (state.order_type === "buy" || state.isAccountExist && !amount.greaterThan(state.balance)) {
+        if (state.order_type === "buy" || !state.isAccountExist || !amount.greaterThan(state.balance)) {
           if (!errExist(state.rate.error)) {
             let error = null;
             rate = new BigNumber(rate);
 
             let total = new BigNumber(amount.times(rate).toFixed(visible));
-            console.log(visible);
-            console.log(total.toString());
-            console.log(state.balance.toString());
-            console.log(total.greaterThan(state.balance));
 
             if (total.lessThan(TOTAL_MIN)) {
               error = ERROR_TOTAL_LT_MIN
-            } else if (state.order_type === "buy" && total.greaterThan(state.balance)) {
+            } else if (state.isAccountExist && state.order_type === "buy" && total.greaterThan(state.balance)) {
               error = ERROR_GT_BALANCE
             }
 
