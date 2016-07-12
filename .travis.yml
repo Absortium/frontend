@@ -1,0 +1,14 @@
+sudo: required
+
+services:
+  - docker
+
+before_install:
+- git clone --recursive https://github.com/absortium/deluge.git
+- pushd deluge
+- pushd services/frontend
+- git checkout $TRAVIS_BRANCH
+- git pull
+- popd
+script:
+- ./useful/install.sh frontend
