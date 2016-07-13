@@ -3,6 +3,11 @@ sudo: required
 services:
   - docker
 
+branches:
+  only:
+    - master
+    - development
+
 env:
     global:
         - DOCKER_VERSION=1.11.2-0~trusty
