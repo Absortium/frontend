@@ -5,35 +5,30 @@ services:
 
 env:
     global:
-        - DOCKER_VERSION=1.10.1-0~trusty
+        - DOCKER_VERSION=1.11.2-0~trusty
         - DOCKER_COMPOSE_VERSION=1.8.0-rc1
+        - SERVICE=frontend
 
 before_install:
-  # upgrade docker-engine to specific version
-  - sudo apt-get -o Dpkg::Options::="--force-confnew" install -y docker-engine=${DOCKER_VERSION}
+  # Clone `deluge` project
+  - git clone --recursive https://github.com/absortium/deluge.git
+  - pushd deluge
 
-  # Reinstall docker-compose at specific version
-  - sudo rm /usr/local/bin/docker-compose
-  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
-  - chmod +x docker-compose
-  - sudo mv docker-compose /usr/local/bin
+  # Create mock .sensitive
+  - ./useful/create_mock_sensitive.sh
+
+  # list docker-engine versions
+  - apt-cache madison docker-engine
+
+  # Upgrade docker-engine to specific version
+  - ./useful/upgrade_docker_engine.sh
+
+  # Upgrade docker-compose to specific version
+  - ./useful/upgrade_docker_compose.sh
 
   # Check docker and docker-compose versions
   - docker version
   - docker-compose version
 
-  # Clone `deluge` project
-  - git clone --recursive https://github.com/absortium/deluge.git
-  - pushd deluge
-
-  # Checkout and pull changes of `frontend` service.
-  - pushd services/frontend
-  - git checkout $TRAVIS_BRANCH
-  - git pull
-  - popd
-
-  # Create mock .sensetive file
-  - touch .sensitive
-
 script:
-  - ./useful/install.sh frontend
+  - ./useful/install.sh "$SERVICE" "$TRAVIS_BRANCH"
