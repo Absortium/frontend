@@ -1,68 +1,57 @@
 
-## Getting started
+    Branch  | Status 
+  --------| -------
+  master | [![Build Status](https://travis-ci.org/absortium/frontend.svg?branch=master)](https://travis-ci.org/absortium/frontend)
+  development | [![Build Status](https://travis-ci.org/absortium/frontend.svg?branch=development)](https://travis-ci.org/absortium/frontend)
+  
+## Getting started  
 #### Prerequisites
   
     Name  | Version 
   --------| -------
-  docker-compose | 1.6
-  docker | 1.11
-  docker-machine | 0.6
+  docker-compose | 1.8.0-rc1
+  docker | 1.12.0-rc3
   
   **Step №1**: Clone repository.  
   ```bash
   $ git clone --recursive https://github.com/absortium/deluge.git
+  $ cd deluge
   ```
 
+  **Step №2**: Ask maintainer to give you `.sensitive` file.
+  
+  **Step №3**: Install `frontend` and run tests.
+  ```bash
+  $ ./useful/install.sh frontend
+  ```
+
+## Hot connect `frontend` to the `backend` and start developing?
+  **Step №1**: Install `backend` and tun tests.
+  ```bash
+  $ ./useful/install.sh backend
+  ```  
+  
   **Step №2**: For simplicity I prefer use [aliases](#alias-info) which I developed for this project, on first sign it might look overwhelming, but I think it may significantly help you for developing, so add env variables and aliases from `useful` directory - copy this in the `.bashrc` or `.zshrc` (this code install project aliases every time when you instantiate terminal window):
   ```bash
-    export DELUGE_PATH="YOUR_WORK_DIRECTORY_PATH"
-    export DEFAULT_MODE="frontend"
-    for f in $DELUGE_PATH/useful/aliases/*; do
-      source "$f"
-    done  
+  export DELUGE_PATH="YOUR_WORK_DIRECTORY_PATH"
+  export DEFAULT_MODE="frontend"
+  for f in $DELUGE_PATH/useful/aliases/*; do
+    source "$f"
+  done  
   ```
   
-  **Step №3**: Install docker on your machine, for that go to the docker [website](https://www.docker.com). If you working on OS X do not forget that now we use old docker toolbox with docker machine. Also do not forget, that you should create `default` machine and initialize it, all information you may find on docker website.
-  
-  **Step №4**: Ask maintainer to give you `.sensetive` file.
-  
-  **Step №5**: Install and run `postgres` service.
+  **Step №3**: Run `frontend`.
   ```bash
-  $ dcu -d postgres
+  $ dc up frontend
   ```
+  
+  **Step №4**: Go to the `localhost:3000`  
 
-  **Step №6**: Build `backend` service.
+## Test Driven Development (TDD)
   ```bash
-  $ dcb backend
-  ```  
-
-**Step №7**: Migrate database.
-  ```bash
-  $ dcr m-backend migrate
+  $ dc run frontend run test:watch -- --grep='<test name>'
   ```
   
-**Step №8**: Install and run `frontend`.
-  ```bash
-  $ dcu frontend
-  ```
-
-**Step №9**: Add entry to the `/etc/hosts`, otherwise you will not be able to authenticate properly. If you run docker containers on the `docker-machine` (OS X), than check your `docker-machine` ip and pass it to the `/etc/hosts`:
- ```bash
- $ docker-machine ip
- $ sudo bash -c 'echo "<ip> dev.absortium.com" >> /etc/hosts'
- ```
- 
- * Otherwise set `127.0.0.1`:
- 
- ```bash
- $ sudo bash -c 'echo "127.0.0.1 dev.absortium.com " >> /etc/hosts'
- ```
-   
-**Step №10**: Go to the `dev.absortium.com:3000`
-    
-## Tips
-* If you use `docker-machine` than you must download project only under `/Users/` directory.
- 
 ## Services
 * `m-backend` - main backend service.
 * `w-backend` - backend worker service (celery).
