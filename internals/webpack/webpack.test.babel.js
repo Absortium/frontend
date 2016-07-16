@@ -4,18 +4,21 @@
 
 const path = require('path');
 const webpack = require('webpack');
+const process = require('process');
 const modules = [
   'app',
   'node_modules',
 ];
 
+const fixes = require('./fixes');
+
 module.exports = {
   devtool: 'inline-source-map',
-  isparta: {
-    babel: {
-      presets: ['es2015', 'react', 'stage-0'],
-    },
-  },
+  // isparta: {
+  //   babel: {
+  //     presets: ['es2015', 'react', 'stage-0'],
+  //   },
+  // },
   module: {
     // Some libraries don't like being run through babel.
     // If they gripe, put them here.
@@ -26,46 +29,21 @@ module.exports = {
       'ws'
 
     ],
-    preLoaders: [
-      {
-        test: /\.js$/,
-        loader: 'isparta',
-        include: path.resolve('app/'),
-      },
-    ],
+    // preLoaders: [
+    //   {
+    //     test: /\.js$/,
+    //     loader: 'isparta',
+    //     include: path.resolve('app/'),
+    //   },
+    // ],
     loaders: [
+      ...fixes.autoBahnFix(),
+      ...fixes.authLockFix(),
+
       { test: /\.json$/, loader: 'json-loader' },
       { test: /\.css$/, loader: 'null-loader' },
-      {
-        test: /node_modules[\\\/]auth0-lock[\\\/].*\.js$/,
-        loaders: [
-          'transform-loader/cacheable?brfs',
-          'transform-loader/cacheable?packageify'
-        ]
-      }, {
-        test: /node_modules[\\\/]auth0-lock[\\\/].*\.ejs$/,
-        loader: 'transform-loader/cacheable?ejsify'
-      },
-      {
-        test: /\.jpe?g$|\.gif$|\.png$|\.svg$/i,
-        loader: 'url-loader?limit=10000',
-      },
-      {
-        test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'file?name=fonts/[name].[hash].[ext]&mimetype=application/font-woff',
-      },
-      {
-        test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'file?name=fonts/[name].[hash].[ext]&mimetype=application/font-woff',
-      },
-      {
-        test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'file?name=fonts/[name].[hash].[ext]&mimetype=application/octet-stream',
-      },
-      {
-        test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'file?name=fonts/[name].[hash].[ext]',
-      },
+      { test: /\.less$/, loader: "null-loader" },
+
       // sinon.js--aliased for enzyme--expects/requires global vars.
       // imports-loader allows for global vars to be injected into the module.
       // See https://github.com/webpack/webpack/issues/304
@@ -73,17 +51,14 @@ module.exports = {
         test: /sinon(\\|\/)pkg(\\|\/)sinon\.js/,
         loader: 'imports?define=>false,require=>false',
       },
-      {
-        test: /\.js$/,
+      { test: /\.js$/,
         loader: 'babel',
         exclude: [/node_modules/],
       },
-      {
-        test: /\.jpe?g$|\.gif$|\.png$/i,
+      { test: /\.jpe?g$|\.gif$|\.png$/i,
         loader: 'null-loader',
       },
-      { test: /\.less$/, loader: "style!css!less" },
-    ],
+    ]
   },
 
   plugins: [
@@ -102,20 +77,20 @@ module.exports = {
   // https://webpack.github.io/docs/configuration.html#node
   // https://github.com/webpack/node-libs-browser/tree/master/mock
   // https://github.com/webpack/jade-loader/issues/8#issuecomment-55568520
-  node: {
-    fs: 'empty',
-    child_process: 'empty',
-    net: 'empty',
-    tls: 'empty',
-  },
+  // node: {
+  //   fs: 'empty',
+  //   child_process: 'empty',
+  //   net: 'empty',
+  //   tls: 'empty',
+  // },
 
   // required for enzyme to work properly
   externals: {
     'ws': true,
-    jsdom: 'window',
-    'react/addons': true,
-    'react/lib/ExecutionEnvironment': true,
-    'react/lib/ReactContext': 'window',
+    // jsdom: 'window',
+    // 'react/addons': true,
+    // 'react/lib/ExecutionEnvironment': true,
+    // 'react/lib/ReactContext': 'window',
   },
   resolve: {
     modulesDirectories: modules,

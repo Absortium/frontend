@@ -18,9 +18,7 @@ const initialState = {
     isAuthenticated: false,
     isAccountLoaded: false,
     isAccountExist: false,
-    accounts: null,
-    from_currency: null,
-    to_currency: null
+    accounts: null
 };
 
 
@@ -53,9 +51,7 @@ function accountBoxReducer(state = initialState, action) {
             return Object.assign({}, state,
                 {
                     isAccountLoaded: false,
-                    isAccountExist: false,
-                    from_currency: action.from_currency,
-                    to_currency: action.to_currency
+                    isAccountExist: false
                 });
         }
 

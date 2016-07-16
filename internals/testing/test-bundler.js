@@ -3,11 +3,15 @@
 import 'babel-polyfill';
 
 // If we need to use Chai, we'll have already chaiEnzyme loaded
-import chai from 'chai';
-import chaiEnzyme from 'chai-enzyme';
-chai.use(chaiEnzyme());
+// import chai from 'chai';
+// import chaiEnzyme from 'chai-enzyme';
+// chai.use(chaiEnzyme());
 
 // Include all .js files under `app`, except app.js, reducers.js, routes.js and
 // store.js. This is for isparta code coverage
-const context = require.context('../../app', true, /^^((?!(app|reducers|routes|store)).)*\.js$/);
-context.keys().forEach(context);
+// const context = require.context('../../app', true, /^^((?!(app|reducers|routes|store)).)*\.js$/);
+// context.keys().forEach(context);
+
+var testsContext = require.context("../../app", true, /.test.js$/);
+testsContext.keys().forEach(testsContext);
+

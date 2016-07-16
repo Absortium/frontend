@@ -17,24 +17,24 @@
 
 
 import {
-    CHANGE_FROM_AMOUNT,
+    CHANGE_AMOUNT,
     CHANGE_RATE,
-    CHANGE_TO_AMOUNT,
+    CHANGE_TOTAL,
     SUBSTITUTE_RATE,
-    SUBSTITUTE_FROM_AMOUNT
+    SUBSTITUTE_BALANCE
 } from "./constants";
 
-export function changeFromAmount(from_amount) {
+export function changeAmount(amount) {
     return {
-        type: CHANGE_FROM_AMOUNT,
-        from_amount
+        type: CHANGE_AMOUNT,
+        amount
     };
 }
 
-export function changeToAmount(to_amount) {
+export function changeTotal(total) {
     return {
-        type: CHANGE_TO_AMOUNT,
-        to_amount
+        type: CHANGE_TOTAL,
+        total
     };
 }
 
@@ -52,8 +52,9 @@ export function substituteRate() {
     };
 }
 
-export function substituteFromAmount() {
+export function substituteBalance(field) {
     return {
-        type: SUBSTITUTE_FROM_AMOUNT,
+        type: SUBSTITUTE_BALANCE,
+        field
     };
 }

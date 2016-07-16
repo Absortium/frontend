@@ -63,7 +63,8 @@ class MarketInfo extends React.Component {
                                         return <Tab key={currency}
                                                     label={<MarketTabLabel currency={currency}/>}
                                                     style={styles.tab}>
-                                            <MarketTabContent currency={currency} changeMarket={this.props.changeMarket}
+                                            <MarketTabContent currency={currency} 
+                                                              changeMarket={this.props.changeMarket}
                                                               info={info}/>
                                         </Tab>
                                     }
@@ -83,7 +84,7 @@ const mapStateToProps = selectMarketInfo();
 
 function mapDispatchToProps(dispatch) {
     return {
-        changeMarket: (from_currency, to_currency) => dispatch(replace("/exchange/" + from_currency + "-" + to_currency)),
+        changeMarket: (from_currency, to_currency) => dispatch(replace("/order/" + from_currency + "-" + to_currency)),
         dispatch,
     };
 }

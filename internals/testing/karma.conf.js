@@ -8,21 +8,6 @@ module.exports = (config) => {
     reporters: ['coverage', 'mocha'],
     browsers: ['PhantomJS'],
 
-    // you can define custom flags
-    customLaunchers: {
-      'PhantomJS_custom': {
-        base: 'PhantomJS',
-        options: {
-          windowName: 'my-window',
-          settings: {
-            webSecurityEnabled: false
-          },
-        },
-        flags: ['--load-images=true'],
-        debug: true
-      }
-    },
-
     phantomjsLauncher: {
       // Have phantomjs exit if a ResourceError is encountered (useful if karma exits without killing phantom)
       exitOnResourceError: true
@@ -50,16 +35,16 @@ module.exports = (config) => {
       ['./test-bundler.js']: ['webpack', 'sourcemap'], // eslint-disable-line no-useless-computed-key
     },
 
+    mochaReporter: {
+      showDiff: true
+    },
+
     webpack: webpackConfig,
 
     // make Webpack bundle generation quiet
     webpackMiddleware: {
       noInfo: true,
       stats: 'errors-only',
-      watchOptions: {
-        aggregateTimeout: 100,
-        poll: true
-      }
     },
 
     coverageReporter: {

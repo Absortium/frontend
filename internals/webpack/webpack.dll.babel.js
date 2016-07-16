@@ -13,7 +13,6 @@ const defaults = require('lodash/defaultsDeep');
 const webpack = require('webpack');
 const pkg = require(join(process.cwd(), 'package.json'));
 const dllPlugin = require('../config').dllPlugin;
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 if (!pkg.dllPlugin) { process.exit(0); }
 
@@ -35,7 +34,6 @@ module.exports = require('./webpack.base.babel')({
   cssLoaders: 'style-loader!css-loader?localIdentName=[local]__[path][name]__[hash:base64:5]&modules&importLoaders=1&sourceMap!postcss-loader',
 
   plugins: [
-    new ExtractTextPlugin("styles.css"),
     new webpack.DllPlugin({ name: '[name]', path: join(outputPath, '[name].json') }), // eslint-disable-line no-new
   ],
 });
