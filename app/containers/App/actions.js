@@ -183,12 +183,11 @@ export function exchangesHistoryChanged(exchanges) {
   };
 }
 
-export function sendWithdrawal(amount, address, pk, currency) {
+export function sendWithdrawal(amount, address, currency) {
   return {
     type: SEND_WITHDRAWAL,
     amount,
     address,
-    pk,
     currency
   };
 }

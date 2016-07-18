@@ -69,10 +69,9 @@ export default class WithdrawalDialog extends React.Component {
     sendWithdrawal = () => {
         let amount = this.props.amount.value;
         let address = this.props.address.value;
-        let pk = this.props.pk;
         let currency = this.props.currency;
 
-        this.props.sendWithdrawal(amount, address, pk, currency)
+        this.props.sendWithdrawal(amount, address, currency)
     };
 
     render() {
@@ -130,7 +129,7 @@ const mapStateToProps = selectWithdrawalDialog();
 function mapDispatchToProps(dispatch) {
     return {
         closeHandler: () => dispatch(withdrawalDialogClose()),
-        sendWithdrawal: (amount, address, pk, currency) => dispatch(sendWithdrawal(amount, address, pk, currency)),
+        sendWithdrawal: (amount, address, currency) => dispatch(sendWithdrawal(amount, address, currency)),
         changeWithdrawalAmount: (event) => dispatch(changeWithdrawalAmount(event.target.value)),
         changeWithdrawalAddress: (event) => dispatch(changeWithdrawalAddress(event.target.value)),
         dispatch,
