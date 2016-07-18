@@ -262,7 +262,7 @@ class AccountsService {
         let accounts = response["data"];
 
         if (isArrayEmpty(accounts)) {
-          sleep(1);
+          sleep(1000);
           yield put(accountsEmpty());
         }
 
@@ -635,9 +635,12 @@ class DepositService {
   static accounts = {};
   static isAuthenticated = false;
 
-  static * get(pk) {
+  static * get(currency) {
     try {
-      const url = "/api/accounts/" + pk + "/deposits/";
+      let q = "?";
+      q += "currency=" + currency;
+
+      const url = "/api/deposits/" + q;
       const response = yield call(axios.get, url);
       return response.data
 
@@ -661,7 +664,7 @@ class DepositService {
     let account = action.account;
 
     try {
-      let data = yield* DepositService.get(account.pk);
+      let data = yield* DepositService.get(account.currency);
       let deposits = data.map(function (deposit, index) {
         return deposit.pk
       });
@@ -672,8 +675,6 @@ class DepositService {
             if (!include(deposits, deposit.pk)) {
               toastr.success("Deposit", "New deposit arrived!");
               deposits.push(deposit.pk);
-
-              deposit.currency = account.currency;
 
               yield put(depositArrived(deposit));
 
