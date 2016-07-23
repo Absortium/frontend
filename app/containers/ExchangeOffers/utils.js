@@ -17,14 +17,10 @@ export function transform(offers) {
   let data = [];
 
   for (let offer of offers) {
-    let price = new BigNumber(offer.price);
-    let amount = new BigNumber(offer.amount);
-    let total = amount.times(price);
-
     data.push({
-      price: price,
-      amount: amount,
-      total: total
+      price: new BigNumber(offer.price),
+      amount: new BigNumber(offer.amount),
+      total: new BigNumber(offer.total)
     });
   }
 
@@ -43,8 +39,10 @@ export function insertOffer(offer, offers) {
       offers.splice(index, 1, offer);
     }
   } else {
-    // if offer not exist just insert it into sorted array
-    offers.splice(index, 0, offer);
+    if (!offer.amount.isZero()) {
+      // if offer not exist just insert it into sorted array
+      offers.splice(index, 0, offer);
+    }
   }
 
   return offers;
@@ -53,13 +51,14 @@ export function insertOffer(offer, offers) {
 export function locationOfOffer(offer, offers, start, end) {
   start = start || 0;
   end = end || offers.length;
-  
+
   var index = parseInt(start + (end - start) / 2, 10);
+
+  if (offers.length == 0) return [index, false];
 
   if (offers[index].price.equals(offer.price)) return [index, true];
 
-  if (end - start <= 1)
-    return offers[index].price.greaterThan(offer.price) ? [index, false] : [index + 1, false];
+  if (end - start <= 1) return offers[index].price.greaterThan(offer.price) ? [index, false] : [index + 1, false];
 
   if (offers[index].price.lessThan(offer.price)) {
     return locationOfOffer(offer, offers, index, end);
