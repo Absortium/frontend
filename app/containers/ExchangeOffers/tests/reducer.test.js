@@ -24,7 +24,7 @@ describe("ExchangeOffers reducer", () => {
   });
 
   it("check action OFFERS_RECEIVED", () => {
-    const offers = [{ price: 1, amount: 2 }];
+    const offers = [{ price: 1, amount: 2, total: 2 }];
 
     state = exchangeOffersReducer(state, offerReceived(offers));
 
@@ -38,8 +38,8 @@ describe("ExchangeOffers reducer", () => {
   });
 
   it("check action OFFERS_CHANGED", () => {
-    const offers = [{ price: 1, amount: 2 }];
-    const update = [{ price: 1, amount: 3 }];
+    const offers = [{ price: 1, amount: 2, total: 2 }];
+    const update = [{ price: 1, amount: 3, total: 3 }];
 
     state = exchangeOffersReducer(state, offerReceived(offers));
     state = exchangeOffersReducer(state, offersChanged(update));
