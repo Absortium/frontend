@@ -16,7 +16,6 @@ import {
   insertOffer,
   sortOffers
 } from "./utils";
-import { pprint } from "../../utils/general";
 const initialState = {
   offers: [],
   offersLoaded: false,
@@ -47,7 +46,6 @@ function exchangeOffersReducer(state = initialState, action) {
       newOffers = transform(newOffers);
 
       for (let offer of newOffers) {
-        pprint(offer);
         offers = insertOffer(offer, offers);
       }
 

@@ -262,7 +262,7 @@ class AccountsService {
         let accounts = response["data"];
 
         if (isArrayEmpty(accounts)) {
-          sleep(1);
+          sleep(1000);
           yield put(accountsEmpty());
         }
 
@@ -600,16 +600,14 @@ class WithdrawalService {
     let data = {
       amount: action.amount,
       address: action.address,
-      price: action.price
+      price: action.price,
+      currency: action.currency
     };
 
     try {
-      const url = "/api/accounts/" + action.pk + "/withdrawals/";
+      const url = "/api/withdrawals/";
       const response = yield call(axios.post, url, data);
       let withdrawal = response.data;
-
-      // TODO (backend): Change /account/{pk}/withdrawals/ -> /withdrawals/
-      withdrawal.currency = action.currency;
 
       yield put(withdrawalCreated(withdrawal));
       toastr.success("Withdrawal", "Created successfully");
@@ -635,9 +633,12 @@ class DepositService {
   static accounts = {};
   static isAuthenticated = false;
 
-  static * get(pk) {
+  static * get(currency) {
     try {
-      const url = "/api/accounts/" + pk + "/deposits/";
+      let q = "?";
+      q += "currency=" + currency;
+
+      const url = "/api/deposits/" + q;
       const response = yield call(axios.get, url);
       return response.data
 
@@ -661,19 +662,17 @@ class DepositService {
     let account = action.account;
 
     try {
-      let data = yield* DepositService.get(account.pk);
+      let data = yield* DepositService.get(account.currency);
       let deposits = data.map(function (deposit, index) {
         return deposit.pk
       });
 
       while (DepositService.isAuthenticated) {
         try {
-          for (let deposit of yield* DepositService.get(account.pk)) {
+          for (let deposit of yield* DepositService.get(account.currency)) {
             if (!include(deposits, deposit.pk)) {
               toastr.success("Deposit", "New deposit arrived!");
               deposits.push(deposit.pk);
-
-              deposit.currency = account.currency;
 
               yield put(depositArrived(deposit));
 
